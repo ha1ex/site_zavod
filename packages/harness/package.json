@@ -9,8 +9,9 @@
     ".": "./src/index.ts",
     "./schemas": "./src/schemas/index.ts",
     "./pipeline": "./src/pipeline/index.ts",
-    "./validators": "./src/validators/index.ts",
-    "./registry": "./src/registry/index.ts"
+    "./registry": "./src/registry/index.ts",
+    "./render": "./src/render/index.ts",
+    "./render/render-spec-react": "./src/render/render-spec-react.tsx"
   },
   "bin": {
     "harness": "./bin/harness.mjs"
@@ -23,6 +24,7 @@
     "ai": "^6.0.182",
     "@ai-sdk/anthropic": "^3.0.77",
     "@ai-sdk/openai": "^3.0.63",
+    "@buffalo/ui": "workspace:*",
     "zod": "^4.4.3",
     "commander": "^14.0.3",
     "chalk": "^5.3.0",
@@ -33,6 +35,8 @@
   "devDependencies": {
     "@types/babel__traverse": "^7.20.6",
     "@types/node": "^22.9.0",
+    "@types/react": "^19.0.0",
+    "react": "^19.2.6",
     "tsx": "^4.19.2",
     "typescript": "^5.6.3"
   }

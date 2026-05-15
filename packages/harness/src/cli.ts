@@ -1,7 +1,32 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
 import chalk from 'chalk';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { dirname, resolve } from 'node:path';
 import { HARNESS_VERSION } from './index.js';
+import { BriefSchema, LandingSpecSchema } from './schemas/index.js';
+import { landingSpecFromBrief } from './pipeline/index.js';
+import { renderLandingToTSX } from './render/index.js';
+import { describeRegistry } from './registry/index.js';
+
+const ROOT = resolve(process.cwd());
+
+async function findRepoRoot(start: string): Promise<string> {
+  // Ищем pnpm-workspace.yaml вверх по дереву; CLI могут вызывать из подпакета.
+  let dir = start;
+  for (let i = 0; i < 10; i++) {
+    try {
+      await readFile(resolve(dir, 'pnpm-workspace.yaml'));
+      return dir;
+    } catch {
+      // not found here, go up
+    }
+    const parent = dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+  return start;
+}
 
 const program = new Command();
 
@@ -14,26 +39,62 @@ program
   .command('generate')
   .description('Сгенерировать артефакт из brief')
   .argument('<kind>', 'тип артефакта: landing | illustration')
-  .option('-b, --brief <path>', 'путь к brief.json')
-  .option('-s, --slug <slug>', 'slug черновика')
-  .action(async (kind: string, opts: { brief?: string; slug?: string }) => {
-    console.log(chalk.cyan(`[harness] generate ${kind}`));
-    console.log(chalk.dim(`  brief: ${opts.brief ?? '(none)'}`));
-    console.log(chalk.dim(`  slug:  ${opts.slug ?? '(auto)'}`));
-    console.log(
-      chalk.yellow(
-        '⏳ Пайплайн ещё не подключён — это skeleton (этап 0). Следующий шаг: этап 1.',
-      ),
-    );
+  .option('-b, --brief <path>', 'путь к brief.json (относительно репозитория)')
+  .option('-s, --slug <slug>', 'slug черновика', 'draft')
+  .action(async (kind: string, opts: { brief?: string; slug: string }) => {
+    if (kind !== 'landing') {
+      console.error(chalk.red(`[harness] kind=${kind} не поддерживается (пока только landing)`));
+      process.exit(1);
+    }
+    if (!opts.brief) {
+      console.error(chalk.red('[harness] --brief обязателен'));
+      process.exit(1);
+    }
+
+    const root = await findRepoRoot(ROOT);
+    const briefPath = resolve(root, opts.brief);
+    console.log(chalk.cyan(`[harness] read brief: ${briefPath}`));
+
+    const briefRaw = await readFile(briefPath, 'utf-8');
+    const brief = BriefSchema.parse(JSON.parse(briefRaw));
+
+    const spec = landingSpecFromBrief(brief);
+    const specPath = resolve(root, 'content', 'landings', `${opts.slug}.json`);
+    await mkdir(dirname(specPath), { recursive: true });
+    await writeFile(specPath, JSON.stringify(spec, null, 2) + '\n', 'utf-8');
+    console.log(chalk.green(`[harness] ✓ spec  → ${specPath}`));
+
+    const tsx = renderLandingToTSX(spec, opts.slug);
+    const tsxPath = resolve(root, 'generated', 'landings', opts.slug, 'page.tsx');
+    await mkdir(dirname(tsxPath), { recursive: true });
+    await writeFile(tsxPath, tsx, 'utf-8');
+    console.log(chalk.green(`[harness] ✓ tsx   → ${tsxPath}`));
+
+    console.log(chalk.dim(`\nПревью: http://localhost:3000/landings/${opts.slug}`));
   });
 
 program
   .command('validate')
   .description('Валидировать существующий spec')
   .argument('<slug>', 'slug черновика')
-  .action((slug: string) => {
-    console.log(chalk.cyan(`[harness] validate ${slug}`));
-    console.log(chalk.yellow('⏳ Validators будут добавлены на этапе 4.'));
+  .action(async (slug: string) => {
+    const root = await findRepoRoot(ROOT);
+    const path = resolve(root, 'content', 'landings', `${slug}.json`);
+    const raw = await readFile(path, 'utf-8');
+    const parsed = LandingSpecSchema.safeParse(JSON.parse(raw));
+    if (!parsed.success) {
+      console.error(chalk.red(`[harness] ✗ spec invalid`));
+      console.error(parsed.error.format());
+      process.exit(1);
+    }
+    console.log(chalk.green(`[harness] ✓ spec valid (${parsed.data.sections.length} sections)`));
+  });
+
+program
+  .command('registry')
+  .description('Показать component registry (для system prompt LLM)')
+  .action(() => {
+    console.log(describeRegistry());
   });
 
 program
@@ -41,16 +102,7 @@ program
   .description('Собрать ZIP-пакет для передачи разработчикам')
   .argument('<slug>', 'slug черновика')
   .action((slug: string) => {
-    console.log(chalk.cyan(`[harness] handoff ${slug}`));
-    console.log(chalk.yellow('⏳ Handoff pipeline будет добавлен на этапе 6.'));
-  });
-
-program
-  .command('registry')
-  .description('Перегенерировать component registry из Storybook stories')
-  .action(() => {
-    console.log(chalk.cyan('[harness] registry'));
-    console.log(chalk.yellow('⏳ Registry extractor будет добавлен на этапе 1.'));
+    console.log(chalk.yellow(`[harness] handoff ${slug} — будет добавлено на этапе 6`));
   });
 
 program.parseAsync(process.argv).catch((err) => {

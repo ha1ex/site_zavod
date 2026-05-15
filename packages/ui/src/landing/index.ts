@@ -1,2 +1,2 @@
-// Этап 1: добавим HeroSection, FeatureGrid, FinalCta, Pricing, FAQ и т.д.
-export {};
+export { HeroSection } from './HeroSection.js';
+export type { HeroSectionProps, CtaProps, AssetRefProps } from './HeroSection.js';

@@ -1,0 +1,138 @@
+/**
+ * Kaiten V01 design system tokens
+ * Источник: .context/attachments/SKILL.md (design-system-kaiten-v01)
+ *
+ * Core style: calm B2B/SaaS interfaces, white/light-gray surfaces, real product
+ * UI screenshots, restrained typography, violet (#7d4ccf) as single primary
+ * interaction color. Product-led composition.
+ */
+
+@theme {
+  /* ─── Neutral scale ───────────────────────────────────────────────── */
+  --color-neutral-000: #ffffff;
+  --color-neutral-050: #fafafa;
+  --color-neutral-100: #f5f5f5;
+  --color-neutral-200: #eeeeee;
+  --color-neutral-300: #e0e0e0;
+  --color-neutral-400: #bdbdbd;
+  --color-neutral-500: #9e9e9e;
+  --color-neutral-600: #757575;
+  --color-neutral-700: #616161;
+  --color-neutral-800: #424242;
+  --color-neutral-900: #2d2d2d;
+  --color-neutral-950: #121212;
+
+  /* ─── Accent colors (100 = brand, 12 = soft tint) ─────────────────── */
+  --color-violet-100: #7d4ccf;
+  --color-violet-12: #efe9f9;
+  --color-purple-100: #ab47bd;
+  --color-purple-12: #f4e8f7;
+  --color-blue-100: #2196f3;
+  --color-blue-12: #e4f2fd;
+  --color-green-100: #4caf51;
+  --color-green-12: #e9f5ea;
+  --color-lime-100: #a5ca00;
+  --color-lime-12: #f4f8e0;
+  --color-orange-100: #ffa100;
+  --color-orange-12: #fff3e0;
+  --color-red-100: #f44336;
+  --color-red-12: #fde8e6;
+
+  /* ─── Semantic aliases (используйте их в компонентах) ─────────────── */
+  --color-text-primary: var(--color-neutral-900);
+  --color-text-secondary: var(--color-neutral-600);
+  --color-text-inverse: var(--color-neutral-000);
+  --color-text-accent: var(--color-violet-100);
+  --color-surface-page: var(--color-neutral-000);
+  --color-surface-section: var(--color-neutral-100);
+  --color-surface-card: var(--color-neutral-000);
+  --color-border-default: var(--color-neutral-300);
+  --color-action-primary: var(--color-violet-100);
+  --color-action-primary-hover: #6f43b8;
+  --color-action-primary-soft: var(--color-violet-12);
+
+  /* ─── Typography ──────────────────────────────────────────────────── */
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --text-xs: 12px;
+  --text-xs--line-height: 16px;
+  --text-sm: 14px;
+  --text-sm--line-height: 20px;
+  --text-md: 16px;
+  --text-md--line-height: 24px;
+  --text-lg: 18px;
+  --text-lg--line-height: 28px;
+  --text-xl: 20px;
+  --text-xl--line-height: 28px;
+  --text-2xl: 24px;
+  --text-2xl--line-height: 32px;
+  --text-3xl: 30px;
+  --text-3xl--line-height: 36px;
+  --text-4xl: 36px;
+  --text-4xl--line-height: 40px;
+  --text-5xl: 48px;
+  --text-5xl--line-height: 52px;
+  --text-6xl: 60px;
+  --text-6xl--line-height: 64px;
+
+  /* ─── Spacing (4px scale) ─────────────────────────────────────────── */
+  --spacing-0: 0px;
+  --spacing-0_5: 2px;
+  --spacing-1: 4px;
+  --spacing-1_5: 6px;
+  --spacing-2: 8px;
+  --spacing-2_5: 10px;
+  --spacing-3: 12px;
+  --spacing-3_5: 14px;
+  --spacing-4: 16px;
+  --spacing-5: 20px;
+  --spacing-6: 24px;
+  --spacing-7: 28px;
+  --spacing-8: 32px;
+  --spacing-9: 36px;
+  --spacing-10: 40px;
+  --spacing-11: 44px;
+  --spacing-12: 48px;
+  --spacing-14: 56px;
+  --spacing-16: 64px;
+  --spacing-20: 80px;
+  --spacing-24: 96px;
+
+  /* ─── Radius ──────────────────────────────────────────────────────── */
+  --radius-none: 0px;
+  --radius-sm: 2px;
+  --radius-base: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-3xl: 24px;
+  --radius-4xl: 32px;
+  --radius-full: 9999px;
+
+  /* ─── Grid ────────────────────────────────────────────────────────── */
+  --container-kaiten: 1216px;
+
+  /* ─── Motion ──────────────────────────────────────────────────────── */
+  --duration-fast: 120ms;
+  --duration-base: 180ms;
+  --duration-slow: 240ms;
+  --ease-ui: cubic-bezier(0.2, 0, 0.2, 1);
+
+  /* ─── Button tokens ───────────────────────────────────────────────── */
+  --button-radius: 8px;
+  --button-fill-bg: var(--color-violet-100);
+  --button-fill-bg-hover: #6f43b8;
+  --button-fill-bg-disabled: var(--color-neutral-100);
+  --button-fill-text: var(--color-neutral-000);
+  --button-fill-text-disabled: var(--color-neutral-500);
+  --button-outline-bg: var(--color-neutral-000);
+  --button-outline-bg-hover: var(--color-violet-12);
+  --button-outline-border: var(--color-neutral-300);
+  --button-outline-border-hover: rgba(125, 76, 207, 0.48);
+  --button-outline-text: var(--color-violet-100);
+  --button-outline-text-hover: #6f43b8;
+  --button-outline-text-disabled: var(--color-neutral-300);
+  --button-focus-brand: 0 0 0 4px rgba(55, 88, 249, 0.2);
+  --button-focus-default: 0 0 0 4px rgba(152, 162, 179, 0.14);
+}

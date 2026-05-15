@@ -1,0 +1,16 @@
+{
+  "product": "Buffalo AI harness",
+  "audience": ["Product Manager", "Marketing Lead", "Frontend Engineer"],
+  "market": "B2B SaaS",
+  "primaryGoal": "book_demo",
+  "mainPain": "Каждый новый лендинг отнимает у фронтенд-команды дни и часто получается не в нашем стиле и не на наших компонентах.",
+  "mainPromise": "Превратите бриф в готовый лендинг за минуту",
+  "proofPoints": [
+    "use cases из вашей дизайн-системы",
+    "TSX, который ревью и мерж как обычный PR",
+    "встроенные валидаторы: бренд, доступность, бизнес-правила"
+  ],
+  "tone": "clear, practical, confident, no hype",
+  "cta": "Получить демо",
+  "pageArchetype": "saas"
+}

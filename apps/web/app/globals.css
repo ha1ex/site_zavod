@@ -1,29 +1,9 @@
 @import "tailwindcss";
-
-@theme {
-  --color-brand: oklch(0.55 0.2 145);
-  --color-surface: oklch(0.99 0 0);
-  --color-surface-dark: oklch(0.14 0 0);
-  --color-text: oklch(0.15 0 0);
-  --color-text-dark: oklch(0.92 0 0);
-  --color-muted: oklch(0.55 0 0);
-
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-
-  --radius-card: 1rem;
-}
+@import "@buffalo/ui/src/tokens.css";
 
 html {
-  background: var(--color-surface);
-  color: var(--color-text);
-}
-
-html.dark {
-  background: var(--color-surface-dark);
-  color: var(--color-text-dark);
-}
-
-body {
+  background: var(--color-surface-page);
+  color: var(--color-text-primary);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }

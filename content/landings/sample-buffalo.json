@@ -1,0 +1,23 @@
+{
+  "pageType": "saas_landing",
+  "goal": "book_demo",
+  "sections": [
+    {
+      "id": "hero",
+      "component": "HeroSection",
+      "props": {
+        "eyebrow": "AI harness для продуктовых команд",
+        "title": "Превратите бриф в готовый лендинг за минуту",
+        "subtitle": "Buffalo собирает страницу из ваших компонентов, проверяет тон и отдаёт TSX-файл, который разработчик может коммитить как есть.",
+        "primaryCta": { "label": "Получить демо", "href": "/demo" },
+        "secondaryCta": { "label": "Как это работает", "href": "#how-it-works" },
+        "visual": { "type": "product_screenshot", "assetId": "harness-dashboard-v1" }
+      }
+    }
+  ],
+  "seo": {
+    "title": "Buffalo — AI harness для генерации SaaS-лендингов",
+    "description": "Превращайте брифы в готовые TSX-лендинги, собранные из вашей дизайн-системы. Со встроенными валидаторами и repair loop."
+  },
+  "illustrationSpecs": []
+}
