@@ -1,0 +1,27 @@
+{
+  "id": "buffalo-hero-dashboard",
+  "scene": "device_showcase",
+  "palette": {
+    "accent": "#7D4CCF",
+    "glowDark": "#7D4CCF",
+    "glowLight": "#EFE9F9"
+  },
+  "devices": [
+    {
+      "type": "laptop",
+      "uiHint": "Project dashboard: KPI tiles на 12 345 / 89% / +24%, поверх — линейный график за 30 дней.",
+      "position": { "x": 540, "y": 180, "scale": 1 }
+    },
+    {
+      "type": "phone",
+      "uiHint": "Mobile companion: список задач с тремя чекбоксами и одним unread badge '3'.",
+      "position": { "x": 1480, "y": 380, "scale": 0.9 }
+    }
+  ],
+  "decorations": [
+    { "type": "plant", "position": { "x": 220, "y": 880 } },
+    { "type": "sparkle", "position": { "x": 1840, "y": 220 } }
+  ],
+  "glow": { "enabled": true, "centerX": 1500, "centerY": 380, "radius": 580 },
+  "viewBox": { "x": 0, "y": -220, "width": 2150, "height": 1420 }
+}

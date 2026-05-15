@@ -11,7 +11,8 @@
     "./pipeline": "./src/pipeline/index.ts",
     "./registry": "./src/registry/index.ts",
     "./render": "./src/render/index.ts",
-    "./render/render-spec-react": "./src/render/render-spec-react.tsx"
+    "./render/render-spec-react": "./src/render/render-spec-react.tsx",
+    "./validators": "./src/validators/index.ts"
   },
   "bin": {
     "harness": "./bin/harness.mjs"

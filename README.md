@@ -28,14 +28,32 @@ design-system/kaiten-v01/  источник истины дизайн-систе
 ## Команды
 
 ```bash
-pnpm install                   # один раз
-pnpm dev                       # Next.js preview на :3000
-pnpm storybook                 # Storybook на :6006
-pnpm harness -- --help         # CLI
-pnpm harness -- generate landing --brief examples/golden-brief.json
-pnpm harness -- validate <slug>
-pnpm harness -- handoff <slug> # → out/landing-<slug>.zip
+pnpm install                                                          # один раз
+pnpm dev                                                              # Next.js preview на :3000
+pnpm storybook                                                        # Storybook на :6006
+
+# CLI (pnpm 10: root-скрипты вызываются через `pnpm -w run`)
+pnpm -w run harness --help
+pnpm -w run harness generate landing      --brief content/briefs/buffalo.json --slug buffalo
+pnpm -w run harness generate illustration --spec  content/illustrations/sample-buffalo.json
+pnpm -w run harness validate <slug>
+pnpm -w run harness handoff  <slug>                                   # → out/landing-<slug>.zip
 ```
+
+### Illustration (этап 3)
+
+```bash
+# детерминированный stub (без LLM) — пишет TSX + .stories.tsx + обновляет barrel
+pnpm -w run harness generate illustration --spec content/illustrations/sample-buffalo.json --no-llm
+
+# LLM-режим: ANTHROPIC_API_KEY / OPENAI_API_KEY / vercel env pull (OIDC для Gateway)
+pnpm -w run harness generate illustration --spec content/illustrations/sample-buffalo.json
+
+# --strict: упасть при провале AST-валидатора (по умолчанию пишет файл + лог ошибок)
+pnpm -w run harness generate illustration --spec ... --strict
+```
+
+Выход кладётся в `packages/ui/src/illustrations/<PascalCaseId>.tsx`, story рядом, экспорт автоматически прописывается в `packages/ui/src/illustrations/index.ts`.
 
 ## Куда что класть
 
