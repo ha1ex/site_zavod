@@ -15,3 +15,12 @@ export type { FinalCtaProps } from './FinalCta';
 
 export { LandingFooter } from './LandingFooter';
 export type { LandingFooterProps, FooterColumnProps } from './LandingFooter';
+
+export { SocialProof } from './SocialProof';
+export type { SocialProofProps, CaseProps } from './SocialProof';
+
+export { ProcessSteps } from './ProcessSteps';
+export type { ProcessStepsProps, ProcessStepProps } from './ProcessSteps';
+
+export { CtaBanner } from './CtaBanner';
+export type { CtaBannerProps, CtaBannerCtaProps } from './CtaBanner';

@@ -9,7 +9,7 @@
 
 export interface ComponentEntry {
   name: string;
-  category: 'hero' | 'features' | 'pricing' | 'faq' | 'cta' | 'footer';
+  category: 'hero' | 'features' | 'pricing' | 'faq' | 'cta' | 'footer' | 'social_proof' | 'process' | 'banner';
   description: string;
   props: Record<string, string>;
   constraints: string[];
@@ -108,6 +108,53 @@ export const REGISTRY: ComponentEntry[] = [
       copyright: 'string (<=200) | undefined',
     },
     constraints: ['always_last_section'],
+  },
+  {
+    name: 'SocialProof',
+    specComponent: 'SocialProof',
+    sectionId: 'social_proof',
+    category: 'social_proof',
+    description:
+      'Карточки клиентских кейсов: 2-6 карточек с brand-инициалом, цитатой и опц. metric/href на полный кейс.',
+    props: {
+      eyebrow: 'string (<=80) | undefined',
+      title: 'string (4..80) | undefined',
+      description: 'string (<=200) | undefined',
+      cases:
+        'Array<{ brand: 1..60; brandInitial?: <=4; quote: 10..400; metric?: <=120; href? }> (2..6)',
+    },
+    constraints: ['min_2_cases', 'max_6_cases'],
+  },
+  {
+    name: 'ProcessSteps',
+    specComponent: 'ProcessSteps',
+    sectionId: 'process',
+    category: 'process',
+    description:
+      'Шаги процесса с большими цифрами: 2-6 пронумерованных карточек с lucide-иконкой, заголовком и описанием.',
+    props: {
+      eyebrow: 'string (<=80) | undefined',
+      title: 'string (4..80)',
+      description: 'string (<=200) | undefined',
+      steps:
+        'Array<{ icon?: lucide-name; title: 2..80; description: 10..280 }> (2..6)',
+    },
+    constraints: ['min_2_steps', 'max_6_steps'],
+  },
+  {
+    name: 'CtaBanner',
+    specComponent: 'CtaBanner',
+    sectionId: 'cta_banner',
+    category: 'banner',
+    description:
+      'Inline CTA-баннер между секциями: заголовок, опц. описание, primary + опц. secondary CTA. Фиолетовый фон.',
+    props: {
+      title: 'string (4..120)',
+      description: 'string (<=280) | undefined',
+      primaryCta: '{ label; href }',
+      secondaryCta: '{ label; href } | null | undefined',
+    },
+    constraints: ['must_have_primary_cta'],
   },
 ];
 

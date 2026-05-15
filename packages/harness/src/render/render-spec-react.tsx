@@ -5,6 +5,9 @@ import {
   FAQAccordion,
   FinalCta,
   LandingFooter,
+  SocialProof,
+  ProcessSteps,
+  CtaBanner,
 } from '@buffalo/ui/landing';
 import type { LandingSpec, Section } from '../schemas/landing-spec';
 
@@ -28,6 +31,12 @@ function RenderSection({ section }: { section: Section }) {
       return <FinalCta {...section.props} />;
     case 'LandingFooter':
       return <LandingFooter {...section.props} />;
+    case 'SocialProof':
+      return <SocialProof {...section.props} />;
+    case 'ProcessSteps':
+      return <ProcessSteps {...section.props} />;
+    case 'CtaBanner':
+      return <CtaBanner {...section.props} />;
     default: {
       const _exhaustive: never = section;
       void _exhaustive;
@@ -39,8 +48,8 @@ function RenderSection({ section }: { section: Section }) {
 export function RenderLanding({ spec }: { spec: LandingSpec }) {
   return (
     <>
-      {spec.sections.map((section) => (
-        <RenderSection key={section.id} section={section} />
+      {spec.sections.map((section, i) => (
+        <RenderSection key={`${section.id}-${i}`} section={section} />
       ))}
     </>
   );

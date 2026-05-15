@@ -27,9 +27,12 @@ sources:
   - packages/harness/src/skills/conversion-landing.md
 sections:
   - hero
+  - social_proof
   - features
+  - process
+  - cta_banner
   - features
-  - features
+  - process
   - faq
   - final_cta
   - footer
@@ -48,7 +51,7 @@ stale: false
 - **brief:** `content/briefs/kaiten-support.json`
 - **archetype:** `saas_landing`
 - **goal:** `try_free` (brief.cta = "Попробовать бесплатно")
-- **sections used:** `hero, features, features, features, faq, final_cta, footer`
+- **sections used:** `hero, social_proof, features, process, cta_banner, features, process, faq, final_cta, footer`
 - **token estimate:** `15165`
 - **generation duration:** `0ms`
 - **generator:** `host-agent`
@@ -84,6 +87,9 @@ stale: false
 - **secondaryCta:** "Смотреть, как это работает"
 - **visual:** `product_screenshot` (assetId: `kaiten-support-board`)
 
+### social_proof (SocialProof)
+
+
 ### features (FeatureGrid)
 
 - **title:** "Всё, что нужно команде поддержки — в одном месте"
@@ -97,13 +103,11 @@ stale: false
   7. `Timer` · "Контроль SLA" — 98 chars
   8. `Star` · "Оценка сервиса" — 99 chars
 
-### features (FeatureGrid)
+### process (ProcessSteps)
 
-- **title:** "От заявки до решения — за три шага"
-- **columns:** 3 · **items:** 3
-  1. `FilePlus` · "Клиент оставляет заявку" — 114 chars
-  2. `Kanban` · "Команда работает с карточкой" — 119 chars
-  3. `BellRing` · "Заказчик видит результат" — 94 chars
+
+### cta_banner (CtaBanner)
+
 
 ### features (FeatureGrid)
 
@@ -112,7 +116,10 @@ stale: false
   1. `LayoutDashboard` · "Где сейчас все заявки" — 95 chars
   2. `TrendingUp` · "Растёт ли нагрузка" — 91 chars
   3. `Users` · "Кто перегружен" — 73 chars
-  4. `ClockAlert` · "Укладываемся ли в SLA" — 64 chars
+  4. `AlarmClock` · "Укладываемся ли в SLA" — 64 chars
+
+### process (ProcessSteps)
+
 
 ### faq (FAQAccordion)
 

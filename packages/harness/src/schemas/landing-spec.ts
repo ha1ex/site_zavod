@@ -113,6 +113,62 @@ const FinalCtaSchema = z.object({
   }),
 });
 
+/* ─── SocialProof (cases) ─────────────────────────────────────────── */
+const SocialProofSchema = z.object({
+  id: z.literal('social_proof'),
+  component: z.literal('SocialProof'),
+  props: z.object({
+    eyebrow: z.string().max(80).optional(),
+    title: z.string().min(4).max(80).optional(),
+    description: z.string().max(200).optional(),
+    cases: z
+      .array(
+        z.object({
+          brand: z.string().min(1).max(60),
+          brandInitial: z.string().max(4).optional(),
+          quote: z.string().min(10).max(400),
+          metric: z.string().max(120).optional(),
+          href: z.string().optional(),
+        }),
+      )
+      .min(2)
+      .max(6),
+  }),
+});
+
+/* ─── ProcessSteps ────────────────────────────────────────────────── */
+const ProcessStepsSchema = z.object({
+  id: z.literal('process'),
+  component: z.literal('ProcessSteps'),
+  props: z.object({
+    eyebrow: z.string().max(80).optional(),
+    title: z.string().min(4).max(80),
+    description: z.string().max(200).optional(),
+    steps: z
+      .array(
+        z.object({
+          icon: z.string().optional().describe('lucide-icon name'),
+          title: z.string().min(2).max(80),
+          description: z.string().min(10).max(280),
+        }),
+      )
+      .min(2)
+      .max(6),
+  }),
+});
+
+/* ─── CtaBanner (inline) ──────────────────────────────────────────── */
+const CtaBannerSchema = z.object({
+  id: z.literal('cta_banner'),
+  component: z.literal('CtaBanner'),
+  props: z.object({
+    title: z.string().min(4).max(120),
+    description: z.string().max(280).optional(),
+    primaryCta: CtaSchema,
+    secondaryCta: CtaSchema.nullable().optional(),
+  }),
+});
+
 /* ─── LandingFooter ───────────────────────────────────────────────── */
 const LandingFooterSchema = z.object({
   id: z.literal('footer'),
@@ -140,6 +196,9 @@ const LandingFooterSchema = z.object({
 export const SectionSchema = z.discriminatedUnion('component', [
   HeroSectionSchema,
   FeatureGridSchema,
+  SocialProofSchema,
+  ProcessStepsSchema,
+  CtaBannerSchema,
   PricingPlansSchema,
   FAQAccordionSchema,
   FinalCtaSchema,
