@@ -179,6 +179,15 @@ pnpm -w run harness approvals status <slug>       # JSON одной записи
 pnpm -w run harness approvals check <slug...>     # CI: exit≠0 если хоть один не approved
 ```
 
+### Claude Code skills (этап 7)
+
+Два project-level skill'а в `.claude/skills/` оборачивают всю фабрику:
+
+- **`buffalo-generate`** — Claude автоматически проводит E2E пайплайн (бриф → spec → TSX → иллюстрации → preview → handoff) когда видит запрос «сгенерируй лендинг», «buffalo generate», «harness landing».
+- **`buffalo-review`** — Claude проходит QA по готовому лендингу (валидаторы, visual regression, страница /approve) когда просят «проверь лендинг», «buffalo review», «что не так с [slug]».
+
+Skills декларативно ссылаются на CLI и валидаторы — никакого магического кода вне харнесса.
+
 ### Handoff ZIP (этап 6)
 
 `harness handoff <slug>` собирает self-contained пакет, который можно уронить в чужой Next.js + Tailwind v4 проект:
