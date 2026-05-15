@@ -1,0 +1,107 @@
+name: README freshness
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect sensitive changes vs README
+        id: detect
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          set -euo pipefail
+          git fetch origin "$BASE_SHA" --depth=1 || true
+
+          CHANGED=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA")
+          echo "Changed files:"
+          echo "$CHANGED"
+
+          SENSITIVE_REGEX='^(packages/harness/src/(cli\.ts|schemas/|registry/|pipeline/|skills/|validators/)|apps/web/app/api/|content/briefs/|content/illustrations/|content/landings/|design-system/|\.env\.example$|pnpm-workspace\.yaml$)'
+
+          SENSITIVE_HITS=$(echo "$CHANGED" | grep -E "$SENSITIVE_REGEX" || true)
+          README_TOUCHED=$(echo "$CHANGED" | grep -E '^README\.md$' || true)
+
+          NEEDS_README=false
+          if [ -n "$SENSITIVE_HITS" ] && [ -z "$README_TOUCHED" ]; then
+            NEEDS_README=true
+          fi
+
+          OPT_OUT=false
+          if echo "${PR_BODY:-}" | grep -qiE 'README не нужно|README not needed|skip-readme-check'; then
+            OPT_OUT=true
+          fi
+
+          {
+            echo "needs_readme=$NEEDS_README"
+            echo "opt_out=$OPT_OUT"
+            echo "sensitive_hits<<EOF"
+            echo "$SENSITIVE_HITS"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Comment on PR if README likely stale
+        if: steps.detect.outputs.needs_readme == 'true' && steps.detect.outputs.opt_out == 'false'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const hits = `${{ steps.detect.outputs.sensitive_hits }}`.trim();
+            const marker = '<!-- readme-freshness-bot -->';
+            const body = [
+              marker,
+              '## README freshness — внимание',
+              '',
+              'Этот PR трогает чувствительные пути, описанные в `README.md`, но сам README не обновлён.',
+              '',
+              '**Изменённые чувствительные файлы:**',
+              '```',
+              hits || '(пусто)',
+              '```',
+              '',
+              'Что сделать:',
+              '- обновить `README.md` в этом же PR, **или**',
+              '- добавить в описание PR строку: `README не нужно: <причина>` (или `skip-readme-check`).',
+              '',
+              '_Правило живёт в разделе «Правило обновления README» в `README.md`._'
+            ].join('\n');
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+            });
+            const existing = comments.find(c => c.body && c.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                body,
+              });
+            }
+
+      - name: Fail soft (warning)
+        if: steps.detect.outputs.needs_readme == 'true' && steps.detect.outputs.opt_out == 'false'
+        run: |
+          echo "::warning title=README freshness::PR трогает поверхность, описанную в README, но README не обновлён. См. комментарий бота."
