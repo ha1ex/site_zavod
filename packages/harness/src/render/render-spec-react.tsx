@@ -11,6 +11,8 @@ import {
   MediaCopy,
   StatStrip,
   PromoBanner,
+  BenefitsStrip,
+  MetricsSplit,
 } from '@buffalo/ui/landing';
 import type { LandingSpec, Section } from '../schemas/landing-spec';
 
@@ -46,6 +48,10 @@ function RenderSection({ section }: { section: Section }) {
       return <StatStrip {...section.props} />;
     case 'PromoBanner':
       return <PromoBanner {...section.props} />;
+    case 'BenefitsStrip':
+      return <BenefitsStrip {...section.props} />;
+    case 'MetricsSplit':
+      return <MetricsSplit {...section.props} />;
     default: {
       const _exhaustive: never = section;
       void _exhaustive;

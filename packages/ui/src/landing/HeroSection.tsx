@@ -1,5 +1,6 @@
 import { ButtonLink } from '../primitives/ButtonLink';
 import { cn } from '../primitives/cn';
+import { SupportBoardMock } from './mocks';
 
 export interface CtaProps {
   label: string;
@@ -11,6 +12,8 @@ export interface AssetRefProps {
   assetId?: string;
   src?: string;
   alt?: string;
+  /** Built-in detailed mocks (see ./mocks). When set, ignores src. */
+  variant?: 'support-board' | 'generic';
 }
 
 export interface HeroSectionProps {
@@ -98,7 +101,7 @@ export function HeroSection({
             </div>
             {visual && (
               <div className="w-full">
-                <HeroVisual src={visual.src} alt={visual.alt} large />
+                <HeroVisual src={visual.src} alt={visual.alt} variant={visual.variant} large />
               </div>
             )}
           </div>
@@ -125,7 +128,7 @@ export function HeroSection({
             </div>
             {visual && (
               <div className="xl:flex-1">
-                <HeroVisual src={visual.src} alt={visual.alt} />
+                <HeroVisual src={visual.src} alt={visual.alt} variant={visual.variant} />
               </div>
             )}
           </div>
@@ -180,10 +183,14 @@ function highlightAccent(title: string, accent: string): React.ReactNode {
 interface HeroVisualProps {
   src?: string;
   alt?: string;
+  variant?: AssetRefProps['variant'];
   large?: boolean;
 }
 
-function HeroVisual({ src, alt, large = false }: HeroVisualProps) {
+function HeroVisual({ src, alt, variant, large = false }: HeroVisualProps) {
+  if (variant === 'support-board') {
+    return <SupportBoardMock />;
+  }
   if (src) {
     return (
       // eslint-disable-next-line @next/next/no-img-element

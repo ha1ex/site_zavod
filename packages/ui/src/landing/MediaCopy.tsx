@@ -1,6 +1,7 @@
 import { ButtonLink } from '../primitives/ButtonLink';
 import { Icon } from '../primitives/Icon';
 import { cn } from '../primitives/cn';
+import { KnowledgeBaseMock, RequestCardMock, SupportBoardMock } from './mocks';
 
 export interface MediaCopyCheckItemProps {
   icon?: string;
@@ -12,6 +13,13 @@ export interface MediaCopyCtaProps {
   href: string;
 }
 
+export type MediaCopyVariant =
+  | 'default'
+  | 'support-board'
+  | 'request-card'
+  | 'kb-public'
+  | 'kb-internal';
+
 export interface MediaCopyProps {
   eyebrow?: string;
   title: string;
@@ -19,6 +27,7 @@ export interface MediaCopyProps {
   checklist?: MediaCopyCheckItemProps[];
   mediaPosition?: 'left' | 'right';
   mediaPlaceholder?: string;
+  mediaVariant?: MediaCopyVariant;
   primaryCta?: MediaCopyCtaProps;
   secondaryCta?: MediaCopyCtaProps | null;
 }
@@ -35,6 +44,7 @@ export function MediaCopy({
   checklist,
   mediaPosition = 'right',
   mediaPlaceholder = 'product UI',
+  mediaVariant = 'default',
   primaryCta,
   secondaryCta,
 }: MediaCopyProps) {
@@ -100,10 +110,31 @@ export function MediaCopy({
           )}
         </div>
 
-        <ProductMock label={mediaPlaceholder} />
+        <MediaCopyVisual variant={mediaVariant} placeholder={mediaPlaceholder} />
       </div>
     </section>
   );
+}
+
+function MediaCopyVisual({
+  variant,
+  placeholder,
+}: {
+  variant: MediaCopyVariant;
+  placeholder: string;
+}) {
+  switch (variant) {
+    case 'support-board':
+      return <SupportBoardMock />;
+    case 'request-card':
+      return <RequestCardMock />;
+    case 'kb-public':
+      return <KnowledgeBaseMock variant="public" />;
+    case 'kb-internal':
+      return <KnowledgeBaseMock variant="internal" />;
+    default:
+      return <ProductMock label={placeholder} />;
+  }
 }
 
 interface ProductMockProps {

@@ -33,3 +33,9 @@ export type { StatStripProps, StatItemProps } from './StatStrip';
 
 export { PromoBanner } from './PromoBanner';
 export type { PromoBannerProps, PromoBannerCtaProps } from './PromoBanner';
+
+export { BenefitsStrip } from './BenefitsStrip';
+export type { BenefitsStripProps } from './BenefitsStrip';
+
+export { MetricsSplit } from './MetricsSplit';
+export type { MetricsSplitProps, MetricCellProps } from './MetricsSplit';

@@ -17,6 +17,9 @@ export type Cta = z.infer<typeof CtaSchema>;
 export const AssetRefSchema = z.object({
   type: z.enum(['product_screenshot', 'illustration', 'logo_cloud', 'photo']),
   assetId: z.string(),
+  src: z.string().optional(),
+  alt: z.string().optional(),
+  variant: z.enum(['support-board', 'generic']).optional(),
 });
 export type AssetRef = z.infer<typeof AssetRefSchema>;
 
@@ -190,8 +193,50 @@ const MediaCopySchema = z.object({
       .optional(),
     mediaPosition: z.enum(['left', 'right']).optional(),
     mediaPlaceholder: z.string().max(80).optional(),
+    mediaVariant: z
+      .enum(['default', 'support-board', 'request-card', 'kb-public', 'kb-internal'])
+      .optional(),
     primaryCta: CtaSchema.optional(),
     secondaryCta: CtaSchema.nullable().optional(),
+  }),
+});
+
+/* ─── BenefitsStrip (thin marketing strip under hero) ─────────────── */
+const BenefitsStripSchema = z.object({
+  id: z.literal('benefits_strip'),
+  component: z.literal('BenefitsStrip'),
+  props: z.object({
+    items: z.array(z.string().min(2).max(60)).min(2).max(6),
+  }),
+});
+
+/* ─── MetricsSplit (text + 2x2 metrics + optional bullets) ────────── */
+const MetricsSplitSchema = z.object({
+  id: z.literal('metrics_split'),
+  component: z.literal('MetricsSplit'),
+  props: z.object({
+    eyebrow: z.string().max(80).optional(),
+    title: z.string().min(4).max(120),
+    description: z.string().max(300).optional(),
+    metrics: z
+      .array(
+        z.object({
+          value: z.string().min(1).max(20),
+          label: z.string().min(2).max(80),
+          trend: z.enum(['up', 'down', 'flat']).optional(),
+        }),
+      )
+      .min(2)
+      .max(6),
+    bullets: z
+      .array(
+        z.object({
+          title: z.string().min(2).max(80),
+          description: z.string().min(10).max(200),
+        }),
+      )
+      .max(6)
+      .optional(),
   }),
 });
 
@@ -267,6 +312,8 @@ export const SectionSchema = z.discriminatedUnion('component', [
   MediaCopySchema,
   StatStripSchema,
   PromoBannerSchema,
+  BenefitsStripSchema,
+  MetricsSplitSchema,
 ]);
 export type Section = z.infer<typeof SectionSchema>;
 

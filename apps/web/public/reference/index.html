@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Кайтен для техподдержки</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="navbar-container">
+        <div class="navbar-content">
+          <div class="menu-with-logo">
+            <a class="navbar-logo" href="#top" aria-label="Кайтен">
+              <span class="brand__mark" aria-hidden="true"><span></span></span>
+              <span class="navbar-logo__text">Кайтен</span>
+            </a>
+
+            <nav class="nav-menu" aria-label="Основная навигация">
+              <a class="nav-link nav-link--dropdown" href="#product">Продукт</a>
+              <a class="nav-link nav-link--dropdown is-active" href="#support">Решения</a>
+              <a class="nav-link nav-link--dropdown" href="#services">Услуги</a>
+              <a class="nav-link" href="#on-premise">On-premise</a>
+              <span class="nav-link nav-link--short">AI</span>
+              <a class="nav-link" href="#pricing">Тарифы</a>
+              <a class="nav-link" href="#case">Кейсы</a>
+            </nav>
+          </div>
+
+          <div class="nav-action">
+            <a class="nav-phone" href="tel:+78000000000" aria-label="Позвонить">
+              <span aria-hidden="true"></span>
+            </a>
+            <a class="nav-login" href="#login">Войти</a>
+            <a class="nav-try" href="#try">Попробовать</a>
+          </div>
+
+          <button class="menu-button" type="button" aria-label="Открыть меню" aria-expanded="false">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+
+      <div class="mobile-menu" hidden>
+        <a href="#product">Продукт</a>
+        <a href="#support">Решения</a>
+        <a href="#services">Услуги</a>
+        <a href="#on-premise">On-premise</a>
+        <a href="#pricing">Тарифы</a>
+        <a href="#case">Кейсы</a>
+        <a class="button button--primary button--lg" href="#try">Попробовать бесплатно</a>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero" id="support">
+        <div class="container hero__inner">
+          <div class="eyebrow">Кайтен для техподдержки</div>
+          <h1>Служба поддержки без потерянных заявок и разбросанных чатов</h1>
+          <p class="hero__lead">
+            Принимайте обращения из почты, мессенджера и с портала на одной доске. Без регистрации для
+            заказчиков, без хаоса для команды.
+          </p>
+          <a class="button button--primary button--lg hero__button" href="#try">Попробовать бесплатно</a>
+
+          <div class="support-board" aria-label="Пример доски службы поддержки">
+            <div class="board-toolbar">
+              <span class="toolbar-tab is-active">Заявки</span>
+              <span>Очередь</span>
+              <span>SLA</span>
+              <span>Ответы</span>
+              <button type="button">Фильтры</button>
+            </div>
+            <div class="board-columns">
+              <article class="board-column">
+                <header>Очередь <b>4</b></header>
+                <div class="ticket-card">
+                  <span class="ticket-card__bar"></span>
+                  <h3>Не приходит код подтверждения</h3>
+                  <p>Telegram · новый клиент</p>
+                  <div><span>Высокий</span><span>12 мин</span></div>
+                </div>
+                <div class="ticket-card muted">
+                  <span class="ticket-card__bar green"></span>
+                  <h3>Вопрос по тарифу</h3>
+                  <p>Портал поддержки</p>
+                </div>
+              </article>
+              <article class="board-column">
+                <header>В работе <b>3</b></header>
+                <div class="ticket-card ticket-card--lifted">
+                  <span class="ticket-card__bar"></span>
+                  <h3>Ошибка в личном кабинете</h3>
+                  <p>Передать в разработку</p>
+                  <div><span>Bug</span><span>SLA 2ч</span></div>
+                  <span class="cursor-hand" aria-hidden="true">☝</span>
+                </div>
+              </article>
+              <article class="board-column">
+                <header>Готовлю ответ <b>2</b></header>
+                <div class="ticket-card">
+                  <span class="ticket-card__bar orange"></span>
+                  <h3>Нужен акт сверки</h3>
+                  <p>Почта · бухгалтерия</p>
+                </div>
+              </article>
+              <article class="board-column">
+                <header>Закрыто <b>12</b></header>
+                <div class="ticket-card muted">
+                  <span class="ticket-card__bar green"></span>
+                  <h3>Доступ восстановлен</h3>
+                  <p>Оценка: 5/5</p>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+
+        <div class="benefits-strip" aria-label="Преимущества">
+          <div class="benefits-strip__track">
+            <span>Российский сервис</span>
+            <span>Настройка за 30 минут</span>
+            <span>Шаблонные ответы</span>
+            <span>Аналитика и SLA</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--gray">
+        <div class="container">
+          <div class="review-card">
+            <div class="review-card__logo">BERGAUF</div>
+            <blockquote>
+              500 сотрудников оставляют заявки через Кайтен. Выстроили три линии поддержки, разделили
+              обращения по типам — теперь каждая заявка попадает к нужному специалисту.
+            </blockquote>
+            <a class="button button--outline button--lg" href="#case">Читать кейс</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="product">
+        <div class="container">
+          <div class="section-title">
+            <h2>Всё, что нужно команде поддержки — в одном месте</h2>
+            <p>
+              Один инструмент, где живут заявки, сотрудники, ответы клиентам, база знаний команды и другие
+              отделы компании.
+            </p>
+          </div>
+
+          <div class="feature-accordion">
+            <button class="feature-item is-open" type="button">
+              <span>Заявки не теряются</span>
+              <i></i>
+            </button>
+            <div class="feature-panel">
+              <p>
+                Telegram, почта, портал — все обращения приходят на одну доску. Специалист видит очередь,
+                руководитель — общую картину. Ни одна заявка не зависнет незамеченной.
+              </p>
+              <div class="mini-visual mini-visual--queue"></div>
+            </div>
+
+            <button class="feature-item" type="button">
+              <span>Сотрудник общается с клиентом прямо в карточке</span>
+              <i></i>
+            </button>
+            <div class="feature-panel" hidden>
+              <p>
+                Вся история переписки, файлы и детали обращения — в одном месте. Контекст не теряется даже
+                при смене исполнителя.
+              </p>
+              <div class="mini-visual mini-visual--chat"></div>
+            </div>
+
+            <button class="feature-item" type="button">
+              <span>Легко передать в другой отдел</span>
+              <i></i>
+            </button>
+            <div class="feature-panel" hidden>
+              <p>
+                Нашли баг — создайте дочернюю карточку для разработчиков прямо из обращения. Контекст
+                переписки с клиентом сохраняется.
+              </p>
+              <div class="mini-visual mini-visual--handoff"></div>
+            </div>
+
+            <button class="feature-item" type="button">
+              <span>Шаблонные ответы под рукой</span>
+              <i></i>
+            </button>
+            <div class="feature-panel" hidden>
+              <p>
+                Готовые сообщения для типовых ситуаций помогают отвечать за секунды и поддерживать единый
+                tone of voice по всей команде.
+              </p>
+              <div class="mini-visual mini-visual--templates"></div>
+            </div>
+          </div>
+
+          <div class="section-actions">
+            <a class="button button--primary button--lg" href="#try">Попробовать Кайтен бесплатно</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--gray">
+        <div class="container">
+          <div class="section-title">
+            <h2>От заявки до решения — за три шага</h2>
+          </div>
+          <div class="steps">
+            <article>
+              <span>01</span>
+              <h3>Клиент оставляет заявку</h3>
+              <p>
+                Заявку можно оставить через портал, по почте или в Telegram. Регистрация в Кайтен не нужна.
+                Поля формы вы настраиваете под свой процесс.
+              </p>
+            </article>
+            <article>
+              <span>02</span>
+              <h3>Команда работает с карточкой</h3>
+              <p>
+                Заявка попадает на канбан-доску. Назначайте ответственных, ставьте приоритеты и общайтесь с
+                заказчиком прямо в карточке.
+              </p>
+            </article>
+            <article>
+              <span>03</span>
+              <h3>Заказчик видит результат</h3>
+              <p>
+                Клиент получает уведомления о смене статуса автоматически, а после закрытия оценивает
+                качество сервиса.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section split-section">
+        <div class="container split-section__grid">
+          <div>
+            <h2>Отвечайте на запросы в карточках</h2>
+            <p>
+              Все данные по заявке собираются в одном месте. Специалисты общаются с клиентами внутри
+              карточки и находят нужную информацию без переключения между каналами.
+            </p>
+            <a class="button button--primary button--lg" href="#try">Попробовать Кайтен бесплатно</a>
+          </div>
+          <div class="request-card-visual" aria-label="Карточка заявки">
+            <div class="request-card-visual__top">
+              <span></span><span></span><span></span>
+            </div>
+            <h3>Оплата не прошла</h3>
+            <p>Клиент пишет в Telegram, а команда отвечает прямо из карточки.</p>
+            <div class="message message--client">Здравствуйте, не могу оплатить тариф.</div>
+            <div class="message message--agent">Проверили платеж. Отправили новую ссылку.</div>
+            <div class="check-list">
+              <span class="checked">Проверить оплату</span>
+              <span class="checked">Отправить инструкцию</span>
+              <span>Закрыть обращение</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--gray">
+        <div class="container">
+          <div class="section-title">
+            <h2>База знаний — рядом с работой. Меньше одинаковых вопросов</h2>
+            <p>
+              Ответили на вопрос один раз — зафиксировали в базе. Клиенты находят ответ сами, специалисты
+              не тратят время на повторы.
+            </p>
+          </div>
+          <div class="knowledge-grid">
+            <article>
+              <div class="doc-preview">
+                <span>📌</span>
+                <h4>Как восстановить доступ</h4>
+                <p>Пошаговая инструкция для клиентов</p>
+              </div>
+              <h3>Публичная база знаний для клиентов</h3>
+              <p>
+                Создайте статьи в Кайтен и опубликуйте на портале поддержки. Типовых обращений становится
+                меньше.
+              </p>
+            </article>
+            <article>
+              <div class="doc-preview">
+                <span>🧑‍💻</span>
+                <h4>Скрипт ответа на инцидент</h4>
+                <p>Регламент для L1 и L2</p>
+              </div>
+              <h3>Внутренние инструкции для команды</h3>
+              <p>
+                Скрипты ответов, регламенты и процессы — в одном редакторе, рядом с задачами и заявками.
+              </p>
+            </article>
+          </div>
+          <div class="note-cta">
+            <span>Документы Кайтен — бесплатно и без ограничений на любом тарифе</span>
+            <a href="#docs">Создать первый документ</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section launch-section">
+        <div class="container">
+          <div class="section-title">
+            <h2>Организуйте работу службы поддержки за 30 минут</h2>
+            <p>Без разработчиков и интеграторов.</p>
+          </div>
+          <div class="launch-list">
+            <article>
+              <span>01</span>
+              <h3>Зарегистрируйтесь в Kaiten</h3>
+              <p>Получите бесплатный доступ ко всем функциям — без оплат и привязки карты.</p>
+            </article>
+            <article>
+              <span>02</span>
+              <h3>Скопируйте готовый шаблон</h3>
+              <p>Настройте этапы: Очередь → В работе → Готовлю ответ → Запрос у ответственного.</p>
+            </article>
+            <article>
+              <span>03</span>
+              <h3>Настройте форму под себя</h3>
+              <p>Добавьте типы обращений, нужные поля и SLA. Подключите Telegram-бот и почту.</p>
+            </article>
+            <article>
+              <span>04</span>
+              <h3>Начинайте принимать заявки</h3>
+              <p>Клиентам не нужна регистрация. Заявки приходят сразу на доску.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--gray" id="reports">
+        <div class="container reports-grid">
+          <div>
+            <h2>Получайте готовые отчеты о работе сервисов</h2>
+            <p>
+              Контролируйте работу специалистов с опорой на данные. Аналитика обновляется автоматически, без
+              ручной сборки таблиц.
+            </p>
+          </div>
+          <div class="metric-grid">
+            <article><b>124</b><span>заявки в работе</span></article>
+            <article><b>87%</b><span>закрыто в SLA</span></article>
+            <article><b>18</b><span>зависли на этапе</span></article>
+            <article><b>6</b><span>перегружены</span></article>
+          </div>
+        </div>
+        <div class="container report-points">
+          <article>
+            <h3>Где сейчас все заявки</h3>
+            <p>Сколько обращений на каждом этапе, что в работе, что зависло — общая картина на одном дашборде.</p>
+          </article>
+          <article>
+            <h3>Растёт ли нагрузка</h3>
+            <p>Динамика обращений по неделям и месяцам показывает, когда нужно усиление команды.</p>
+          </article>
+          <article>
+            <h3>Кто перегружен</h3>
+            <p>Нагрузка по каждому специалисту видна сразу: где перекос и кому нужна помощь.</p>
+          </article>
+          <article>
+            <h3>Укладываемся ли в SLA</h3>
+            <p>Отчёт покажет долю заявок, закрытых в срок, и где именно команда теряет время.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="section-title">
+            <h2>Всё, что нужно для управления потоком заявок</h2>
+          </div>
+          <div class="capability-grid">
+            <article><h3>Все обращения в одном месте</h3><p>Telegram, почта и портал собираются на одной доске.</p></article>
+            <article><h3>Прозрачные статусы</h3><p>Клиент видит статус на портале, а команда — застрявшие карточки.</p></article>
+            <article><h3>Время работы с заявкой</h3><p>Система предупредит, если заявка рискует просрочиться.</p></article>
+            <article><h3>Анализ узких мест</h3><p>Дашборды, отчеты по ответственным и экспорт в таблицы.</p></article>
+            <article><h3>Шаблонные ответы</h3><p>Готовые сообщения экономят время специалистов.</p></article>
+            <article><h3>Связь между отделами</h3><p>Передавайте баги разработчикам, а вопросы по заказам — в продажи.</p></article>
+            <article><h3>Telegram-бот</h3><p>Клиенты оставляют заявки и получают ответы в мессенджере.</p></article>
+            <article><h3>Оценка сервиса</h3><p>Заказчик ставит оценку после закрытия заявки.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="migration">
+        <div class="container migration__inner">
+          <div>
+            <h2>Переезжайте в Кайтен быстро и без потерь</h2>
+            <p>
+              Перенесите заявки, историю обращений и базу знаний. Данные импортируются с сохранением
+              структуры через CSV/XLS, а для регламентов есть раздел «Документы».
+            </p>
+          </div>
+          <a class="button button--outline button--lg" href="#learn">Узнать подробнее</a>
+        </div>
+      </section>
+
+      <section class="final-cta" id="try">
+        <div class="container final-cta__inner">
+          <h2>Ни одна заявка больше не потеряется</h2>
+          <p>
+            Попробуйте Кайтен бесплатно — количество заявок и клиентов не ограничено. Платите только за тех,
+            кто работает в системе.
+          </p>
+          <a class="button button--primary button--lg" href="#top">Попробовать бесплатно</a>
+        </div>
+      </section>
+
+      <section class="faq-section" id="faq">
+        <div class="faq-container">
+          <div class="faq-title">
+            <h2>Нас часто спрашивают</h2>
+          </div>
+          <div class="faq-list">
+            <article class="faq-card">
+              <div class="faq-card__question">
+                <h3>Кайтен бесплатный?</h3>
+                <span class="faq-card__minus" aria-hidden="true"></span>
+              </div>
+              <p>
+                Да. Есть полноценный бесплатный тариф без ограничения по времени. Заявки можно принимать с
+                модулем «Служба поддержки», доступным на платных тарифах начиная со «Стандарт».
+              </p>
+            </article>
+            <article class="faq-card faq-card--large">
+              <div class="faq-card__question">
+                <h3>Мы используем Zendesk / Freshdesk. Можно перейти в Кайтен?</h3>
+                <span class="faq-card__minus" aria-hidden="true"></span>
+              </div>
+              <p>
+                Да, и это проще, чем кажется. Кайтен — российский сервис, оплата в рублях, данные хранятся
+                на серверах в России. Перенести данные можно через CSV-импорт, а настроить доску под
+                привычный процесс — за 30 минут без разработчика.
+              </p>
+            </article>
+            <article class="faq-card faq-card--small">
+              <div class="faq-card__question">
+                <h3>Клиентам нужно регистрироваться в Кайтен, чтобы оставить заявку?</h3>
+                <span class="faq-card__minus" aria-hidden="true"></span>
+              </div>
+              <p>
+                Нет. Клиент пишет через Telegram-бот, отправляет письмо на почту или заполняет форму на
+                портале — без регистрации.
+              </p>
+            </article>
+            <article class="faq-card">
+              <div class="faq-card__question">
+                <h3>Можно ли установить Кайтен на собственный сервер?</h3>
+                <span class="faq-card__minus" aria-hidden="true"></span>
+              </div>
+              <p>
+                Да. Кайтен доступен в облаке и в on-premise варианте для компаний, которым важно держать
+                данные на своей инфраструктуре. Внесён в реестр отечественного ПО №14347.
+              </p>
+            </article>
+            <article class="faq-card">
+              <div class="faq-card__question">
+                <h3>Мы используем Кайтен для задач команды. Можно просто добавить модуль поддержки?</h3>
+                <span class="faq-card__minus" aria-hidden="true"></span>
+              </div>
+              <p>
+                Именно так и делает большинство клиентов. Подключите модуль «Служба поддержки» к
+                существующему пространству — заявки клиентов окажутся рядом с задачами команды.
+              </p>
+            </article>
+            <article class="faq-card">
+              <div class="faq-card__question">
+                <h3>Есть ли готовые шаблоны ответов?</h3>
+                <span class="faq-card__minus" aria-hidden="true"></span>
+              </div>
+              <p>
+                Да. Можно заранее создать шаблонные сообщения для типовых ситуаций — специалист выбирает
+                нужный и отвечает быстрее, сохраняя единый tone of voice.
+              </p>
+            </article>
+            <article class="faq-card">
+              <div class="faq-card__question">
+                <h3>Как быстро можно запустить службу поддержки в Кайтен?</h3>
+                <span class="faq-card__minus" aria-hidden="true"></span>
+              </div>
+              <p>
+                Хватит и 30 минут: зарегистрируйтесь, скопируйте готовый шаблон, настройте форму и каналы
+                приема заявок, пригласите команду. Без разработчиков и интеграторов.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer__inner">
+        <a class="brand" href="#top" aria-label="Кайтен">
+          <span class="brand__mark" aria-hidden="true"><span></span></span>
+          <span class="brand__name">Кайтен</span>
+        </a>
+        <span>Служба поддержки без хаоса</span>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>

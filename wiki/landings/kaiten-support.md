@@ -27,14 +27,16 @@ sources:
   - packages/harness/src/skills/conversion-landing.md
 sections:
   - hero
-  - stats
+  - benefits_strip
+  - social_proof
+  - media_copy
   - media_copy
   - media_copy
   - media_copy
   - promo_banner
-  - features
+  - metrics_split
   - process
-  - social_proof
+  - features
   - faq
   - promo_banner
   - footer
@@ -53,7 +55,7 @@ stale: false
 - **brief:** `content/briefs/kaiten-support.json`
 - **archetype:** `saas_landing`
 - **goal:** `try_free` (brief.cta = "Попробовать бесплатно")
-- **sections used:** `hero, stats, media_copy, media_copy, media_copy, promo_banner, features, process, social_proof, faq, promo_banner, footer`
+- **sections used:** `hero, benefits_strip, social_proof, media_copy, media_copy, media_copy, media_copy, promo_banner, metrics_split, process, features, faq, promo_banner, footer`
 - **token estimate:** `15165`
 - **generation duration:** `0ms`
 - **generator:** `host-agent`
@@ -83,13 +85,19 @@ stale: false
 <!-- gen:sections-summary -->
 ### hero (HeroSection)
 
-- **title:** "Служба поддержки без потерянных заявок"
+- **title:** "Служба поддержки без потерянных заявок и разбросанных чатов"
 - **subtitle:** "Принимайте обращения из почты, мессенджера и с портала на одной доске. Без регистрации для заказчиков, без хаоса для команды." _(125/200 chars)_
-- **primaryCta:** "Попробовать сами бесплатно" → `/signup`
+- **primaryCta:** "Попробовать бесплатно" → `/signup`
 - **secondaryCta:** "Хочу записаться на демо"
 - **visual:** `product_screenshot` (assetId: `kaiten-support-board`)
 
-### stats (StatStrip)
+### benefits_strip (BenefitsStrip)
+
+
+### social_proof (SocialProof)
+
+
+### media_copy (MediaCopy)
 
 
 ### media_copy (MediaCopy)
@@ -104,33 +112,36 @@ stale: false
 ### promo_banner (PromoBanner)
 
 
-### features (FeatureGrid)
+### metrics_split (MetricsSplit)
 
-- **title:** "Готовые отчёты о работе сервиса"
-- **columns:** 4 · **items:** 4
-  1. `LayoutDashboard` · "Где сейчас все заявки" — 95 chars
-  2. `TrendingUp` · "Растёт ли нагрузка" — 71 chars
-  3. `Users` · "Кто перегружен" — 66 chars
-  4. `AlarmClock` · "Укладываемся ли в SLA" — 64 chars
 
 ### process (ProcessSteps)
 
 
-### social_proof (SocialProof)
+### features (FeatureGrid)
 
+- **title:** "Всё, что нужно для управления потоком заявок"
+- **columns:** 4 · **items:** 8
+  1. `Inbox` · "Все обращения в одном месте" — 51 chars
+  2. `Eye` · "Прозрачные статусы" — 64 chars
+  3. `Timer` · "Время работы с заявкой" — 54 chars
+  4. `LineChart` · "Анализ узких мест" — 54 chars
+  5. `Sparkles` · "Шаблонные ответы" — 46 chars
+  6. `Network` · "Связь между отделами" — 65 chars
+  7. `Send` · "Telegram-бот" — 57 chars
+  8. `Star` · "Оценка сервиса" — 45 chars
 
 ### faq (FAQAccordion)
 
-- **title:** "Что спрашивают перед стартом"
-- **items:** 8 Q&A
-  1. "Нужно ли клиентам регистрироваться в Кайтен?" — answer 171/600 chars
-  2. "Сколько времени занимает запуск?" — answer 185/600 chars
-  3. "Можно ли перенести данные из текущей системы?" — answer 188/600 chars
-  4. "Это российский сервис? Как с хранением данных?" — answer 133/600 chars
-  5. "Какие каналы поступления заявок поддерживаются?" — answer 185/600 chars
-  6. "Как устроены SLA и контроль сроков?" — answer 187/600 chars
-  7. "Можно ли передать заявку другому отделу?" — answer 169/600 chars
-  8. "Сколько стоит и есть ли ограничения по заявкам?" — answer 155/600 chars
+- **title:** "Нас часто спрашивают"
+- **items:** 7 Q&A
+  1. "Кайтен бесплатный?" — answer 170/600 chars
+  2. "Мы используем Zendesk / Freshdesk. Можно перейти в Кайтен?" — answer 225/600 chars
+  3. "Клиентам нужно регистрироваться в Кайтен, чтобы оставить заявку?" — answer 114/600 chars
+  4. "Можно ли установить Кайтен на собственный сервер?" — answer 162/600 chars
+  5. "Мы используем Кайтен для задач команды. Можно добавить модуль поддержки?" — answer 160/600 chars
+  6. "Есть ли готовые шаблоны ответов?" — answer 146/600 chars
+  7. "Как быстро можно запустить службу поддержки в Кайтен?" — answer 158/600 chars
 
 ### promo_banner (PromoBanner)
 
