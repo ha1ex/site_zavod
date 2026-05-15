@@ -1,0 +1,710 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Кайтен для техподдержки — заявки на одной доске без потерь</title><meta name="description" content="Российский сервис поддержки: заявки из почты, Telegram и портала на одной доске. Шаблонные ответы, SLA, аналитика. Запуск за 30 минут.">
+<style>
+@layer properties {
+  @supports (((-webkit-hyphens: none)) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
+  *, ::before, ::after, ::backdrop { --tw-translate-x: 0; --tw-translate-y: 0; --tw-translate-z: 0; --tw-space-y-reverse: 0; --tw-border-style: solid; --tw-gradient-position: initial; --tw-gradient-from: #0000; --tw-gradient-via: #0000; --tw-gradient-to: #0000; --tw-gradient-stops: initial; --tw-gradient-via-stops: initial; --tw-gradient-from-position: 0%; --tw-gradient-via-position: 50%; --tw-gradient-to-position: 100%; --tw-leading: initial; --tw-font-weight: initial; --tw-tracking: initial; --tw-ordinal: initial; --tw-slashed-zero: initial; --tw-numeric-figure: initial; --tw-numeric-spacing: initial; --tw-numeric-fraction: initial; --tw-shadow: 0 0 #0000; --tw-shadow-color: initial; --tw-shadow-alpha: 100%; --tw-inset-shadow: 0 0 #0000; --tw-inset-shadow-color: initial; --tw-inset-shadow-alpha: 100%; --tw-ring-color: initial; --tw-ring-shadow: 0 0 #0000; --tw-inset-ring-color: initial; --tw-inset-ring-shadow: 0 0 #0000; --tw-ring-inset: initial; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-outline-style: solid; --tw-blur: initial; --tw-brightness: initial; --tw-contrast: initial; --tw-grayscale: initial; --tw-hue-rotate: initial; --tw-invert: initial; --tw-opacity: initial; --tw-saturate: initial; --tw-sepia: initial; --tw-drop-shadow: initial; --tw-drop-shadow-color: initial; --tw-drop-shadow-alpha: 100%; --tw-drop-shadow-size: initial; --tw-duration: initial; --tw-ease: initial; }
+}
+}
+@layer theme {
+  :root, :host { --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif; --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+      "Courier New", monospace; --color-red-100: #f44336; --color-red-300: #ffa3a3; --color-red-700: #bf000f; --color-orange-100: #ffa100; --color-amber-100: #fef3c6; --color-amber-800: #953d00; --color-yellow-300: #ffe02a; --color-green-100: #4caf51; --color-green-300: #7bf1a8; --color-emerald-100: #d0fae5; --color-emerald-800: #005f46; --color-blue-100: #2196f3; --color-violet-100: #7d4ccf; --color-rose-100: #ffe4e6; --color-rose-700: #c20039; --color-rose-800: #a30037; --color-slate-100: #f1f5f9; --color-slate-700: #314158; --color-slate-950: #020618; --color-neutral-100: #f5f5f5; --color-neutral-200: #eee; --color-neutral-300: #e0e0e0; --color-neutral-400: #bdbdbd; --color-neutral-500: #9e9e9e; --color-neutral-600: #757575; --color-neutral-900: #2d2d2d; --color-white: #fff; --spacing: .25rem; --container-sm: 24rem; --container-xl: 36rem; --container-2xl: 42rem; --container-3xl: 48rem; --container-5xl: 64rem; --container-7xl: 80rem; --text-xs: 12px; --text-xs--line-height: 16px; --text-sm: 14px; --text-sm--line-height: 20px; --text-base: 1rem; --text-base--line-height: calc(1.5 / 1); --text-lg: 18px; --text-lg--line-height: 28px; --text-xl: 20px; --text-xl--line-height: 28px; --text-2xl: 24px; --text-2xl--line-height: 32px; --text-3xl: 30px; --text-3xl--line-height: 36px; --text-4xl: 36px; --text-4xl--line-height: 40px; --text-5xl: 48px; --text-5xl--line-height: 52px; --text-6xl: 60px; --text-6xl--line-height: 64px; --font-weight-medium: 500; --font-weight-semibold: 600; --tracking-tight: -.025em; --tracking-wide: .025em; --leading-tight: 1.25; --leading-snug: 1.375; --leading-relaxed: 1.625; --radius-md: 6px; --radius-lg: 8px; --radius-xl: 12px; --radius-2xl: 16px; --radius-3xl: 24px; --drop-shadow-sm: 0 1px 2px #00000026; --blur-3xl: 64px; --default-transition-duration: .15s; --default-transition-timing-function: cubic-bezier(.4, 0, .2, 1); --default-font-family: var(--font-sans); --default-mono-font-family: var(--font-mono); --color-neutral-000: #fff; --color-violet-12: #efe9f9; --color-blue-12: #e4f2fd; --color-text-primary: var(--color-neutral-900); --color-text-secondary: var(--color-neutral-600); --color-text-inverse: var(--color-neutral-000); --color-text-accent: var(--color-violet-100); --color-surface-page: var(--color-neutral-000); --color-surface-section: var(--color-neutral-100); --color-surface-card: var(--color-neutral-000); --color-border-default: var(--color-neutral-300); --color-action-primary: var(--color-violet-100); --color-action-primary-soft: var(--color-violet-12); --spacing-0: 0px; --spacing-0_5: 2px; --spacing-1: 4px; --spacing-1_5: 6px; --spacing-2: 8px; --spacing-2_5: 10px; --spacing-3: 12px; --spacing-3_5: 14px; --spacing-4: 16px; --spacing-5: 20px; --spacing-6: 24px; --spacing-7: 28px; --spacing-8: 32px; --spacing-9: 36px; --spacing-10: 40px; --spacing-11: 44px; --spacing-12: 48px; --spacing-14: 56px; --spacing-16: 64px; --spacing-20: 80px; --spacing-24: 96px; --radius-full: 9999px; --container-kaiten: 1216px; --duration-base: .18s; --ease-ui: cubic-bezier(.2, 0, .2, 1); --button-radius: 8px; --button-fill-bg: var(--color-violet-100); --button-fill-bg-hover: #6f43b8; --button-fill-bg-disabled: var(--color-neutral-100); --button-fill-text: var(--color-neutral-000); --button-fill-text-disabled: var(--color-neutral-500); --button-outline-bg: var(--color-neutral-000); --button-outline-bg-hover: var(--color-violet-12); --button-outline-border: var(--color-neutral-300); --button-outline-border-hover: #7d4ccf7a; --button-outline-text: var(--color-violet-100); --button-outline-text-hover: #6f43b8; --button-outline-text-disabled: var(--color-neutral-300); --button-focus-brand: 0 0 0 4px #3758f933; --button-focus-default: 0 0 0 4px #98a2b324; }
+  @supports (color: lab(0% 0 0)) {
+  :root, :host { --color-red-300: lab(76.5514% 36.422 15.5335); --color-red-700: lab(40.4273% 67.2623 53.7441); --color-amber-100: lab(95.916% -1.21653 23.111); --color-amber-800: lab(37.8822% 37.1699 52.2718); --color-yellow-300: lab(89.7033% -.480294 84.4917); --color-green-300: lab(86.9953% -47.2691 25.0054); --color-emerald-100: lab(94.9004% -17.0769 5.63836); --color-emerald-800: lab(35.3675% -33.1188 8.04002); --color-rose-100: lab(92.8221% 9.86832 2.60075); --color-rose-700: lab(41.1651% 71.6251 30.3087); --color-rose-800: lab(34.6481% 60.802 20.1957); --color-slate-100: lab(96.286% -.852436 -2.46847); --color-slate-700: lab(26.9569% -1.47016 -15.6993); --color-slate-950: lab(1.76974% 1.32743 -9.28855); }
+}
+}
+@layer base {
+  *, ::after, ::before, ::backdrop { box-sizing: border-box; border: 0px solid; margin: 0px; padding: 0px; }
+  ::file-selector-button { box-sizing: border-box; border: 0px solid; margin: 0px; padding: 0px; }
+  html, :host { text-size-adjust: 100%; tab-size: 4; line-height: 1.5; font-family: var(--default-font-family, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"); font-feature-settings: var(--default-font-feature-settings, normal); font-variation-settings: var(--default-font-variation-settings, normal); -webkit-tap-highlight-color: transparent; }
+  hr { height: 0px; color: inherit; border-top-width: 1px; }
+  abbr:where([title]) { text-decoration: underline dotted; }
+  h1, h2, h3, h4, h5, h6 { font-size: inherit; font-weight: inherit; }
+  a { color: inherit; text-decoration: inherit; }
+  b, strong { font-weight: bolder; }
+  code, kbd, samp, pre { font-family: var(--default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace); font-feature-settings: var(--default-mono-font-feature-settings, normal); font-variation-settings: var(--default-mono-font-variation-settings, normal); font-size: 1em; }
+  small { font-size: 80%; }
+  sub, sup { vertical-align: baseline; font-size: 75%; line-height: 0; position: relative; }
+  sub { bottom: -0.25em; }
+  sup { top: -0.5em; }
+  table { text-indent: 0px; border-color: inherit; border-collapse: collapse; }
+  progress { vertical-align: baseline; }
+  summary { display: list-item; }
+  ol, ul, menu { list-style: none; }
+  img, svg, video, canvas, audio, iframe, embed, object { vertical-align: middle; display: block; }
+  img, video { max-width: 100%; height: auto; }
+  button, input, select, optgroup, textarea { font: inherit; letter-spacing: inherit; color: inherit; opacity: 1; background-color: rgba(0, 0, 0, 0); border-radius: 0px; }
+  ::file-selector-button { font: inherit; letter-spacing: inherit; color: inherit; opacity: 1; background-color: rgba(0, 0, 0, 0); border-radius: 0px; }
+  :where(select:is([multiple], [size])) optgroup { font-weight: bolder; }
+  :where(select:is([multiple], [size])) optgroup option { padding-inline-start: 20px; }
+  ::file-selector-button { margin-inline-end: 4px; }
+  ::placeholder { opacity: 1; }
+  @supports (not ((-webkit-appearance: -apple-pay-button))) or (contain-intrinsic-size: 1px) {
+  ::placeholder { color: currentcolor; }
+  @supports (color: color-mix(in lab, red, red)) {
+  ::placeholder { color: color-mix(currentcolor, transparent); }
+}
+}
+  textarea { resize: vertical; }
+  ::-webkit-search-decoration { appearance: none; }
+  ::-webkit-date-and-time-value { min-height: 1lh; text-align: inherit; }
+  ::-webkit-datetime-edit { display: inline-flex; }
+  ::-webkit-datetime-edit-fields-wrapper { padding: 0px; }
+  ::-webkit-datetime-edit { padding-block: 0px; }
+  ::-webkit-datetime-edit-year-field { padding-block: 0px; }
+  ::-webkit-datetime-edit-month-field { padding-block: 0px; }
+  ::-webkit-datetime-edit-day-field { padding-block: 0px; }
+  ::-webkit-datetime-edit-hour-field { padding-block: 0px; }
+  ::-webkit-datetime-edit-minute-field { padding-block: 0px; }
+  ::-webkit-datetime-edit-second-field { padding-block: 0px; }
+  ::-webkit-datetime-edit-millisecond-field { padding-block: 0px; }
+  ::-webkit-datetime-edit-meridiem-field { padding-block: 0px; }
+  ::-webkit-calendar-picker-indicator { line-height: 1; }
+  button, input:where([type="button"], [type="reset"], [type="submit"]) { appearance: button; }
+  ::file-selector-button { appearance: button; }
+  ::-webkit-inner-spin-button { height: auto; }
+  ::-webkit-outer-spin-button { height: auto; }
+  [hidden]:where(:not([hidden="until-found"])) { display: none !important; }
+}
+@layer components;
+@layer utilities {
+  .pointer-events-none { pointer-events: none; }
+  .absolute { position: absolute; }
+  .fixed { position: fixed; }
+  .relative { position: relative; }
+  .inset-x-0 { inset-inline: var(--spacing-0); }
+  .-top-20 { top: calc(var(--spacing-20) * -1); }
+  .-top-32 { top: calc(var(--spacing) * -32); }
+  .top-0 { top: var(--spacing-0); }
+  .-right-2 { right: calc(var(--spacing-2) * -1); }
+  .-right-4 { right: calc(var(--spacing-4) * -1); }
+  .-right-20 { right: calc(var(--spacing-20) * -1); }
+  .-bottom-2 { bottom: calc(var(--spacing-2) * -1); }
+  .-bottom-3 { bottom: calc(var(--spacing-3) * -1); }
+  .isolate { isolation: isolate; }
+  .-z-10 { z-index: calc(-10); }
+  .col-span-2 { grid-column: span 2 / span 2; }
+  .container { width: 100%; }
+  @media (min-width: 40rem) {
+  .container { max-width: 40rem; }
+}
+  @media (min-width: 48rem) {
+  .container { max-width: 48rem; }
+}
+  @media (min-width: 64rem) {
+  .container { max-width: 64rem; }
+}
+  @media (min-width: 80rem) {
+  .container { max-width: 80rem; }
+}
+  @media (min-width: 96rem) {
+  .container { max-width: 96rem; }
+}
+  .mx-auto { margin-inline: auto; }
+  .mt-0\.5 { margin-top: var(--spacing-0_5); }
+  .mt-1 { margin-top: var(--spacing-1); }
+  .mt-1\.5 { margin-top: var(--spacing-1_5); }
+  .mt-2 { margin-top: var(--spacing-2); }
+  .mt-3 { margin-top: var(--spacing-3); }
+  .mt-4 { margin-top: var(--spacing-4); }
+  .mt-5 { margin-top: var(--spacing-5); }
+  .mt-6 { margin-top: var(--spacing-6); }
+  .mt-8 { margin-top: var(--spacing-8); }
+  .mt-10 { margin-top: var(--spacing-10); }
+  .mt-12 { margin-top: var(--spacing-12); }
+  .mt-16 { margin-top: var(--spacing-16); }
+  .mb-1\.5 { margin-bottom: var(--spacing-1_5); }
+  .mb-2 { margin-bottom: var(--spacing-2); }
+  .mb-3 { margin-bottom: var(--spacing-3); }
+  .mb-4 { margin-bottom: var(--spacing-4); }
+  .mb-5 { margin-bottom: var(--spacing-5); }
+  .mb-10 { margin-bottom: var(--spacing-10); }
+  .mb-12 { margin-bottom: var(--spacing-12); }
+  .ml-2 { margin-left: var(--spacing-2); }
+  .ml-3 { margin-left: var(--spacing-3); }
+  .ml-4 { margin-left: var(--spacing-4); }
+  .ml-auto { margin-left: auto; }
+  .block { display: block; }
+  .flex { display: flex; }
+  .grid { display: grid; }
+  .hidden { display: none; }
+  .inline { display: inline; }
+  .inline-block { display: inline-block; }
+  .inline-flex { display: inline-flex; }
+  .table { display: table; }
+  .h-1 { height: var(--spacing-1); }
+  .h-1\.5 { height: var(--spacing-1_5); }
+  .h-2 { height: var(--spacing-2); }
+  .h-2\.5 { height: var(--spacing-2_5); }
+  .h-3 { height: var(--spacing-3); }
+  .h-3\.5 { height: var(--spacing-3_5); }
+  .h-4 { height: var(--spacing-4); }
+  .h-5 { height: var(--spacing-5); }
+  .h-6 { height: var(--spacing-6); }
+  .h-9 { height: var(--spacing-9); }
+  .h-10 { height: var(--spacing-10); }
+  .h-11 { height: var(--spacing-11); }
+  .h-12 { height: var(--spacing-12); }
+  .h-72 { height: calc(var(--spacing) * 72); }
+  .h-\[720px\] { height: 720px; }
+  .h-\[calc\(100vh-220px\)\] { height: calc(-220px + 100vh); }
+  .min-h-screen { min-height: 100vh; }
+  .w-1 { width: var(--spacing-1); }
+  .w-1\/2 { width: 50%; }
+  .w-2 { width: var(--spacing-2); }
+  .w-2\.5 { width: var(--spacing-2_5); }
+  .w-2\/3 { width: 66.6667%; }
+  .w-3\.5 { width: var(--spacing-3_5); }
+  .w-3\/4 { width: 75%; }
+  .w-4\/6 { width: 66.6667%; }
+  .w-5 { width: var(--spacing-5); }
+  .w-5\/6 { width: 83.3333%; }
+  .w-6 { width: var(--spacing-6); }
+  .w-8 { width: var(--spacing-8); }
+  .w-9 { width: var(--spacing-9); }
+  .w-10 { width: var(--spacing-10); }
+  .w-11 { width: var(--spacing-11); }
+  .w-12 { width: var(--spacing-12); }
+  .w-40 { width: calc(var(--spacing) * 40); }
+  .w-72 { width: calc(var(--spacing) * 72); }
+  .w-full { width: 100%; }
+  .max-w-\(--container-kaiten\) { max-width: var(--container-kaiten); }
+  .max-w-2xl { max-width: var(--container-2xl); }
+  .max-w-3xl { max-width: var(--container-3xl); }
+  .max-w-5xl { max-width: var(--container-5xl); }
+  .max-w-7xl { max-width: var(--container-7xl); }
+  .max-w-\[85\%\] { max-width: 85%; }
+  .max-w-\[1440px\] { max-width: 1440px; }
+  .max-w-sm { max-width: var(--container-sm); }
+  .max-w-xl { max-width: var(--container-xl); }
+  .flex-1 { flex: 1 1 0%; }
+  .shrink-0 { flex-shrink: 0; }
+  .translate-y-\[-2px\] { --tw-translate-y: -2px; translate: var(--tw-translate-x) var(--tw-translate-y); }
+  .grid-cols-1 { grid-template-columns: repeat(1, minmax(0px, 1fr)); }
+  .grid-cols-2 { grid-template-columns: repeat(2, minmax(0px, 1fr)); }
+  .grid-cols-3 { grid-template-columns: repeat(3, minmax(0px, 1fr)); }
+  .grid-cols-4 { grid-template-columns: repeat(4, minmax(0px, 1fr)); }
+  .grid-cols-\[120px_1fr\] { grid-template-columns: 120px 1fr; }
+  .grid-cols-\[140px_1fr\] { grid-template-columns: 140px 1fr; }
+  .flex-col { flex-direction: column; }
+  .flex-wrap { flex-wrap: wrap; }
+  .items-baseline { align-items: baseline; }
+  .items-center { align-items: center; }
+  .items-start { align-items: flex-start; }
+  .justify-between { justify-content: space-between; }
+  .justify-center { justify-content: center; }
+  .gap-1 { gap: var(--spacing-1); }
+  .gap-1\.5 { gap: var(--spacing-1_5); }
+  .gap-2 { gap: var(--spacing-2); }
+  .gap-2\.5 { gap: var(--spacing-2_5); }
+  .gap-3 { gap: var(--spacing-3); }
+  .gap-4 { gap: var(--spacing-4); }
+  .gap-6 { gap: var(--spacing-6); }
+  .gap-10 { gap: var(--spacing-10); }
+  .gap-12 { gap: var(--spacing-12); }
+  :where(.space-y-1\.5 > :not(:last-child)) { --tw-space-y-reverse: 0; margin-block-start: calc(var(--spacing-1_5) * var(--tw-space-y-reverse)); margin-block-end: calc(var(--spacing-1_5) * calc(1 - var(--tw-space-y-reverse))); }
+  :where(.space-y-2 > :not(:last-child)) { --tw-space-y-reverse: 0; margin-block-start: calc(var(--spacing-2) * var(--tw-space-y-reverse)); margin-block-end: calc(var(--spacing-2) * calc(1 - var(--tw-space-y-reverse))); }
+  :where(.space-y-2\.5 > :not(:last-child)) { --tw-space-y-reverse: 0; margin-block-start: calc(var(--spacing-2_5) * var(--tw-space-y-reverse)); margin-block-end: calc(var(--spacing-2_5) * calc(1 - var(--tw-space-y-reverse))); }
+  :where(.space-y-3 > :not(:last-child)) { --tw-space-y-reverse: 0; margin-block-start: calc(var(--spacing-3) * var(--tw-space-y-reverse)); margin-block-end: calc(var(--spacing-3) * calc(1 - var(--tw-space-y-reverse))); }
+  :where(.space-y-4 > :not(:last-child)) { --tw-space-y-reverse: 0; margin-block-start: calc(var(--spacing-4) * var(--tw-space-y-reverse)); margin-block-end: calc(var(--spacing-4) * calc(1 - var(--tw-space-y-reverse))); }
+  .gap-x-8 { column-gap: var(--spacing-8); }
+  .gap-y-2 { row-gap: var(--spacing-2); }
+  .truncate { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
+  .overflow-hidden { overflow: hidden; }
+  .rounded-\(--radius-2xl\) { border-radius: var(--radius-2xl); }
+  .rounded-\(--radius-3xl\) { border-radius: var(--radius-3xl); }
+  .rounded-\(--radius-lg\) { border-radius: var(--radius-lg); }
+  .rounded-\(--radius-xl\) { border-radius: var(--radius-xl); }
+  .rounded-2xl { border-radius: var(--radius-2xl); }
+  .rounded-\[var\(--button-radius\)\] { border-radius: var(--button-radius); }
+  .rounded-full { border-radius: var(--radius-full); }
+  .rounded-md { border-radius: var(--radius-md); }
+  .rounded-br-md { border-bottom-right-radius: var(--radius-md); }
+  .rounded-bl-md { border-bottom-left-radius: var(--radius-md); }
+  .border { border-style: var(--tw-border-style); border-width: 1px; }
+  .border-y { border-block-style: var(--tw-border-style); border-block-width: 1px; }
+  .border-t { border-top-style: var(--tw-border-style); border-top-width: 1px; }
+  .border-b { border-bottom-style: var(--tw-border-style); border-bottom-width: 1px; }
+  .border-\(--button-outline-border\) { border-color: var(--button-outline-border); }
+  .border-\(--color-action-primary\) { border-color: var(--color-action-primary); }
+  .border-\(--color-action-primary\)\/20 { border-color: rgba(125, 76, 207, 0.2); }
+  @supports (color: color-mix(in lab, red, red)) {
+  .border-\(--color-action-primary\)\/20 { border-color: color-mix(in oklab, var(--color-action-primary) 20%, transparent); }
+}
+  .border-\(--color-border-default\) { border-color: var(--color-border-default); }
+  .border-\(--color-text-inverse\)\/40 { border-color: rgba(255, 255, 255, 0.4); }
+  @supports (color: color-mix(in lab, red, red)) {
+  .border-\(--color-text-inverse\)\/40 { border-color: color-mix(in oklab, var(--color-text-inverse) 40%, transparent); }
+}
+  .border-current { border-color: currentcolor; }
+  .border-transparent { border-color: rgba(0, 0, 0, 0); }
+  .border-white\/40 { border-color: rgba(255, 255, 255, 0.4); }
+  @supports (color: color-mix(in lab, red, red)) {
+  .border-white\/40 { border-color: color-mix(in oklab, var(--color-white) 40%, transparent); }
+}
+  .bg-\(--button-fill-bg\) { background-color: var(--button-fill-bg); }
+  .bg-\(--button-outline-bg\) { background-color: var(--button-outline-bg); }
+  .bg-\(--color-action-primary\) { background-color: var(--color-action-primary); }
+  .bg-\(--color-action-primary-soft\) { background-color: var(--color-action-primary-soft); }
+  .bg-\(--color-blue-12\) { background-color: var(--color-blue-12); }
+  .bg-\(--color-blue-100\) { background-color: var(--color-blue-100); }
+  .bg-\(--color-green-100\) { background-color: var(--color-green-100); }
+  .bg-\(--color-neutral-100\) { background-color: var(--color-neutral-100); }
+  .bg-\(--color-neutral-200\) { background-color: var(--color-neutral-200); }
+  .bg-\(--color-neutral-300\) { background-color: var(--color-neutral-300); }
+  .bg-\(--color-neutral-400\) { background-color: var(--color-neutral-400); }
+  .bg-\(--color-orange-100\) { background-color: var(--color-orange-100); }
+  .bg-\(--color-surface-card\) { background-color: var(--color-surface-card); }
+  .bg-\(--color-surface-page\) { background-color: var(--color-surface-page); }
+  .bg-\(--color-surface-section\) { background-color: var(--color-surface-section); }
+  .bg-\(--color-surface-section\)\/40 { background-color: rgba(245, 245, 245, 0.4); }
+  @supports (color: color-mix(in lab, red, red)) {
+  .bg-\(--color-surface-section\)\/40 { background-color: color-mix(in oklab, var(--color-surface-section) 40%, transparent); }
+}
+  .bg-\(--color-surface-section\)\/50 { background-color: rgba(245, 245, 245, 0.5); }
+  @supports (color: color-mix(in lab, red, red)) {
+  .bg-\(--color-surface-section\)\/50 { background-color: color-mix(in oklab, var(--color-surface-section) 50%, transparent); }
+}
+  .bg-\(--color-surface-section\)\/60 { background-color: rgba(245, 245, 245, 0.6); }
+  @supports (color: color-mix(in lab, red, red)) {
+  .bg-\(--color-surface-section\)\/60 { background-color: color-mix(in oklab, var(--color-surface-section) 60%, transparent); }
+}
+  .bg-\(--color-text-inverse\) { background-color: var(--color-text-inverse); }
+  .bg-amber-100 { background-color: var(--color-amber-100); }
+  .bg-emerald-100 { background-color: var(--color-emerald-100); }
+  .bg-green-300 { background-color: var(--color-green-300); }
+  .bg-red-100 { background-color: var(--color-red-100); }
+  .bg-red-300 { background-color: var(--color-red-300); }
+  .bg-rose-100 { background-color: var(--color-rose-100); }
+  .bg-slate-100 { background-color: var(--color-slate-100); }
+  .bg-slate-950 { background-color: var(--color-slate-950); }
+  .bg-transparent { background-color: rgba(0, 0, 0, 0); }
+  .bg-white { background-color: var(--color-white); }
+  .bg-yellow-300 { background-color: var(--color-yellow-300); }
+  .bg-gradient-to-r { --tw-gradient-position: to right in oklab; background-image: linear-gradient(var(--tw-gradient-stops)); }
+  .bg-\[radial-gradient\(60\%_60\%_at_70\%_0\%\,rgba\(125\,76\,207\,0\.22\)_0\%\,rgba\(125\,76\,207\,0\)_60\%\)\,radial-gradient\(40\%_40\%_at_15\%_30\%\,rgba\(33\,150\,243\,0\.10\)_0\%\,rgba\(33\,150\,243\,0\)_60\%\)\] { background-image: radial-gradient(60% 60% at 70% 0px, rgba(125, 76, 207, 0.22) 0%, rgba(125, 76, 207, 0) 60%), radial-gradient(40% 40% at 15% 30%, rgba(33, 150, 243, 0.1) 0%, rgba(33, 150, 243, 0) 60%); }
+  .from-\(--color-action-primary\) { --tw-gradient-from: var(--color-action-primary); --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position)); }
+  .to-\(--color-blue-100\) { --tw-gradient-to: var(--color-blue-100); --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position)); }
+  .p-2\.5 { padding: var(--spacing-2_5); }
+  .p-3 { padding: var(--spacing-3); }
+  .p-4 { padding: var(--spacing-4); }
+  .p-5 { padding: var(--spacing-5); }
+  .p-6 { padding: var(--spacing-6); }
+  .p-8 { padding: var(--spacing-8); }
+  .px-1\.5 { padding-inline: var(--spacing-1_5); }
+  .px-2 { padding-inline: var(--spacing-2); }
+  .px-3 { padding-inline: var(--spacing-3); }
+  .px-3\.5 { padding-inline: var(--spacing-3_5); }
+  .px-4 { padding-inline: var(--spacing-4); }
+  .px-5 { padding-inline: var(--spacing-5); }
+  .px-6 { padding-inline: var(--spacing-6); }
+  .px-8 { padding-inline: var(--spacing-8); }
+  .py-0\.5 { padding-block: var(--spacing-0_5); }
+  .py-1 { padding-block: var(--spacing-1); }
+  .py-2 { padding-block: var(--spacing-2); }
+  .py-2\.5 { padding-block: var(--spacing-2_5); }
+  .py-3 { padding-block: var(--spacing-3); }
+  .py-4 { padding-block: var(--spacing-4); }
+  .py-6 { padding-block: var(--spacing-6); }
+  .py-8 { padding-block: var(--spacing-8); }
+  .py-10 { padding-block: var(--spacing-10); }
+  .py-12 { padding-block: var(--spacing-12); }
+  .py-16 { padding-block: var(--spacing-16); }
+  .pt-6 { padding-top: var(--spacing-6); }
+  .pt-14 { padding-top: var(--spacing-14); }
+  .pt-16 { padding-top: var(--spacing-16); }
+  .pb-1 { padding-bottom: var(--spacing-1); }
+  .pb-5 { padding-bottom: var(--spacing-5); }
+  .pb-10 { padding-bottom: var(--spacing-10); }
+  .pb-12 { padding-bottom: var(--spacing-12); }
+  .text-center { text-align: center; }
+  .text-left { text-align: left; }
+  .text-2xl { font-size: var(--text-2xl); line-height: var(--tw-leading, var(--text-2xl--line-height)); }
+  .text-3xl { font-size: var(--text-3xl); line-height: var(--tw-leading, var(--text-3xl--line-height)); }
+  .text-4xl { font-size: var(--text-4xl); line-height: var(--tw-leading, var(--text-4xl--line-height)); }
+  .text-base { font-size: var(--text-base); line-height: var(--tw-leading, var(--text-base--line-height)); }
+  .text-lg { font-size: var(--text-lg); line-height: var(--tw-leading, var(--text-lg--line-height)); }
+  .text-sm { font-size: var(--text-sm); line-height: var(--tw-leading, var(--text-sm--line-height)); }
+  .text-xl { font-size: var(--text-xl); line-height: var(--tw-leading, var(--text-xl--line-height)); }
+  .text-xs { font-size: var(--text-xs); line-height: var(--tw-leading, var(--text-xs--line-height)); }
+  .text-\[9px\] { font-size: 9px; }
+  .text-\[10px\] { font-size: 10px; }
+  .text-\[11\.5px\] { font-size: 11.5px; }
+  .text-\[11px\] { font-size: 11px; }
+  .text-\[12px\] { font-size: 12px; }
+  .text-\[13px\] { font-size: 13px; }
+  .leading-\[1\.05\] { --tw-leading: 1.05; line-height: 1.05; }
+  .leading-none { --tw-leading: 1; line-height: 1; }
+  .leading-relaxed { --tw-leading: var(--leading-relaxed); line-height: var(--leading-relaxed); }
+  .leading-snug { --tw-leading: var(--leading-snug); line-height: var(--leading-snug); }
+  .leading-tight { --tw-leading: var(--leading-tight); line-height: var(--leading-tight); }
+  .font-medium { --tw-font-weight: var(--font-weight-medium); font-weight: var(--font-weight-medium); }
+  .font-semibold { --tw-font-weight: var(--font-weight-semibold); font-weight: var(--font-weight-semibold); }
+  .tracking-tight { --tw-tracking: var(--tracking-tight); letter-spacing: var(--tracking-tight); }
+  .tracking-wide { --tw-tracking: var(--tracking-wide); letter-spacing: var(--tracking-wide); }
+  .text-\(--button-fill-text\) { color: var(--button-fill-text); }
+  .text-\(--button-outline-text\) { color: var(--button-outline-text); }
+  .text-\(--color-action-primary\) { color: var(--color-action-primary); }
+  .text-\(--color-blue-100\) { color: var(--color-blue-100); }
+  .text-\(--color-green-100\) { color: var(--color-green-100); }
+  .text-\(--color-red-100\) { color: var(--color-red-100); }
+  .text-\(--color-text-accent\) { color: var(--color-text-accent); }
+  .text-\(--color-text-inverse\) { color: var(--color-text-inverse); }
+  .text-\(--color-text-inverse\)\/70 { color: rgba(255, 255, 255, 0.7); }
+  @supports (color: color-mix(in lab, red, red)) {
+  .text-\(--color-text-inverse\)\/70 { color: color-mix(in oklab, var(--color-text-inverse) 70%, transparent); }
+}
+  .text-\(--color-text-inverse\)\/80 { color: rgba(255, 255, 255, 0.8); }
+  @supports (color: color-mix(in lab, red, red)) {
+  .text-\(--color-text-inverse\)\/80 { color: color-mix(in oklab, var(--color-text-inverse) 80%, transparent); }
+}
+  .text-\(--color-text-primary\) { color: var(--color-text-primary); }
+  .text-\(--color-text-secondary\) { color: var(--color-text-secondary); }
+  .text-amber-800 { color: var(--color-amber-800); }
+  .text-emerald-800 { color: var(--color-emerald-800); }
+  .text-red-700 { color: var(--color-red-700); }
+  .text-rose-700 { color: var(--color-rose-700); }
+  .text-rose-800 { color: var(--color-rose-800); }
+  .text-slate-700 { color: var(--color-slate-700); }
+  .text-white { color: var(--color-white); }
+  .text-white\/80 { color: rgba(255, 255, 255, 0.8); }
+  @supports (color: color-mix(in lab, red, red)) {
+  .text-white\/80 { color: color-mix(in oklab, var(--color-white) 80%, transparent); }
+}
+  .text-white\/85 { color: rgba(255, 255, 255, 0.85); }
+  @supports (color: color-mix(in lab, red, red)) {
+  .text-white\/85 { color: color-mix(in oklab, var(--color-white) 85%, transparent); }
+}
+  .uppercase { text-transform: uppercase; }
+  .tabular-nums { --tw-numeric-spacing: tabular-nums; font-variant-numeric: var(--tw-ordinal, ) var(--tw-slashed-zero, ) var(--tw-numeric-figure, ) var(--tw-numeric-spacing, ) var(--tw-numeric-fraction, ); }
+  .line-through { text-decoration-line: line-through; }
+  .no-underline { text-decoration-line: none; }
+  .underline { text-decoration-line: underline; }
+  .opacity-30 { opacity: 0.3; }
+  .opacity-60 { opacity: 0.6; }
+  .shadow-\[0_24px_60px_-30px_rgba\(125\,76\,207\,0\.25\)\] { --tw-shadow: 0 24px 60px -30px var(--tw-shadow-color, #7d4ccf40); box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow); }
+  .shadow-\[0_30px_80px_-30px_rgba\(125\,76\,207\,0\.25\)\] { --tw-shadow: 0 30px 80px -30px var(--tw-shadow-color, #7d4ccf40); box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow); }
+  .shadow-\[0_30px_80px_-30px_rgba\(125\,76\,207\,0\.30\)\] { --tw-shadow: 0 30px 80px -30px var(--tw-shadow-color, #7d4ccf4d); box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow); }
+  .shadow-md { --tw-shadow: 0 4px 6px -1px var(--tw-shadow-color, #0000001a), 0 2px 4px -2px var(--tw-shadow-color, #0000001a); box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow); }
+  .shadow-sm { --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, #0000001a), 0 1px 2px -1px var(--tw-shadow-color, #0000001a); box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow); }
+  .shadow-xl { --tw-shadow: 0 20px 25px -5px var(--tw-shadow-color, #0000001a), 0 8px 10px -6px var(--tw-shadow-color, #0000001a); box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow); }
+  .ring-2 { --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor); box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow); }
+  .ring-\(--color-action-primary\) { --tw-ring-color: var(--color-action-primary); }
+  .outline { outline-style: var(--tw-outline-style); outline-width: 1px; }
+  .blur-3xl { --tw-blur: blur(var(--blur-3xl)); filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, ); }
+  .drop-shadow-sm { --tw-drop-shadow-size: drop-shadow(0 1px 2px var(--tw-drop-shadow-color, #00000026)); --tw-drop-shadow: drop-shadow(var(--drop-shadow-sm)); filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, ); }
+  .invert { --tw-invert: invert(100%); filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, ); }
+  .filter { filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, ); }
+  .transition { transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to, opacity, box-shadow, transform, translate, scale, rotate, filter, -webkit-backdrop-filter, backdrop-filter, display, content-visibility, overlay, pointer-events; transition-timing-function: var(--tw-ease, var(--default-transition-timing-function)); transition-duration: var(--tw-duration, var(--default-transition-duration)); }
+  .transition-colors { transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to; transition-timing-function: var(--tw-ease, var(--default-transition-timing-function)); transition-duration: var(--tw-duration, var(--default-transition-duration)); }
+  .duration-\(--duration-base\) { --tw-duration: var(--duration-base); transition-duration: var(--duration-base); }
+  .ease-\(--ease-ui\) { --tw-ease: var(--ease-ui); transition-timing-function: var(--ease-ui); }
+  @media (hover: hover) {
+  .hover\:-translate-y-0\.5:hover { --tw-translate-y: calc(var(--spacing-0_5) * -1); translate: var(--tw-translate-x) var(--tw-translate-y); }
+}
+  @media (hover: hover) {
+  .hover\:border-\(--button-outline-border-hover\):hover { border-color: var(--button-outline-border-hover); }
+}
+  @media (hover: hover) {
+  .hover\:border-\(--color-action-primary\)\/40:hover { border-color: rgba(125, 76, 207, 0.4); }
+  @supports (color: color-mix(in lab, red, red)) {
+  .hover\:border-\(--color-action-primary\)\/40:hover { border-color: color-mix(in oklab, var(--color-action-primary) 40%, transparent); }
+}
+}
+  @media (hover: hover) {
+  .hover\:border-\(--color-text-inverse\)\/60:hover { border-color: rgba(255, 255, 255, 0.6); }
+  @supports (color: color-mix(in lab, red, red)) {
+  .hover\:border-\(--color-text-inverse\)\/60:hover { border-color: color-mix(in oklab, var(--color-text-inverse) 60%, transparent); }
+}
+}
+  @media (hover: hover) {
+  .hover\:border-white\/60:hover { border-color: rgba(255, 255, 255, 0.6); }
+  @supports (color: color-mix(in lab, red, red)) {
+  .hover\:border-white\/60:hover { border-color: color-mix(in oklab, var(--color-white) 60%, transparent); }
+}
+}
+  @media (hover: hover) {
+  .hover\:bg-\(--button-fill-bg-hover\):hover { background-color: var(--button-fill-bg-hover); }
+}
+  @media (hover: hover) {
+  .hover\:bg-\(--button-outline-bg-hover\):hover { background-color: var(--button-outline-bg-hover); }
+}
+  @media (hover: hover) {
+  .hover\:bg-\(--color-surface-section\):hover { background-color: var(--color-surface-section); }
+}
+  @media (hover: hover) {
+  .hover\:bg-\(--color-text-inverse\)\/10:hover { background-color: rgba(255, 255, 255, 0.1); }
+  @supports (color: color-mix(in lab, red, red)) {
+  .hover\:bg-\(--color-text-inverse\)\/10:hover { background-color: color-mix(in oklab, var(--color-text-inverse) 10%, transparent); }
+}
+}
+  @media (hover: hover) {
+  .hover\:bg-\(--color-text-inverse\)\/90:hover { background-color: rgba(255, 255, 255, 0.9); }
+  @supports (color: color-mix(in lab, red, red)) {
+  .hover\:bg-\(--color-text-inverse\)\/90:hover { background-color: color-mix(in oklab, var(--color-text-inverse) 90%, transparent); }
+}
+}
+  @media (hover: hover) {
+  .hover\:bg-white\/10:hover { background-color: rgba(255, 255, 255, 0.1); }
+  @supports (color: color-mix(in lab, red, red)) {
+  .hover\:bg-white\/10:hover { background-color: color-mix(in oklab, var(--color-white) 10%, transparent); }
+}
+}
+  @media (hover: hover) {
+  .hover\:bg-white\/90:hover { background-color: rgba(255, 255, 255, 0.9); }
+  @supports (color: color-mix(in lab, red, red)) {
+  .hover\:bg-white\/90:hover { background-color: color-mix(in oklab, var(--color-white) 90%, transparent); }
+}
+}
+  @media (hover: hover) {
+  .hover\:text-\(--button-outline-text-hover\):hover { color: var(--button-outline-text-hover); }
+}
+  @media (hover: hover) {
+  .hover\:text-\(--color-text-accent\):hover { color: var(--color-text-accent); }
+}
+  @media (hover: hover) {
+  .hover\:text-\(--color-text-inverse\):hover { color: var(--color-text-inverse); }
+}
+  @media (hover: hover) {
+  .hover\:underline:hover { text-decoration-line: underline; }
+}
+  @media (hover: hover) {
+  .hover\:shadow-sm:hover { --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, #0000001a), 0 1px 2px -1px var(--tw-shadow-color, #0000001a); box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow); }
+}
+  .focus-visible\:shadow-\(--button-focus-default\):focus-visible { --tw-shadow: var(--button-focus-default); box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow); }
+  .focus-visible\:outline-none:focus-visible { --tw-outline-style: none; outline-style: none; }
+  .disabled\:cursor-not-allowed:disabled { cursor: not-allowed; }
+  .disabled\:bg-\(--button-fill-bg-disabled\):disabled { background-color: var(--button-fill-bg-disabled); }
+  .disabled\:text-\(--button-fill-text-disabled\):disabled { color: var(--button-fill-text-disabled); }
+  .disabled\:text-\(--button-outline-text-disabled\):disabled { color: var(--button-outline-text-disabled); }
+  .disabled\:opacity-60:disabled { opacity: 0.6; }
+  @media (hover: hover) {
+  .disabled\:hover\:border-\(--button-outline-border\):disabled:hover { border-color: var(--button-outline-border); }
+}
+  @media (hover: hover) {
+  .disabled\:hover\:bg-\(--button-fill-bg-disabled\):disabled:hover { background-color: var(--button-fill-bg-disabled); }
+}
+  @media (hover: hover) {
+  .disabled\:hover\:bg-\(--button-outline-bg\):disabled:hover { background-color: var(--button-outline-bg); }
+}
+  @media (min-width: 40rem) {
+  .sm\:flex-row { flex-direction: row; }
+}
+  @media (min-width: 40rem) {
+  .sm\:items-center { align-items: center; }
+}
+  @media (min-width: 40rem) {
+  .sm\:text-5xl { font-size: var(--text-5xl); line-height: var(--tw-leading, var(--text-5xl--line-height)); }
+}
+  @media (min-width: 40rem) {
+  .sm\:text-xl { font-size: var(--text-xl); line-height: var(--tw-leading, var(--text-xl--line-height)); }
+}
+  @media (min-width: 48rem) {
+  .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0px, 1fr)); }
+}
+  @media (min-width: 48rem) {
+  .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0px, 1fr)); }
+}
+  @media (min-width: 48rem) {
+  .md\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0px, 1fr)); }
+}
+  @media (min-width: 48rem) {
+  .md\:grid-cols-5 { grid-template-columns: repeat(5, minmax(0px, 1fr)); }
+}
+  @media (min-width: 48rem) {
+  .md\:gap-3 { gap: var(--spacing-3); }
+}
+  @media (min-width: 48rem) {
+  .md\:gap-4 { gap: var(--spacing-4); }
+}
+  @media (min-width: 48rem) {
+  .md\:gap-5 { gap: var(--spacing-5); }
+}
+  @media (min-width: 48rem) {
+  .md\:gap-6 { gap: var(--spacing-6); }
+}
+  @media (min-width: 48rem) {
+  .md\:p-5 { padding: var(--spacing-5); }
+}
+  @media (min-width: 48rem) {
+  .md\:p-6 { padding: var(--spacing-6); }
+}
+  @media (min-width: 48rem) {
+  .md\:p-7 { padding: var(--spacing-7); }
+}
+  @media (min-width: 48rem) {
+  .md\:p-8 { padding: var(--spacing-8); }
+}
+  @media (min-width: 48rem) {
+  .md\:px-6 { padding-inline: var(--spacing-6); }
+}
+  @media (min-width: 48rem) {
+  .md\:px-10 { padding-inline: var(--spacing-10); }
+}
+  @media (min-width: 48rem) {
+  .md\:px-14 { padding-inline: var(--spacing-14); }
+}
+  @media (min-width: 48rem) {
+  .md\:px-16 { padding-inline: var(--spacing-16); }
+}
+  @media (min-width: 48rem) {
+  .md\:py-10 { padding-block: var(--spacing-10); }
+}
+  @media (min-width: 48rem) {
+  .md\:py-16 { padding-block: var(--spacing-16); }
+}
+  @media (min-width: 48rem) {
+  .md\:text-3xl { font-size: var(--text-3xl); line-height: var(--tw-leading, var(--text-3xl--line-height)); }
+}
+  @media (min-width: 48rem) {
+  .md\:text-4xl { font-size: var(--text-4xl); line-height: var(--tw-leading, var(--text-4xl--line-height)); }
+}
+  @media (min-width: 64rem) {
+  .lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0px, 1fr)); }
+}
+  @media (min-width: 64rem) {
+  .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0px, 1fr)); }
+}
+  @media (min-width: 64rem) {
+  .lg\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0px, 1fr)); }
+}
+  @media (min-width: 64rem) {
+  .lg\:grid-cols-\[1fr_360px\] { grid-template-columns: 1fr 360px; }
+}
+  @media (min-width: 64rem) {
+  .lg\:flex-row { flex-direction: row; }
+}
+  @media (min-width: 64rem) {
+  .lg\:items-center { align-items: center; }
+}
+  @media (min-width: 64rem) {
+  .lg\:justify-between { justify-content: space-between; }
+}
+  @media (min-width: 64rem) {
+  .lg\:gap-16 { gap: var(--spacing-16); }
+}
+  @media (min-width: 64rem) {
+  .lg\:px-20 { padding-inline: var(--spacing-20); }
+}
+  @media (min-width: 64rem) {
+  .lg\:py-12 { padding-block: var(--spacing-12); }
+}
+  @media (min-width: 64rem) {
+  .lg\:py-16 { padding-block: var(--spacing-16); }
+}
+  @media (min-width: 64rem) {
+  .lg\:py-20 { padding-block: var(--spacing-20); }
+}
+  @media (min-width: 64rem) {
+  .lg\:py-24 { padding-block: var(--spacing-24); }
+}
+  @media (min-width: 64rem) {
+  .lg\:pt-20 { padding-top: var(--spacing-20); }
+}
+  @media (min-width: 64rem) {
+  .lg\:pb-12 { padding-bottom: var(--spacing-12); }
+}
+  @media (min-width: 64rem) {
+  .lg\:pb-20 { padding-bottom: var(--spacing-20); }
+}
+  @media (min-width: 64rem) {
+  .lg\:text-5xl { font-size: var(--text-5xl); line-height: var(--tw-leading, var(--text-5xl--line-height)); }
+}
+  @media (min-width: 80rem) {
+  .xl\:max-w-2xl { max-width: var(--container-2xl); }
+}
+  @media (min-width: 80rem) {
+  .xl\:flex-1 { flex: 1 1 0%; }
+}
+  @media (min-width: 80rem) {
+  .xl\:flex-row { flex-direction: row; }
+}
+  @media (min-width: 80rem) {
+  .xl\:items-center { align-items: center; }
+}
+  @media (min-width: 80rem) {
+  .xl\:gap-16 { gap: var(--spacing-16); }
+}
+  @media (min-width: 80rem) {
+  .xl\:text-6xl { font-size: var(--text-6xl); line-height: var(--tw-leading, var(--text-6xl--line-height)); }
+}
+  @media (prefers-color-scheme: dark) {
+  .dark\:block { display: block; }
+}
+  @media (prefers-color-scheme: dark) {
+  .dark\:hidden { display: none; }
+}
+  .\[\&_svg\]\:size-5 svg { width: var(--spacing-5); height: var(--spacing-5); }
+  .\[\&_svg\]\:size-6 svg { width: var(--spacing-6); height: var(--spacing-6); }
+  @media (min-width: 64rem) {
+  .lg\:\[\&\>div\:first-child\]\:order-2 > div:first-child { order: 2; }
+}
+}
+html { background: var(--color-surface-page); color: var(--color-text-primary); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+@property --tw-translate-x { syntax: "*"; inherits: false; initial-value: 0; }
+@property --tw-translate-y { syntax: "*"; inherits: false; initial-value: 0; }
+@property --tw-translate-z { syntax: "*"; inherits: false; initial-value: 0; }
+@property --tw-space-y-reverse { syntax: "*"; inherits: false; initial-value: 0; }
+@property --tw-border-style { syntax: "*"; inherits: false; initial-value: solid; }
+@property --tw-gradient-position { syntax: "*"; inherits: false; }
+@property --tw-gradient-from { syntax: "<color>"; inherits: false; initial-value: #0000; }
+@property --tw-gradient-via { syntax: "<color>"; inherits: false; initial-value: #0000; }
+@property --tw-gradient-to { syntax: "<color>"; inherits: false; initial-value: #0000; }
+@property --tw-gradient-stops { syntax: "*"; inherits: false; }
+@property --tw-gradient-via-stops { syntax: "*"; inherits: false; }
+@property --tw-gradient-from-position { syntax: "<length-percentage>"; inherits: false; initial-value: 0%; }
+@property --tw-gradient-via-position { syntax: "<length-percentage>"; inherits: false; initial-value: 50%; }
+@property --tw-gradient-to-position { syntax: "<length-percentage>"; inherits: false; initial-value: 100%; }
+@property --tw-leading { syntax: "*"; inherits: false; }
+@property --tw-font-weight { syntax: "*"; inherits: false; }
+@property --tw-tracking { syntax: "*"; inherits: false; }
+@property --tw-ordinal { syntax: "*"; inherits: false; }
+@property --tw-slashed-zero { syntax: "*"; inherits: false; }
+@property --tw-numeric-figure { syntax: "*"; inherits: false; }
+@property --tw-numeric-spacing { syntax: "*"; inherits: false; }
+@property --tw-numeric-fraction { syntax: "*"; inherits: false; }
+@property --tw-shadow { syntax: "*"; inherits: false; initial-value: 0 0 #0000; }
+@property --tw-shadow-color { syntax: "*"; inherits: false; }
+@property --tw-shadow-alpha { syntax: "<percentage>"; inherits: false; initial-value: 100%; }
+@property --tw-inset-shadow { syntax: "*"; inherits: false; initial-value: 0 0 #0000; }
+@property --tw-inset-shadow-color { syntax: "*"; inherits: false; }
+@property --tw-inset-shadow-alpha { syntax: "<percentage>"; inherits: false; initial-value: 100%; }
+@property --tw-ring-color { syntax: "*"; inherits: false; }
+@property --tw-ring-shadow { syntax: "*"; inherits: false; initial-value: 0 0 #0000; }
+@property --tw-inset-ring-color { syntax: "*"; inherits: false; }
+@property --tw-inset-ring-shadow { syntax: "*"; inherits: false; initial-value: 0 0 #0000; }
+@property --tw-ring-inset { syntax: "*"; inherits: false; }
+@property --tw-ring-offset-width { syntax: "<length>"; inherits: false; initial-value: 0; }
+@property --tw-ring-offset-color { syntax: "*"; inherits: false; initial-value: #fff; }
+@property --tw-ring-offset-shadow { syntax: "*"; inherits: false; initial-value: 0 0 #0000; }
+@property --tw-outline-style { syntax: "*"; inherits: false; initial-value: solid; }
+@property --tw-blur { syntax: "*"; inherits: false; }
+@property --tw-brightness { syntax: "*"; inherits: false; }
+@property --tw-contrast { syntax: "*"; inherits: false; }
+@property --tw-grayscale { syntax: "*"; inherits: false; }
+@property --tw-hue-rotate { syntax: "*"; inherits: false; }
+@property --tw-invert { syntax: "*"; inherits: false; }
+@property --tw-opacity { syntax: "*"; inherits: false; }
+@property --tw-saturate { syntax: "*"; inherits: false; }
+@property --tw-sepia { syntax: "*"; inherits: false; }
+@property --tw-drop-shadow { syntax: "*"; inherits: false; }
+@property --tw-drop-shadow-color { syntax: "*"; inherits: false; }
+@property --tw-drop-shadow-alpha { syntax: "<percentage>"; inherits: false; initial-value: 100%; }
+@property --tw-drop-shadow-size { syntax: "*"; inherits: false; }
+@property --tw-duration { syntax: "*"; inherits: false; }
+@property --tw-ease { syntax: "*"; inherits: false; }
+
+/* --- next sheet --- */
+
+@font-face { font-family: __nextjs-Geist; font-style: normal; font-weight: 400 600; font-display: swap; src: url("/__nextjs_font/geist-latin-ext.woff2") format("woff2"); unicode-range: U+100-2BA, U+2BD-2C5, U+2C7-2CC, U+2CE-2D7, U+2DD-2FF, U+304, U+308, U+329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "__nextjs-Geist Mono"; font-style: normal; font-weight: 400 600; font-display: swap; src: url("/__nextjs_font/geist-mono-latin-ext.woff2") format("woff2"); unicode-range: U+100-2BA, U+2BD-2C5, U+2C7-2CC, U+2CE-2D7, U+2DD-2FF, U+304, U+308, U+329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: __nextjs-Geist; font-style: normal; font-weight: 400 600; font-display: swap; src: url("/__nextjs_font/geist-latin.woff2") format("woff2"); unicode-range: U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "__nextjs-Geist Mono"; font-style: normal; font-weight: 400 600; font-display: swap; src: url("/__nextjs_font/geist-mono-latin.woff2") format("woff2"); unicode-range: U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+</style>
+</head>
+<body>
+<div hidden=""><!--$--><!--/$--></div><section class="relative isolate overflow-hidden bg-(--color-surface-page) text-(--color-text-primary)"><div aria-hidden="true" class="pointer-events-none absolute inset-x-0 -top-32 -z-10 mx-auto h-[720px] max-w-[1440px] bg-[radial-gradient(60%_60%_at_70%_0%,rgba(125,76,207,0.22)_0%,rgba(125,76,207,0)_60%),radial-gradient(40%_40%_at_15%_30%,rgba(33,150,243,0.10)_0%,rgba(33,150,243,0)_60%)]"></div><div class="mx-auto w-full max-w-(--container-kaiten) px-4 pt-14 pb-12 md:px-6 lg:pt-20 lg:pb-12"><div class="flex flex-col items-center gap-12"><div class="max-w-3xl text-center"><span class="mb-5 inline-flex items-center rounded-full px-3 py-1 border border-(--color-action-primary)/20 bg-(--color-action-primary-soft) text-sm font-medium text-(--color-text-accent)">Кайтен для техподдержки</span><h1 class="text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl xl:text-6xl">Служба поддержки без <span class="inline-block rounded-(--radius-2xl) bg-(--color-action-primary-soft) px-3 pb-1 text-(--color-text-accent)">потерянных</span> заявок и разбросанных чатов</h1><p class="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-(--color-text-secondary) sm:text-xl">Принимайте обращения из почты, мессенджера и с портала на одной доске. Без регистрации для заказчиков, без хаоса для команды.</p><div class="mt-8 flex w-full flex-col items-center justify-center gap-3 sm:flex-row"><a class="inline-flex items-center justify-center rounded-[var(--button-radius)] font-medium no-underline transition-colors duration-(--duration-base) ease-(--ease-ui) focus-visible:outline-none focus-visible:shadow-(--button-focus-default) h-12 px-5 text-base gap-1 [&amp;_svg]:size-6 bg-(--button-fill-bg) text-(--button-fill-text) hover:bg-(--button-fill-bg-hover)" href="/signup">Попробовать бесплатно</a><a class="inline-flex items-center justify-center rounded-[var(--button-radius)] font-medium no-underline transition-colors duration-(--duration-base) ease-(--ease-ui) focus-visible:outline-none focus-visible:shadow-(--button-focus-default) h-12 px-5 text-base gap-1 [&amp;_svg]:size-6 bg-(--button-outline-bg) text-(--button-outline-text) border border-(--button-outline-border) hover:bg-(--button-outline-bg-hover) hover:text-(--button-outline-text-hover) hover:border-(--button-outline-border-hover)" href="/demo">Хочу записаться на демо</a></div></div><div class="w-full"><div aria-hidden="true" class="relative overflow-hidden rounded-(--radius-3xl) border border-(--color-border-default) bg-(--color-surface-card) shadow-[0_30px_80px_-30px_rgba(125,76,207,0.30)]"><div class="flex flex-wrap items-center gap-1.5 border-b border-(--color-border-default) bg-(--color-surface-section) px-3 py-2.5"><span class="h-2 w-2 rounded-full bg-red-300"></span><span class="h-2 w-2 rounded-full bg-yellow-300"></span><span class="h-2 w-2 rounded-full bg-green-300"></span><div class="ml-2 flex flex-wrap items-center gap-3 text-[11px] text-(--color-text-secondary)"><span class="font-medium text-(--color-text-primary)">Заявки</span><span>Очередь</span><span>SLA</span><span>Ответы</span><span class="rounded-md border border-(--color-border-default) bg-(--color-surface-page) px-1.5 py-0.5">Фильтры</span></div></div><div class="grid grid-cols-4 gap-2.5 p-4 md:gap-3 md:p-5"><div class="space-y-2.5"><div class="flex items-center justify-between text-[11px] font-medium text-(--color-text-secondary)"><span class="truncate">Очередь</span><span class="rounded-full bg-(--color-neutral-200) px-1.5 py-0.5 text-[10px] text-(--color-text-primary)">4</span></div><div class="relative rounded-(--radius-lg) border bg-(--color-surface-page) p-2.5 border-(--color-border-default) shadow-sm"><div class="mb-1.5 h-1 w-8 rounded-full bg-(--color-action-primary)"></div><div class="text-[11.5px] font-semibold leading-tight text-(--color-text-primary)">Не приходит код подтверждения</div><div class="mt-1 truncate text-[10px] text-(--color-text-secondary)">Telegram · новый клиент</div><div class="mt-1.5 flex flex-wrap items-center gap-1"><span class="inline-flex h-4 items-center rounded-full px-1.5 text-[9px] font-medium leading-none bg-(--color-action-primary-soft) text-(--color-text-accent)">Высокий</span><span class="inline-flex h-4 items-center rounded-full bg-(--color-neutral-200) px-1.5 text-[9px] font-medium leading-none text-(--color-text-primary)">12 мин</span></div></div><div class="relative rounded-(--radius-lg) border bg-(--color-surface-page) p-2.5 border-(--color-border-default) opacity-60"><div class="mb-1.5 h-1 w-8 rounded-full bg-(--color-green-100)"></div><div class="text-[11.5px] font-semibold leading-tight text-(--color-text-primary)">Вопрос по тарифу</div><div class="mt-1 truncate text-[10px] text-(--color-text-secondary)">Портал поддержки</div></div></div><div class="space-y-2.5"><div class="flex items-center justify-between text-[11px] font-medium text-(--color-text-secondary)"><span class="truncate">В работе</span><span class="rounded-full bg-(--color-neutral-200) px-1.5 py-0.5 text-[10px] text-(--color-text-primary)">3</span></div><div class="relative rounded-(--radius-lg) border bg-(--color-surface-page) p-2.5 border-(--color-border-default) translate-y-[-2px] shadow-md"><div class="mb-1.5 h-1 w-8 rounded-full bg-(--color-action-primary)"></div><div class="text-[11.5px] font-semibold leading-tight text-(--color-text-primary)">Ошибка в личном кабинете</div><div class="mt-1 truncate text-[10px] text-(--color-text-secondary)">Передать в разработку</div><div class="mt-1.5 flex flex-wrap items-center gap-1"><span class="inline-flex h-4 items-center rounded-full px-1.5 text-[9px] font-medium leading-none bg-red-100 text-red-700">Bug</span><span class="inline-flex h-4 items-center rounded-full bg-(--color-neutral-200) px-1.5 text-[9px] font-medium leading-none text-(--color-text-primary)">SLA 2ч</span></div><span class="pointer-events-none absolute -right-2 -bottom-2 text-lg drop-shadow-sm">☝️</span></div></div><div class="space-y-2.5"><div class="flex items-center justify-between text-[11px] font-medium text-(--color-text-secondary)"><span class="truncate">Готовлю ответ</span><span class="rounded-full bg-(--color-neutral-200) px-1.5 py-0.5 text-[10px] text-(--color-text-primary)">2</span></div><div class="relative rounded-(--radius-lg) border bg-(--color-surface-page) p-2.5 border-(--color-border-default) shadow-sm"><div class="mb-1.5 h-1 w-8 rounded-full bg-(--color-orange-100)"></div><div class="text-[11.5px] font-semibold leading-tight text-(--color-text-primary)">Нужен акт сверки</div><div class="mt-1 truncate text-[10px] text-(--color-text-secondary)">Почта · бухгалтерия</div></div></div><div class="space-y-2.5"><div class="flex items-center justify-between text-[11px] font-medium text-(--color-text-secondary)"><span class="truncate">Закрыто</span><span class="rounded-full bg-(--color-neutral-200) px-1.5 py-0.5 text-[10px] text-(--color-text-primary)">12</span></div><div class="relative rounded-(--radius-lg) border bg-(--color-surface-page) p-2.5 border-(--color-border-default) opacity-60"><div class="mb-1.5 h-1 w-8 rounded-full bg-(--color-green-100)"></div><div class="text-[11.5px] font-semibold leading-tight text-(--color-text-primary)">Доступ восстановлен</div><div class="mt-1 truncate text-[10px] text-(--color-text-secondary)">Оценка: 5/5</div></div></div></div></div></div></div></div></section><section class="border-y border-(--color-border-default) bg-(--color-surface-section)/50"><div class="mx-auto w-full max-w-(--container-kaiten) flex flex-wrap items-center justify-center gap-x-8 gap-y-2 px-4 py-4 md:px-6"><span class="flex items-center gap-3 text-sm font-medium text-(--color-text-secondary)">Российский сервис<span class="h-1 w-1 rounded-full bg-(--color-neutral-400)" aria-hidden="true"></span></span><span class="flex items-center gap-3 text-sm font-medium text-(--color-text-secondary)">Настройка за 30 минут<span class="h-1 w-1 rounded-full bg-(--color-neutral-400)" aria-hidden="true"></span></span><span class="flex items-center gap-3 text-sm font-medium text-(--color-text-secondary)">Шаблонные ответы<span class="h-1 w-1 rounded-full bg-(--color-neutral-400)" aria-hidden="true"></span></span><span class="flex items-center gap-3 text-sm font-medium text-(--color-text-secondary)">Аналитика и SLA</span></div></section><section class="mx-auto w-full max-w-(--container-kaiten) px-4 py-16 md:px-6 lg:py-20"><div class="mb-10 max-w-2xl"><p class="mb-3 text-sm font-medium uppercase tracking-wide text-(--color-text-accent)">Клиенты</p><h2 class="text-3xl font-semibold leading-tight md:text-4xl">Российские команды уже работают на одной доске</h2></div><div class="grid grid-cols-1 gap-6 md:grid-cols-3"><div class="flex flex-col rounded-(--radius-2xl) border border-(--color-border-default) bg-(--color-surface-card) p-6"><div class="mb-4 flex items-center gap-3"><div class="flex h-10 w-10 items-center justify-center rounded-(--radius-xl) bg-(--color-action-primary-soft) text-base font-semibold text-(--color-text-accent)" aria-hidden="true">C</div><p class="text-base font-semibold">CORE12</p></div><p class="flex-1 text-base leading-relaxed text-(--color-text-primary)">«<!-- -->Один сотрудник обрабатывает 235+ обращений в месяц — и ни одно не теряется. Заявки приходят через бота и сразу попадают на доску.<!-- -->»</p><p class="mt-4 text-sm font-medium text-(--color-text-accent)">235+ обращений / сотрудник</p><a href="/cases/core12" class="mt-4 inline-flex items-center gap-1 text-sm font-medium text-(--color-action-primary) hover:underline">Читать кейс →</a></div><div class="flex flex-col rounded-(--radius-2xl) border border-(--color-border-default) bg-(--color-surface-card) p-6"><div class="mb-4 flex items-center gap-3"><div class="flex h-10 w-10 items-center justify-center rounded-(--radius-xl) bg-(--color-action-primary-soft) text-base font-semibold text-(--color-text-accent)" aria-hidden="true">P</div><p class="text-base font-semibold">Proctoredu</p></div><p class="flex-1 text-base leading-relaxed text-(--color-text-primary)">«<!-- -->Мы уже вели задачи в Кайтен — подключили модуль Службы поддержки, и заявки клиентов оказались рядом с задачами команды. Ни одно обращение не теряется.<!-- -->»</p><p class="mt-4 text-sm font-medium text-(--color-text-accent)">Один инструмент на задачи и поддержку</p><a href="/cases/proctoredu" class="mt-4 inline-flex items-center gap-1 text-sm font-medium text-(--color-action-primary) hover:underline">Читать кейс →</a></div><div class="flex flex-col rounded-(--radius-2xl) border border-(--color-border-default) bg-(--color-surface-card) p-6"><div class="mb-4 flex items-center gap-3"><div class="flex h-10 w-10 items-center justify-center rounded-(--radius-xl) bg-(--color-action-primary-soft) text-base font-semibold text-(--color-text-accent)" aria-hidden="true">B</div><p class="text-base font-semibold">Bergauf</p></div><p class="flex-1 text-base leading-relaxed text-(--color-text-primary)">«<!-- -->500 сотрудников оставляют заявки через Кайтен. Выстроили три линии поддержки, разделили по типам обращений — заявка попадает к нужному специалисту.<!-- -->»</p><p class="mt-4 text-sm font-medium text-(--color-text-accent)">500 сотрудников, 3 линии</p><a href="/cases/bergauf" class="mt-4 inline-flex items-center gap-1 text-sm font-medium text-(--color-action-primary) hover:underline">Читать кейс →</a></div></div></section><section class="mx-auto w-full max-w-(--container-kaiten) px-4 py-12 md:px-6 lg:py-20"><div class="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16 lg:items-center"><div><p class="mb-3 text-sm font-medium uppercase tracking-wide text-(--color-text-accent)">Один входящий канал</p><h2 class="text-3xl font-semibold leading-tight md:text-4xl">Все обращения собираются на одну доску</h2><p class="mt-4 text-lg leading-relaxed text-(--color-text-secondary)">Заявки из Telegram, почты и портала приходят на канбан-доску команды. Специалист видит очередь, руководитель — общую картину.</p><ul class="mt-6 space-y-3"><li class="flex items-start gap-3"><span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--color-action-primary-soft) text-(--color-text-accent)"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-inbox h-3.5 w-3.5" aria-hidden="true"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg></span><span class="text-base leading-relaxed text-(--color-text-primary)">Заявка из Telegram-бота, почты или портала — на одной доске</span></li><li class="flex items-start gap-3"><span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--color-action-primary-soft) text-(--color-text-accent)"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye h-3.5 w-3.5" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg></span><span class="text-base leading-relaxed text-(--color-text-primary)">Видна очередь и общая нагрузка, ни одна заявка не теряется</span></li><li class="flex items-start gap-3"><span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--color-action-primary-soft) text-(--color-text-accent)"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-check h-3.5 w-3.5" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><polyline points="16 11 18 13 22 9"></polyline></svg></span><span class="text-base leading-relaxed text-(--color-text-primary)">Регистрация в Кайтен заказчикам не нужна</span></li></ul><div class="mt-8 flex flex-col gap-3 sm:flex-row"><a class="inline-flex items-center justify-center rounded-[var(--button-radius)] font-medium no-underline transition-colors duration-(--duration-base) ease-(--ease-ui) focus-visible:outline-none focus-visible:shadow-(--button-focus-default) h-12 px-5 text-base gap-1 [&amp;_svg]:size-6 bg-(--button-fill-bg) text-(--button-fill-text) hover:bg-(--button-fill-bg-hover)" href="/signup">Попробовать бесплатно</a></div></div><div aria-hidden="true" class="relative overflow-hidden rounded-(--radius-3xl) border border-(--color-border-default) bg-(--color-surface-card) shadow-[0_30px_80px_-30px_rgba(125,76,207,0.30)]"><div class="flex flex-wrap items-center gap-1.5 border-b border-(--color-border-default) bg-(--color-surface-section) px-3 py-2.5"><span class="h-2 w-2 rounded-full bg-red-300"></span><span class="h-2 w-2 rounded-full bg-yellow-300"></span><span class="h-2 w-2 rounded-full bg-green-300"></span><div class="ml-2 flex flex-wrap items-center gap-3 text-[11px] text-(--color-text-secondary)"><span class="font-medium text-(--color-text-primary)">Заявки</span><span>Очередь</span><span>SLA</span><span>Ответы</span><span class="rounded-md border border-(--color-border-default) bg-(--color-surface-page) px-1.5 py-0.5">Фильтры</span></div></div><div class="grid grid-cols-4 gap-2.5 p-4 md:gap-3 md:p-5"><div class="space-y-2.5"><div class="flex items-center justify-between text-[11px] font-medium text-(--color-text-secondary)"><span class="truncate">Очередь</span><span class="rounded-full bg-(--color-neutral-200) px-1.5 py-0.5 text-[10px] text-(--color-text-primary)">4</span></div><div class="relative rounded-(--radius-lg) border bg-(--color-surface-page) p-2.5 border-(--color-border-default) shadow-sm"><div class="mb-1.5 h-1 w-8 rounded-full bg-(--color-action-primary)"></div><div class="text-[11.5px] font-semibold leading-tight text-(--color-text-primary)">Не приходит код подтверждения</div><div class="mt-1 truncate text-[10px] text-(--color-text-secondary)">Telegram · новый клиент</div><div class="mt-1.5 flex flex-wrap items-center gap-1"><span class="inline-flex h-4 items-center rounded-full px-1.5 text-[9px] font-medium leading-none bg-(--color-action-primary-soft) text-(--color-text-accent)">Высокий</span><span class="inline-flex h-4 items-center rounded-full bg-(--color-neutral-200) px-1.5 text-[9px] font-medium leading-none text-(--color-text-primary)">12 мин</span></div></div><div class="relative rounded-(--radius-lg) border bg-(--color-surface-page) p-2.5 border-(--color-border-default) opacity-60"><div class="mb-1.5 h-1 w-8 rounded-full bg-(--color-green-100)"></div><div class="text-[11.5px] font-semibold leading-tight text-(--color-text-primary)">Вопрос по тарифу</div><div class="mt-1 truncate text-[10px] text-(--color-text-secondary)">Портал поддержки</div></div></div><div class="space-y-2.5"><div class="flex items-center justify-between text-[11px] font-medium text-(--color-text-secondary)"><span class="truncate">В работе</span><span class="rounded-full bg-(--color-neutral-200) px-1.5 py-0.5 text-[10px] text-(--color-text-primary)">3</span></div><div class="relative rounded-(--radius-lg) border bg-(--color-surface-page) p-2.5 border-(--color-border-default) translate-y-[-2px] shadow-md"><div class="mb-1.5 h-1 w-8 rounded-full bg-(--color-action-primary)"></div><div class="text-[11.5px] font-semibold leading-tight text-(--color-text-primary)">Ошибка в личном кабинете</div><div class="mt-1 truncate text-[10px] text-(--color-text-secondary)">Передать в разработку</div><div class="mt-1.5 flex flex-wrap items-center gap-1"><span class="inline-flex h-4 items-center rounded-full px-1.5 text-[9px] font-medium leading-none bg-red-100 text-red-700">Bug</span><span class="inline-flex h-4 items-center rounded-full bg-(--color-neutral-200) px-1.5 text-[9px] font-medium leading-none text-(--color-text-primary)">SLA 2ч</span></div><span class="pointer-events-none absolute -right-2 -bottom-2 text-lg drop-shadow-sm">☝️</span></div></div><div class="space-y-2.5"><div class="flex items-center justify-between text-[11px] font-medium text-(--color-text-secondary)"><span class="truncate">Готовлю ответ</span><span class="rounded-full bg-(--color-neutral-200) px-1.5 py-0.5 text-[10px] text-(--color-text-primary)">2</span></div><div class="relative rounded-(--radius-lg) border bg-(--color-surface-page) p-2.5 border-(--color-border-default) shadow-sm"><div class="mb-1.5 h-1 w-8 rounded-full bg-(--color-orange-100)"></div><div class="text-[11.5px] font-semibold leading-tight text-(--color-text-primary)">Нужен акт сверки</div><div class="mt-1 truncate text-[10px] text-(--color-text-secondary)">Почта · бухгалтерия</div></div></div><div class="space-y-2.5"><div class="flex items-center justify-between text-[11px] font-medium text-(--color-text-secondary)"><span class="truncate">Закрыто</span><span class="rounded-full bg-(--color-neutral-200) px-1.5 py-0.5 text-[10px] text-(--color-text-primary)">12</span></div><div class="relative rounded-(--radius-lg) border bg-(--color-surface-page) p-2.5 border-(--color-border-default) opacity-60"><div class="mb-1.5 h-1 w-8 rounded-full bg-(--color-green-100)"></div><div class="text-[11.5px] font-semibold leading-tight text-(--color-text-primary)">Доступ восстановлен</div><div class="mt-1 truncate text-[10px] text-(--color-text-secondary)">Оценка: 5/5</div></div></div></div></div></div></section><section class="mx-auto w-full max-w-(--container-kaiten) px-4 py-12 md:px-6 lg:py-20"><div class="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16 lg:items-center lg:[&amp;&gt;div:first-child]:order-2"><div><p class="mb-3 text-sm font-medium uppercase tracking-wide text-(--color-text-accent)">Контекст не теряется</p><h2 class="text-3xl font-semibold leading-tight md:text-4xl">Отвечайте на запросы прямо в карточках</h2><p class="mt-4 text-lg leading-relaxed text-(--color-text-secondary)">Все данные по заявке собраны в одном месте — переписка, файлы, история. Команда не переключается между почтой, мессенджером и таск-трекером.</p><ul class="mt-6 space-y-3"><li class="flex items-start gap-3"><span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--color-action-primary-soft) text-(--color-text-accent)"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square h-3.5 w-3.5" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></span><span class="text-base leading-relaxed text-(--color-text-primary)">Переписка с клиентом ведётся в комментариях карточки</span></li><li class="flex items-start gap-3"><span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--color-action-primary-soft) text-(--color-text-accent)"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-paperclip h-3.5 w-3.5" aria-hidden="true"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg></span><span class="text-base leading-relaxed text-(--color-text-primary)">Файлы и скриншоты остаются вместе с заявкой</span></li><li class="flex items-start gap-3"><span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--color-action-primary-soft) text-(--color-text-accent)"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-repeat h-3.5 w-3.5" aria-hidden="true"><path d="m17 2 4 4-4 4"></path><path d="M3 11v-1a4 4 0 0 1 4-4h14"></path><path d="m7 22-4-4 4-4"></path><path d="M21 13v1a4 4 0 0 1-4 4H3"></path></svg></span><span class="text-base leading-relaxed text-(--color-text-primary)">Смена исполнителя не теряет контекст разговора</span></li><li class="flex items-start gap-3"><span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--color-action-primary-soft) text-(--color-text-accent)"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles h-3.5 w-3.5" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path><path d="M20 3v4"></path><path d="M22 5h-4"></path><path d="M4 17v2"></path><path d="M5 18H3"></path></svg></span><span class="text-base leading-relaxed text-(--color-text-primary)">Шаблонные ответы для типовых ситуаций — единый tone of voice</span></li></ul></div><div aria-hidden="true" class="relative overflow-hidden rounded-(--radius-3xl) border border-(--color-border-default) bg-(--color-surface-card) shadow-[0_30px_80px_-30px_rgba(125,76,207,0.25)] p-6 md:p-7"><div class="mb-5 flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-red-300"></span><span class="h-2.5 w-2.5 rounded-full bg-yellow-300"></span><span class="h-2.5 w-2.5 rounded-full bg-green-300"></span><span class="ml-3 text-xs text-(--color-text-secondary)">Заявка #18524</span></div><h3 class="text-xl font-semibold text-(--color-text-primary)">Оплата не прошла</h3><p class="mt-1 text-sm text-(--color-text-secondary)">Клиент пишет в Telegram, команда отвечает прямо из карточки.</p><div class="mt-5 space-y-3"><div class="max-w-[85%] rounded-2xl rounded-bl-md bg-(--color-neutral-100) px-4 py-2.5 text-sm text-(--color-text-primary)">Здравствуйте, не могу оплатить тариф.</div><div class="ml-auto max-w-[85%] rounded-2xl rounded-br-md bg-(--color-action-primary-soft) px-4 py-2.5 text-sm text-(--color-text-primary)">Проверили платёж — отправили новую ссылку. Подтвердите получение, пожалуйста.</div></div><div class="mt-6 space-y-2 rounded-(--radius-xl) border border-(--color-border-default) bg-(--color-surface-section)/40 p-3"><div class="flex items-center gap-2.5 text-sm"><span class="inline-flex h-5 w-5 items-center justify-center rounded-md border text-[12px] border-(--color-action-primary) bg-(--color-action-primary) text-white">✓</span><span class="text-(--color-text-secondary) line-through">Проверить оплату</span></div><div class="flex items-center gap-2.5 text-sm"><span class="inline-flex h-5 w-5 items-center justify-center rounded-md border text-[12px] border-(--color-action-primary) bg-(--color-action-primary) text-white">✓</span><span class="text-(--color-text-secondary) line-through">Отправить инструкцию</span></div><div class="flex items-center gap-2.5 text-sm"><span class="inline-flex h-5 w-5 items-center justify-center rounded-md border text-[12px] border-(--color-border-default) bg-white"></span><span class="text-(--color-text-primary)">Закрыть обращение</span></div></div></div></div></section><section class="mx-auto w-full max-w-(--container-kaiten) px-4 py-12 md:px-6 lg:py-20"><div class="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16 lg:items-center"><div><p class="mb-3 text-sm font-medium uppercase tracking-wide text-(--color-text-accent)">База знаний</p><h2 class="text-3xl font-semibold leading-tight md:text-4xl">Публичная база знаний для клиентов</h2><p class="mt-4 text-lg leading-relaxed text-(--color-text-secondary)">Создавайте статьи в Кайтен и публикуйте на портале поддержки. Клиент находит ответ до того, как напишет заявку. Типовых обращений становится меньше — команда фокусируется на сложных кейсах.</p><ul class="mt-6 space-y-3"><li class="flex items-start gap-3"><span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--color-action-primary-soft) text-(--color-text-accent)"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-globe h-3.5 w-3.5" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg></span><span class="text-base leading-relaxed text-(--color-text-primary)">Публичные статьи доступны по прямой ссылке</span></li><li class="flex items-start gap-3"><span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--color-action-primary-soft) text-(--color-text-accent)"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search h-3.5 w-3.5" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></span><span class="text-base leading-relaxed text-(--color-text-primary)">Поиск по содержимому статей и категориям</span></li><li class="flex items-start gap-3"><span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--color-action-primary-soft) text-(--color-text-accent)"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star h-3.5 w-3.5" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg></span><span class="text-base leading-relaxed text-(--color-text-primary)">Оценка статей — видно, что нужно дописать</span></li></ul></div><div aria-hidden="true" class="relative overflow-hidden rounded-(--radius-3xl) border border-(--color-border-default) bg-(--color-surface-card) shadow-[0_24px_60px_-30px_rgba(125,76,207,0.25)] p-6 md:p-7"><div class="grid grid-cols-[120px_1fr] gap-4"><div class="space-y-2"><div class="h-2.5 w-3/4 rounded-full bg-(--color-action-primary-soft)"></div><div class="h-2 w-full rounded-full bg-(--color-neutral-200)"></div><div class="h-2 w-full rounded-full bg-(--color-neutral-200)"></div><div class="h-2 w-full rounded-full bg-(--color-neutral-200)"></div><div class="h-2 w-full rounded-full bg-(--color-neutral-200)"></div><div class="h-2 w-full rounded-full bg-(--color-neutral-200)"></div></div><div class="rounded-(--radius-2xl) border border-(--color-border-default) bg-(--color-surface-page) p-4 md:p-5"><div class="mb-3 flex items-center gap-2"><span class="text-xl">📌</span><span class="inline-flex h-5 items-center rounded-full px-2 text-[10px] font-medium bg-(--color-action-primary-soft) text-(--color-text-accent)">Опубликовано</span></div><h4 class="text-base font-semibold text-(--color-text-primary)">Как восстановить доступ</h4><p class="mt-1 text-sm text-(--color-text-secondary)">Пошаговая инструкция для клиентов</p><div class="mt-4 space-y-1.5"><div class="h-2 w-full rounded-full bg-(--color-neutral-200)"></div><div class="h-2 w-5/6 rounded-full bg-(--color-neutral-200)"></div><div class="h-2 w-4/6 rounded-full bg-(--color-neutral-200)"></div></div></div></div></div></div></section><section class="mx-auto w-full max-w-(--container-kaiten) px-4 py-12 md:px-6 lg:py-20"><div class="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16 lg:items-center lg:[&amp;&gt;div:first-child]:order-2"><div><p class="mb-3 text-sm font-medium uppercase tracking-wide text-(--color-text-accent)">Документы</p><h2 class="text-3xl font-semibold leading-tight md:text-4xl">Внутренние инструкции для команды — рядом с работой</h2><p class="mt-4 text-lg leading-relaxed text-(--color-text-secondary)">Скрипты ответов, регламенты, описание процессов — в одном редакторе рядом с задачами. Новый специалист разбирается сам, без серии вопросов к коллегам.</p><ul class="mt-6 space-y-3"><li class="flex items-start gap-3"><span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--color-action-primary-soft) text-(--color-text-accent)"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open h-3.5 w-3.5" aria-hidden="true"><path d="M12 7v14"></path><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path></svg></span><span class="text-base leading-relaxed text-(--color-text-primary)">Внутренние документы рядом с карточками заявок</span></li><li class="flex items-start gap-3"><span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--color-action-primary-soft) text-(--color-text-accent)"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users h-3.5 w-3.5" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span><span class="text-base leading-relaxed text-(--color-text-primary)">Доступ только для команды, без публикации наружу</span></li><li class="flex items-start gap-3"><span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--color-action-primary-soft) text-(--color-text-accent)"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-git-merge h-3.5 w-3.5" aria-hidden="true"><circle cx="18" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><path d="M6 21V9a9 9 0 0 0 9 9"></path></svg></span><span class="text-base leading-relaxed text-(--color-text-primary)">Связь с конкретными типами обращений и шаблонами</span></li></ul></div><div aria-hidden="true" class="relative overflow-hidden rounded-(--radius-3xl) border border-(--color-border-default) bg-(--color-surface-card) shadow-[0_24px_60px_-30px_rgba(125,76,207,0.25)] p-6 md:p-7"><div class="grid grid-cols-[120px_1fr] gap-4"><div class="space-y-2"><div class="h-2.5 w-3/4 rounded-full bg-(--color-blue-12)"></div><div class="h-2 w-full rounded-full bg-(--color-neutral-200)"></div><div class="h-2 w-full rounded-full bg-(--color-neutral-200)"></div><div class="h-2 w-full rounded-full bg-(--color-neutral-200)"></div><div class="h-2 w-full rounded-full bg-(--color-neutral-200)"></div><div class="h-2 w-full rounded-full bg-(--color-neutral-200)"></div></div><div class="rounded-(--radius-2xl) border border-(--color-border-default) bg-(--color-surface-page) p-4 md:p-5"><div class="mb-3 flex items-center gap-2"><span class="text-xl">🧑‍💻</span><span class="inline-flex h-5 items-center rounded-full px-2 text-[10px] font-medium bg-(--color-blue-12) text-(--color-blue-100)">Только команда</span></div><h4 class="text-base font-semibold text-(--color-text-primary)">Скрипт ответа на инцидент</h4><p class="mt-1 text-sm text-(--color-text-secondary)">Регламент для L1 и L2</p><div class="mt-4 space-y-1.5"><div class="h-2 w-full rounded-full bg-(--color-neutral-200)"></div><div class="h-2 w-5/6 rounded-full bg-(--color-neutral-200)"></div><div class="h-2 w-4/6 rounded-full bg-(--color-neutral-200)"></div></div></div></div></div></div></section><section class="mx-auto w-full max-w-(--container-kaiten) px-4 py-12 md:px-6 lg:py-16"><div class="relative overflow-hidden rounded-(--radius-3xl) px-8 py-12 md:px-14 md:py-16 lg:py-20 border border-(--color-action-primary)/20 bg-(--color-action-primary-soft) text-(--color-text-primary)"><div aria-hidden="true" class="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full opacity-30 blur-3xl bg-(--color-action-primary)"></div><div class="relative mx-auto max-w-3xl text-center"><p class="mb-3 text-sm font-medium uppercase tracking-wide text-(--color-text-accent)">Бонус всем тарифам</p><h2 class="text-3xl font-semibold leading-tight md:text-4xl lg:text-5xl">Документы Кайтен — бесплатно и без ограничений</h2><p class="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-(--color-text-secondary)">База знаний, регламенты и публичный справочный центр — в одном редакторе. Отдельный продукт покупать не нужно.</p><div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row"><a class="inline-flex items-center justify-center rounded-[var(--button-radius)] font-medium no-underline transition-colors duration-(--duration-base) ease-(--ease-ui) focus-visible:outline-none focus-visible:shadow-(--button-focus-default) h-12 px-5 text-base gap-1 [&amp;_svg]:size-6 bg-(--button-fill-bg) text-(--button-fill-text) hover:bg-(--button-fill-bg-hover)" href="/docs/new">Создать первый документ</a><a class="inline-flex items-center justify-center rounded-[var(--button-radius)] font-medium no-underline transition-colors duration-(--duration-base) ease-(--ease-ui) focus-visible:outline-none focus-visible:shadow-(--button-focus-default) h-12 px-5 text-base gap-1 [&amp;_svg]:size-6 bg-(--button-outline-bg) text-(--button-outline-text) border border-(--button-outline-border) hover:bg-(--button-outline-bg-hover) hover:text-(--button-outline-text-hover) hover:border-(--button-outline-border-hover)" href="/templates">Посмотреть шаблоны</a></div></div></div></section><section class="bg-(--color-surface-section)/60"><div class="mx-auto w-full max-w-(--container-kaiten) px-4 py-16 md:px-6 lg:py-20"><div class="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-center lg:gap-16"><div><p class="mb-3 text-sm font-medium uppercase tracking-wide text-(--color-text-accent)">Аналитика</p><h2 class="text-3xl font-semibold leading-tight md:text-4xl">Получайте готовые отчёты о работе сервиса</h2><p class="mt-4 text-lg leading-relaxed text-(--color-text-secondary)">Контролируйте работу команды с опорой на данные. Аналитика обновляется автоматически — не нужно собирать таблицы руками.</p></div><div class="grid grid-cols-2 gap-4 md:gap-5"><div class="rounded-(--radius-2xl) border border-(--color-border-default) bg-(--color-surface-card) p-6 md:p-7"><div class="flex items-baseline gap-2"><span class="text-3xl font-semibold text-(--color-text-primary) md:text-4xl">124</span><span class="text-(--color-green-100)" aria-hidden="true">▲</span></div><div class="mt-1.5 text-sm text-(--color-text-secondary)">заявки в работе</div></div><div class="rounded-(--radius-2xl) border border-(--color-border-default) bg-(--color-surface-card) p-6 md:p-7"><div class="flex items-baseline gap-2"><span class="text-3xl font-semibold text-(--color-text-primary) md:text-4xl">87%</span><span class="text-(--color-green-100)" aria-hidden="true">▲</span></div><div class="mt-1.5 text-sm text-(--color-text-secondary)">закрыто в SLA</div></div><div class="rounded-(--radius-2xl) border border-(--color-border-default) bg-(--color-surface-card) p-6 md:p-7"><div class="flex items-baseline gap-2"><span class="text-3xl font-semibold text-(--color-text-primary) md:text-4xl">18</span><span class="text-(--color-red-100)" aria-hidden="true">▼</span></div><div class="mt-1.5 text-sm text-(--color-text-secondary)">зависли на этапе</div></div><div class="rounded-(--radius-2xl) border border-(--color-border-default) bg-(--color-surface-card) p-6 md:p-7"><div class="flex items-baseline gap-2"><span class="text-3xl font-semibold text-(--color-text-primary) md:text-4xl">6</span></div><div class="mt-1.5 text-sm text-(--color-text-secondary)">перегружены</div></div></div></div><div class="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4"><article class="rounded-(--radius-2xl) border border-(--color-border-default) bg-(--color-surface-card) p-6"><h3 class="text-lg font-semibold leading-snug">Где сейчас все заявки</h3><p class="mt-2 text-base leading-relaxed text-(--color-text-secondary)">Сколько обращений на каждом этапе, что в работе, что зависло — общая картина на одном дашборде.</p></article><article class="rounded-(--radius-2xl) border border-(--color-border-default) bg-(--color-surface-card) p-6"><h3 class="text-lg font-semibold leading-snug">Растёт ли нагрузка</h3><p class="mt-2 text-base leading-relaxed text-(--color-text-secondary)">Динамика обращений по неделям и месяцам — когда нужно усиление команды.</p></article><article class="rounded-(--radius-2xl) border border-(--color-border-default) bg-(--color-surface-card) p-6"><h3 class="text-lg font-semibold leading-snug">Кто перегружен</h3><p class="mt-2 text-base leading-relaxed text-(--color-text-secondary)">Нагрузка по специалистам — видно, где перекос и кому нужна помощь.</p></article><article class="rounded-(--radius-2xl) border border-(--color-border-default) bg-(--color-surface-card) p-6"><h3 class="text-lg font-semibold leading-snug">Укладываемся ли в SLA</h3><p class="mt-2 text-base leading-relaxed text-(--color-text-secondary)">Доля заявок, закрытых в срок, и точки, где команда теряет время.</p></article></div></div></section><section class="mx-auto w-full max-w-(--container-kaiten) px-4 py-16 md:px-6 lg:py-24"><div class="mb-12 max-w-2xl"><p class="mb-3 text-sm font-medium uppercase tracking-wide text-(--color-text-accent)">Запуск</p><h2 class="text-3xl font-semibold leading-tight md:text-4xl">Организуйте работу службы поддержки за 30 минут</h2><p class="mt-4 text-lg text-(--color-text-secondary)">Без разработчиков и интеграторов. Нужны только администратор и полчаса времени.</p></div><div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4"><div class="relative overflow-hidden rounded-(--radius-2xl) border border-(--color-border-default) bg-(--color-surface-card) p-6"><div aria-hidden="true" class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-(--color-action-primary) to-(--color-blue-100)"></div><div class="mb-4 flex items-center gap-3"><span class="inline-flex h-9 w-9 items-center justify-center rounded-(--radius-xl) bg-(--color-action-primary-soft) text-sm font-semibold text-(--color-text-accent)">01</span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-plus h-5 w-5 text-(--color-text-secondary)" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" x2="19" y1="8" y2="14"></line><line x1="22" x2="16" y1="11" y2="11"></line></svg></div><h3 class="text-lg font-semibold leading-snug">Зарегистрируйтесь в Кайтен</h3><p class="mt-2 text-base leading-relaxed text-(--color-text-secondary)">Короткая форма — и бесплатный доступ ко всем функциям. Без оплат и привязки карты.</p></div><div class="relative overflow-hidden rounded-(--radius-2xl) border border-(--color-border-default) bg-(--color-surface-card) p-6"><div aria-hidden="true" class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-(--color-action-primary) to-(--color-blue-100)"></div><div class="mb-4 flex items-center gap-3"><span class="inline-flex h-9 w-9 items-center justify-center rounded-(--radius-xl) bg-(--color-action-primary-soft) text-sm font-semibold text-(--color-text-accent)">02</span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-5 w-5 text-(--color-text-secondary)" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></div><h3 class="text-lg font-semibold leading-snug">Скопируйте готовый шаблон</h3><p class="mt-2 text-base leading-relaxed text-(--color-text-secondary)">Доска службы поддержки уже настроена: Очередь → В работе → Готовлю ответ → Готово.</p></div><div class="relative overflow-hidden rounded-(--radius-2xl) border border-(--color-border-default) bg-(--color-surface-card) p-6"><div aria-hidden="true" class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-(--color-action-primary) to-(--color-blue-100)"></div><div class="mb-4 flex items-center gap-3"><span class="inline-flex h-9 w-9 items-center justify-center rounded-(--radius-xl) bg-(--color-action-primary-soft) text-sm font-semibold text-(--color-text-accent)">03</span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings2 h-5 w-5 text-(--color-text-secondary)" aria-hidden="true"><path d="M20 7h-9"></path><path d="M14 17H5"></path><circle cx="17" cy="17" r="3"></circle><circle cx="7" cy="7" r="3"></circle></svg></div><h3 class="text-lg font-semibold leading-snug">Настройте форму под себя</h3><p class="mt-2 text-base leading-relaxed text-(--color-text-secondary)">Добавьте типы обращений, нужные поля и SLA. Подключите Telegram-бот и почту.</p></div><div class="relative overflow-hidden rounded-(--radius-2xl) border border-(--color-border-default) bg-(--color-surface-card) p-6"><div aria-hidden="true" class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-(--color-action-primary) to-(--color-blue-100)"></div><div class="mb-4 flex items-center gap-3"><span class="inline-flex h-9 w-9 items-center justify-center rounded-(--radius-xl) bg-(--color-action-primary-soft) text-sm font-semibold text-(--color-text-accent)">04</span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rocket h-5 w-5 text-(--color-text-secondary)" aria-hidden="true"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path></svg></div><h3 class="text-lg font-semibold leading-snug">Начинайте принимать заявки</h3><p class="mt-2 text-base leading-relaxed text-(--color-text-secondary)">Клиентам не нужна регистрация. Заявки приходят сразу на доску.</p></div></div></section><section class="mx-auto w-full max-w-(--container-kaiten) px-4 py-16 md:px-6 lg:py-24"><div class="mb-12 max-w-2xl"><p class="mb-3 text-sm font-medium uppercase tracking-wide text-(--color-text-accent)">Возможности</p><h2 class="text-3xl font-semibold leading-tight md:text-4xl">Всё, что нужно для управления потоком заявок</h2><p class="mt-4 text-lg text-(--color-text-secondary)">Минимальный набор возможностей, которые делают повседневную работу команды быстрее и спокойнее.</p></div><div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4"><div class="group rounded-(--radius-2xl) border border-(--color-border-default) bg-(--color-surface-card) p-6 transition hover:-translate-y-0.5 hover:border-(--color-action-primary)/40 hover:shadow-sm"><div class="mb-5 inline-flex h-11 w-11 items-center justify-center rounded-(--radius-xl) bg-(--color-action-primary-soft) text-(--color-text-accent)"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-inbox h-5 w-5" aria-hidden="true"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg></div><h3 class="text-lg font-semibold leading-snug">Все обращения в одном месте</h3><p class="mt-2 text-base leading-relaxed text-(--color-text-secondary)">Telegram, почта и портал собираются на одной доске.</p></div><div class="group rounded-(--radius-2xl) border border-(--color-border-default) bg-(--color-surface-card) p-6 transition hover:-translate-y-0.5 hover:border-(--color-action-primary)/40 hover:shadow-sm"><div class="mb-5 inline-flex h-11 w-11 items-center justify-center rounded-(--radius-xl) bg-(--color-action-primary-soft) text-(--color-text-accent)"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye h-5 w-5" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg></div><h3 class="text-lg font-semibold leading-snug">Прозрачные статусы</h3><p class="mt-2 text-base leading-relaxed text-(--color-text-secondary)">Клиент видит статус на портале, а команда — застрявшие карточки.</p></div><div class="group rounded-(--radius-2xl) border border-(--color-border-default) bg-(--color-surface-card) p-6 transition hover:-translate-y-0.5 hover:border-(--color-action-primary)/40 hover:shadow-sm"><div class="mb-5 inline-flex h-11 w-11 items-center justify-center rounded-(--radius-xl) bg-(--color-action-primary-soft) text-(--color-text-accent)"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-timer h-5 w-5" aria-hidden="true"><line x1="10" x2="14" y1="2" y2="2"></line><line x1="12" x2="15" y1="14" y2="11"></line><circle cx="12" cy="14" r="8"></circle></svg></div><h3 class="text-lg font-semibold leading-snug">Время работы с заявкой</h3><p class="mt-2 text-base leading-relaxed text-(--color-text-secondary)">Система предупредит, если заявка рискует просрочиться.</p></div><div class="group rounded-(--radius-2xl) border border-(--color-border-default) bg-(--color-surface-card) p-6 transition hover:-translate-y-0.5 hover:border-(--color-action-primary)/40 hover:shadow-sm"><div class="mb-5 inline-flex h-11 w-11 items-center justify-center rounded-(--radius-xl) bg-(--color-action-primary-soft) text-(--color-text-accent)"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles h-5 w-5" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path><path d="M20 3v4"></path><path d="M22 5h-4"></path><path d="M4 17v2"></path><path d="M5 18H3"></path></svg></div><h3 class="text-lg font-semibold leading-snug">Анализ узких мест</h3><p class="mt-2 text-base leading-relaxed text-(--color-text-secondary)">Дашборды, отчёты по ответственным и экспорт в таблицы.</p></div><div class="group rounded-(--radius-2xl) border border-(--color-border-default) bg-(--color-surface-card) p-6 transition hover:-translate-y-0.5 hover:border-(--color-action-primary)/40 hover:shadow-sm"><div class="mb-5 inline-flex h-11 w-11 items-center justify-center rounded-(--radius-xl) bg-(--color-action-primary-soft) text-(--color-text-accent)"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles h-5 w-5" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path><path d="M20 3v4"></path><path d="M22 5h-4"></path><path d="M4 17v2"></path><path d="M5 18H3"></path></svg></div><h3 class="text-lg font-semibold leading-snug">Шаблонные ответы</h3><p class="mt-2 text-base leading-relaxed text-(--color-text-secondary)">Готовые сообщения экономят время специалистов.</p></div><div class="group rounded-(--radius-2xl) border border-(--color-border-default) bg-(--color-surface-card) p-6 transition hover:-translate-y-0.5 hover:border-(--color-action-primary)/40 hover:shadow-sm"><div class="mb-5 inline-flex h-11 w-11 items-center justify-center rounded-(--radius-xl) bg-(--color-action-primary-soft) text-(--color-text-accent)"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-network h-5 w-5" aria-hidden="true"><rect x="16" y="16" width="6" height="6" rx="1"></rect><rect x="2" y="16" width="6" height="6" rx="1"></rect><rect x="9" y="2" width="6" height="6" rx="1"></rect><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"></path><path d="M12 12V8"></path></svg></div><h3 class="text-lg font-semibold leading-snug">Связь между отделами</h3><p class="mt-2 text-base leading-relaxed text-(--color-text-secondary)">Передавайте баги разработчикам, а вопросы по заказам — в продажи.</p></div><div class="group rounded-(--radius-2xl) border border-(--color-border-default) bg-(--color-surface-card) p-6 transition hover:-translate-y-0.5 hover:border-(--color-action-primary)/40 hover:shadow-sm"><div class="mb-5 inline-flex h-11 w-11 items-center justify-center rounded-(--radius-xl) bg-(--color-action-primary-soft) text-(--color-text-accent)"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send h-5 w-5" aria-hidden="true"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"></path><path d="m21.854 2.147-10.94 10.939"></path></svg></div><h3 class="text-lg font-semibold leading-snug">Telegram-бот</h3><p class="mt-2 text-base leading-relaxed text-(--color-text-secondary)">Клиенты оставляют заявки и получают ответы в мессенджере.</p></div><div class="group rounded-(--radius-2xl) border border-(--color-border-default) bg-(--color-surface-card) p-6 transition hover:-translate-y-0.5 hover:border-(--color-action-primary)/40 hover:shadow-sm"><div class="mb-5 inline-flex h-11 w-11 items-center justify-center rounded-(--radius-xl) bg-(--color-action-primary-soft) text-(--color-text-accent)"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star h-5 w-5" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg></div><h3 class="text-lg font-semibold leading-snug">Оценка сервиса</h3><p class="mt-2 text-base leading-relaxed text-(--color-text-secondary)">Заказчик ставит оценку после закрытия заявки.</p></div></div></section><section class="mx-auto w-full max-w-(--container-kaiten) px-4 py-16 md:px-6 lg:py-24"><div class="mb-12 max-w-2xl"><p class="mb-3 text-sm font-medium uppercase tracking-wide text-(--color-text-accent)">FAQ</p><h2 class="text-3xl font-semibold leading-tight md:text-4xl">Нас часто спрашивают</h2></div><div class="space-y-3"><div class="overflow-hidden rounded-(--radius-xl) border transition-colors duration-(--duration-base) ease-(--ease-ui) border-(--color-action-primary) bg-(--color-action-primary-soft)"><button type="button" aria-expanded="true" class="flex w-full items-center justify-between px-5 py-4 text-left font-medium text-(--color-text-accent)"><span>Кайтен бесплатный?</span><span aria-hidden="true" class="ml-3 text-lg leading-none">−</span></button><div class="px-5 pb-5 text-base text-(--color-text-secondary)">Да. Есть полноценный бесплатный тариф без ограничения по времени. Заявки можно принимать с модулем «Служба поддержки», доступным на платных тарифах начиная со «Стандарт».</div></div><div class="overflow-hidden rounded-(--radius-xl) border transition-colors duration-(--duration-base) ease-(--ease-ui) border-(--color-border-default) bg-(--color-surface-card)"><button type="button" aria-expanded="false" class="flex w-full items-center justify-between px-5 py-4 text-left font-medium text-(--color-text-primary)"><span>Мы используем Zendesk / Freshdesk. Можно перейти в Кайтен?</span><span aria-hidden="true" class="ml-3 text-lg leading-none">+</span></button></div><div class="overflow-hidden rounded-(--radius-xl) border transition-colors duration-(--duration-base) ease-(--ease-ui) border-(--color-border-default) bg-(--color-surface-card)"><button type="button" aria-expanded="false" class="flex w-full items-center justify-between px-5 py-4 text-left font-medium text-(--color-text-primary)"><span>Клиентам нужно регистрироваться в Кайтен, чтобы оставить заявку?</span><span aria-hidden="true" class="ml-3 text-lg leading-none">+</span></button></div><div class="overflow-hidden rounded-(--radius-xl) border transition-colors duration-(--duration-base) ease-(--ease-ui) border-(--color-border-default) bg-(--color-surface-card)"><button type="button" aria-expanded="false" class="flex w-full items-center justify-between px-5 py-4 text-left font-medium text-(--color-text-primary)"><span>Можно ли установить Кайтен на собственный сервер?</span><span aria-hidden="true" class="ml-3 text-lg leading-none">+</span></button></div><div class="overflow-hidden rounded-(--radius-xl) border transition-colors duration-(--duration-base) ease-(--ease-ui) border-(--color-border-default) bg-(--color-surface-card)"><button type="button" aria-expanded="false" class="flex w-full items-center justify-between px-5 py-4 text-left font-medium text-(--color-text-primary)"><span>Мы используем Кайтен для задач команды. Можно добавить модуль поддержки?</span><span aria-hidden="true" class="ml-3 text-lg leading-none">+</span></button></div><div class="overflow-hidden rounded-(--radius-xl) border transition-colors duration-(--duration-base) ease-(--ease-ui) border-(--color-border-default) bg-(--color-surface-card)"><button type="button" aria-expanded="false" class="flex w-full items-center justify-between px-5 py-4 text-left font-medium text-(--color-text-primary)"><span>Есть ли готовые шаблоны ответов?</span><span aria-hidden="true" class="ml-3 text-lg leading-none">+</span></button></div><div class="overflow-hidden rounded-(--radius-xl) border transition-colors duration-(--duration-base) ease-(--ease-ui) border-(--color-border-default) bg-(--color-surface-card)"><button type="button" aria-expanded="false" class="flex w-full items-center justify-between px-5 py-4 text-left font-medium text-(--color-text-primary)"><span>Как быстро можно запустить службу поддержки в Кайтен?</span><span aria-hidden="true" class="ml-3 text-lg leading-none">+</span></button></div></div></section><section class="mx-auto w-full max-w-(--container-kaiten) px-4 py-12 md:px-6 lg:py-16"><div class="relative overflow-hidden rounded-(--radius-3xl) px-8 py-12 md:px-14 md:py-16 lg:py-20 bg-(--color-action-primary) text-(--color-text-inverse)"><div aria-hidden="true" class="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full opacity-30 blur-3xl bg-white"></div><div class="relative mx-auto max-w-3xl text-center"><h2 class="text-3xl font-semibold leading-tight md:text-4xl lg:text-5xl">Ни одна заявка больше не потеряется</h2><p class="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-white/85">Попробуйте Кайтен бесплатно — количество заявок и клиентов не ограничено. Платите только за тех, кто работает в системе.</p><div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row"><a class="inline-flex items-center justify-center rounded-[var(--button-radius)] font-medium no-underline transition-colors duration-(--duration-base) ease-(--ease-ui) focus-visible:outline-none focus-visible:shadow-(--button-focus-default) h-12 px-5 text-base gap-1 [&amp;_svg]:size-6 bg-white text-(--color-action-primary) hover:bg-white/90" href="/signup">Попробовать бесплатно</a><a class="inline-flex items-center justify-center rounded-[var(--button-radius)] font-medium no-underline transition-colors duration-(--duration-base) ease-(--ease-ui) focus-visible:outline-none focus-visible:shadow-(--button-focus-default) h-12 px-5 text-base gap-1 [&amp;_svg]:size-6 bg-transparent text-white border border-white/40 hover:bg-white/10 hover:border-white/60" href="/demo">Хочу записаться на демо</a></div></div></div></section><footer class="mx-auto w-full max-w-(--container-kaiten) px-4 pt-16 pb-10 md:px-6"><div class="grid grid-cols-2 gap-10 md:grid-cols-5"><div class="col-span-2"><p class="text-xl font-semibold">Кайтен</p><p class="mt-2 max-w-sm text-sm text-(--color-text-secondary)">Российская платформа для команд: задачи, поддержка, документы и база знаний.</p></div><div><p class="text-sm font-medium uppercase tracking-wide text-(--color-text-secondary)">Продукт</p><ul class="mt-4 space-y-2"><li><a href="/support" class="text-sm text-(--color-text-primary) hover:text-(--color-text-accent)">Служба поддержки</a></li><li><a href="/tasks" class="text-sm text-(--color-text-primary) hover:text-(--color-text-accent)">Задачи команды</a></li><li><a href="/docs" class="text-sm text-(--color-text-primary) hover:text-(--color-text-accent)">Документы</a></li><li><a href="/knowledge" class="text-sm text-(--color-text-primary) hover:text-(--color-text-accent)">База знаний</a></li></ul></div><div><p class="text-sm font-medium uppercase tracking-wide text-(--color-text-secondary)">Решения</p><ul class="mt-4 space-y-2"><li><a href="/solutions/support" class="text-sm text-(--color-text-primary) hover:text-(--color-text-accent)">Техподдержка</a></li><li><a href="/solutions/hr" class="text-sm text-(--color-text-primary) hover:text-(--color-text-accent)">HR-служба</a></li><li><a href="/solutions/legal" class="text-sm text-(--color-text-primary) hover:text-(--color-text-accent)">Юридический отдел</a></li><li><a href="/solutions/dev" class="text-sm text-(--color-text-primary) hover:text-(--color-text-accent)">Разработка</a></li></ul></div><div><p class="text-sm font-medium uppercase tracking-wide text-(--color-text-secondary)">Ресурсы</p><ul class="mt-4 space-y-2"><li><a href="/cases" class="text-sm text-(--color-text-primary) hover:text-(--color-text-accent)">Кейсы клиентов</a></li><li><a href="/help" class="text-sm text-(--color-text-primary) hover:text-(--color-text-accent)">Справочный центр</a></li><li><a href="/blog" class="text-sm text-(--color-text-primary) hover:text-(--color-text-accent)">Блог</a></li><li><a href="/templates" class="text-sm text-(--color-text-primary) hover:text-(--color-text-accent)">Шаблоны досок</a></li></ul></div><div><p class="text-sm font-medium uppercase tracking-wide text-(--color-text-secondary)">Компания</p><ul class="mt-4 space-y-2"><li><a href="/about" class="text-sm text-(--color-text-primary) hover:text-(--color-text-accent)">О сервисе</a></li><li><a href="/contact" class="text-sm text-(--color-text-primary) hover:text-(--color-text-accent)">Контакты</a></li><li><a href="/careers" class="text-sm text-(--color-text-primary) hover:text-(--color-text-accent)">Карьера</a></li><li><a href="/legal/terms" class="text-sm text-(--color-text-primary) hover:text-(--color-text-accent)">Условия использования</a></li></ul></div></div><div class="mt-12 border-t border-(--color-border-default) pt-6 text-xs text-(--color-text-secondary)">© 2026 Кайтен. Российская служба для команд.</div></footer><!--$--><!--/$--><next-route-announcer style="position: absolute;"></next-route-announcer>
+</body>
+</html>
