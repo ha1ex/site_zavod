@@ -71,26 +71,28 @@ export function SupportBoardMock() {
       )}
     >
       {/* window chrome */}
-      <div className="flex items-center gap-1.5 border-b border-(--color-border-default) bg-(--color-surface-section) px-4 py-3">
-        <span className="h-2.5 w-2.5 rounded-full bg-red-300" />
-        <span className="h-2.5 w-2.5 rounded-full bg-yellow-300" />
-        <span className="h-2.5 w-2.5 rounded-full bg-green-300" />
-        <div className="ml-3 flex items-center gap-4 text-xs text-(--color-text-secondary)">
+      <div className="flex flex-wrap items-center gap-1.5 border-b border-(--color-border-default) bg-(--color-surface-section) px-3 py-2.5">
+        <span className="h-2 w-2 rounded-full bg-red-300" />
+        <span className="h-2 w-2 rounded-full bg-yellow-300" />
+        <span className="h-2 w-2 rounded-full bg-green-300" />
+        <div className="ml-2 flex flex-wrap items-center gap-3 text-[11px] text-(--color-text-secondary)">
           <span className="font-medium text-(--color-text-primary)">Заявки</span>
           <span>Очередь</span>
           <span>SLA</span>
           <span>Ответы</span>
-          <span className="ml-2 rounded-md border border-(--color-border-default) px-2 py-1">Фильтры</span>
+          <span className="rounded-md border border-(--color-border-default) bg-(--color-surface-page) px-1.5 py-0.5">
+            Фильтры
+          </span>
         </div>
       </div>
 
       {/* board */}
-      <div className="grid grid-cols-4 gap-3 p-5 md:gap-4 md:p-6">
+      <div className="grid grid-cols-4 gap-2.5 p-4 md:gap-3 md:p-5">
         {COLUMNS.map((col) => (
-          <div key={col.name} className="space-y-3">
-            <div className="flex items-center justify-between text-xs font-medium text-(--color-text-secondary)">
-              <span>{col.name}</span>
-              <span className="rounded-full bg-(--color-neutral-200) px-2 py-0.5 text-(--color-text-primary)">
+          <div key={col.name} className="space-y-2.5">
+            <div className="flex items-center justify-between text-[11px] font-medium text-(--color-text-secondary)">
+              <span className="truncate">{col.name}</span>
+              <span className="rounded-full bg-(--color-neutral-200) px-1.5 py-0.5 text-[10px] text-(--color-text-primary)">
                 {col.count}
               </span>
             </div>
@@ -98,24 +100,26 @@ export function SupportBoardMock() {
               <div
                 key={i}
                 className={cn(
-                  'relative rounded-(--radius-xl) border bg-(--color-surface-page) p-3',
+                  'relative rounded-(--radius-lg) border bg-(--color-surface-page) p-2.5',
                   t.muted
                     ? 'border-(--color-border-default) opacity-60'
                     : 'border-(--color-border-default) shadow-sm',
                   t.lifted && 'translate-y-[-2px] shadow-md',
                 )}
               >
-                <div className={cn('mb-2 h-1.5 w-12 rounded-full', BAR_CLASS[t.bar])} />
-                <div className="text-[13px] font-semibold leading-snug text-(--color-text-primary)">
+                <div className={cn('mb-1.5 h-1 w-8 rounded-full', BAR_CLASS[t.bar])} />
+                <div className="text-[11.5px] font-semibold leading-tight text-(--color-text-primary)">
                   {t.title}
                 </div>
-                <div className="mt-1 text-[11px] text-(--color-text-secondary)">{t.meta}</div>
+                <div className="mt-1 truncate text-[10px] text-(--color-text-secondary)">
+                  {t.meta}
+                </div>
                 {(t.badge || t.sla) && (
-                  <div className="mt-2 flex items-center gap-1.5">
+                  <div className="mt-1.5 flex flex-wrap items-center gap-1">
                     {t.badge && (
                       <span
                         className={cn(
-                          'inline-flex h-5 items-center rounded-full px-2 text-[10px] font-medium',
+                          'inline-flex h-4 items-center rounded-full px-1.5 text-[9px] font-medium leading-none',
                           t.badge === 'Bug'
                             ? 'bg-red-100 text-red-700'
                             : 'bg-(--color-action-primary-soft) text-(--color-text-accent)',
@@ -125,14 +129,16 @@ export function SupportBoardMock() {
                       </span>
                     )}
                     {t.sla && (
-                      <span className="inline-flex h-5 items-center rounded-full bg-(--color-neutral-200) px-2 text-[10px] font-medium text-(--color-text-primary)">
+                      <span className="inline-flex h-4 items-center rounded-full bg-(--color-neutral-200) px-1.5 text-[9px] font-medium leading-none text-(--color-text-primary)">
                         {t.sla}
                       </span>
                     )}
                   </div>
                 )}
                 {t.lifted && (
-                  <span className="pointer-events-none absolute -right-4 -bottom-3 text-2xl drop-shadow-sm">☝️</span>
+                  <span className="pointer-events-none absolute -right-2 -bottom-2 text-lg drop-shadow-sm">
+                    ☝️
+                  </span>
                 )}
               </div>
             ))}
