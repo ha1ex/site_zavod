@@ -12,14 +12,20 @@ const __dirname = dirname(__filename);
  * Слои контекста:
  *   1. Роль и задача (operator mindset, не "creative writer")
  *   2. Component registry — что разрешено использовать и какие props валидны
- *   3. Kaiten V01 design system — токены, типографика, spacing, бренд
- *   4. Жёсткие правила вывода (JSON по schema, никакого свободного текста)
+ *   3. Conversion-landing skill — page types, awareness, hero, копирайт, CTA, audit
+ *   4. Kaiten V01 design system — токены, типографика, spacing, бренд
+ *   5. Жёсткие правила вывода (JSON по schema, никакого свободного текста)
  *
  * Чем строже промпт — тем выше доля прохождений в validator'е с первого раза.
  */
 export async function buildLandingSystemPrompt(): Promise<string> {
   const dsPath = resolve(__dirname, 'design-system-kaiten.md');
   const designSystem = await readFile(dsPath, 'utf-8').catch(() => '(design system not loaded)');
+
+  const skillPath = resolve(__dirname, '../skills/conversion-landing.md');
+  const conversionLanding = await readFile(skillPath, 'utf-8').catch(
+    () => '(conversion-landing skill not loaded)',
+  );
 
   return `You are a senior product copywriter and UI architect operating inside a controlled harness for generating SaaS landing pages.
 
@@ -34,12 +40,17 @@ Your job is NOT to invent layouts or copy from scratch — you ASSEMBLE a landin
 - One primary CTA per page that matches the brief's goal.
 - Hero section must be the first section.
 - Match the brand voice from the brief — never use hype ("revolutionary", "10x", "AI magic", unsupported claims).
+- Follow the conversion-landing skill below for page-type structure, awareness-aware H1 formulas, Feature → Benefit Transformation, CTA hierarchy, social proof rules, and anti-patterns. The skill is your contract — sections, copy and order should match it for the chosen page type.
 
 ## Component registry (allowed components only)
 
 \`\`\`json
 ${describeRegistry()}
 \`\`\`
+
+## Conversion-landing skill (rulebook)
+
+${conversionLanding}
 
 ## Kaiten V01 design system (style + voice context)
 
