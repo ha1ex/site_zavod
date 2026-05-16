@@ -390,22 +390,28 @@ export const DOMAIN_REGISTRY: DomainEntry[] = [
       'кредиторк',
       'erp',
     ],
-    mocks: [],
-    missingMocks: [
+    mocks: [
       {
         variant: 'ledger-view',
-        description: 'Фрагмент главной книги с проводками, дебет/кредит, балансом',
+        sections: ['hero', 'media', 'tab'],
+        description:
+          'Главная книга: проводки с датой, документом, счётами дебет/кредит, балансом',
       },
       {
         variant: 'invoice-status',
+        sections: ['media', 'tab', 'scenario'],
         description:
-          'Список счетов с компанией, суммой, сроком оплаты, статусом просрочки',
+          'Список счетов с компанией, суммой, сроком оплаты, статусом просрочки (paid/sent/overdue/draft)',
       },
       {
         variant: 'reconciliation-matrix',
-        description: 'Матрица сверки банк × ERP с расхождениями',
+        sections: ['media', 'tab', 'scenario'],
+        description:
+          'Матрица сверки банк × ERP с расхождениями: match/diff/missing с цвет-кодом',
       },
     ],
+    missingMocks: [],
+    referenceDoc: 'wiki/landings/finance-reference.md',
   },
   {
     domain: 'ecommerce',
@@ -425,23 +431,28 @@ export const DOMAIN_REGISTRY: DomainEntry[] = [
       'я.маркет',
       'интернет магазин',
     ],
-    mocks: [],
-    missingMocks: [
+    mocks: [
       {
         variant: 'order-queue',
-        description: 'Лента заказов с маркетплейсов и сайта, статус сборки/доставки',
+        sections: ['hero', 'media', 'tab', 'scenario'],
+        description:
+          'Лента заказов с маркетплейсов и сайта со статусами сборки/доставки/курьерами',
       },
       {
         variant: 'inventory-grid',
+        sections: ['media', 'tab'],
         description:
-          'Каталог товаров с остатками по складам, минимальным запасом',
+          'Каталог товаров SKU × склады с остатками, минимальным запасом, цвет-код наличия',
       },
       {
         variant: 'marketplace-connector',
+        sections: ['media', 'tab', 'scenario'],
         description:
-          'Статус подключения к Wildberries / Ozon / Я.Маркет с числом активных карточек',
+          'Статус коннекторов Wildberries / Ozon / Я.Маркет / AliExpress: подключён/синхронизация/ошибка',
       },
     ],
+    missingMocks: [],
+    referenceDoc: 'wiki/landings/ecommerce-reference.md',
   },
 ];
 

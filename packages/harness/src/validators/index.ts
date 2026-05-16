@@ -58,3 +58,27 @@ export {
   type CrossLandingDiversityOptions,
   type CrossLandingDiversityRule,
 } from './cross-landing-diversity';
+export {
+  validateSectionPlanIntent,
+  formatSectionPlanIntentErrors,
+  type SectionPlanIntentError,
+  type SectionPlanIntentResult,
+} from './section-plan-intent';
+export {
+  validateSectionPlanMockChoice,
+  formatSectionPlanMockChoiceErrors,
+  type SectionPlanMockChoiceError,
+  type SectionPlanMockChoiceResult,
+} from './section-plan-mock-choice';
+export {
+  validateMockSemanticFit,
+  formatMockSemanticFitErrors,
+  type MockSemanticFitError,
+  type MockSemanticFitResult,
+} from './mock-semantic-fit';
+export {
+  validateLayoutAwarenessFit,
+  formatLayoutAwarenessFitErrors,
+  type LayoutAwarenessFitError,
+  type LayoutAwarenessFitResult,
+} from './layout-awareness-fit';

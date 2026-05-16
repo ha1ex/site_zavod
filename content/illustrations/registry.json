@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-16T07:02:32.844Z",
+  "updatedAt": "2026-05-16T07:07:28.770Z",
   "entries": [
     {
       "kind": "mock-use",
@@ -127,6 +127,24 @@
       "sectionIdx": 1,
       "domain": "hr",
       "recordedAt": "2026-05-16T07:02:32.844Z"
+    },
+    {
+      "kind": "mock-use",
+      "variant": "ledger-view",
+      "landingSlug": "test-finance",
+      "sectionId": "hero",
+      "sectionIdx": 0,
+      "domain": "finance",
+      "recordedAt": "2026-05-16T07:07:28.769Z"
+    },
+    {
+      "kind": "mock-use",
+      "variant": "invoice-status",
+      "landingSlug": "test-finance",
+      "sectionId": "media_copy",
+      "sectionIdx": 1,
+      "domain": "finance",
+      "recordedAt": "2026-05-16T07:07:28.770Z"
     }
   ]
 }

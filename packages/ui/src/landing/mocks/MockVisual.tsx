@@ -13,15 +13,21 @@ import {
   EmailSequenceMock,
   HiringPipelineMock,
   IntegrationsConsoleMock,
+  InventoryGridMock,
+  InvoiceStatusMock,
   KnowledgeBaseMock,
+  LedgerViewMock,
+  MarketplaceConnectorMock,
   MobileCrmMock,
   ModulesMatrixMock,
   OmnichannelInboxMock,
   OnboardingChecklistMock,
+  OrderQueueMock,
   OrgChartMock,
   PerformanceReviewMock,
   PmBoardMock,
   ProcessFlowchartMock,
+  ReconciliationMatrixMock,
   RequestCardMock,
   SalesFunnelMock,
   SlaTrackerMock,
@@ -68,7 +74,15 @@ export type MockVariant =
   // BPM
   | 'process-flowchart'
   | 'approval-chain'
-  | 'sla-tracker';
+  | 'sla-tracker'
+  // Finance
+  | 'ledger-view'
+  | 'invoice-status'
+  | 'reconciliation-matrix'
+  // E-commerce
+  | 'order-queue'
+  | 'inventory-grid'
+  | 'marketplace-connector';
 
 export function MockVisual({ variant }: { variant: MockVariant | undefined }) {
   switch (variant) {
@@ -128,6 +142,18 @@ export function MockVisual({ variant }: { variant: MockVariant | undefined }) {
       return <ApprovalChainMock />;
     case 'sla-tracker':
       return <SlaTrackerMock />;
+    case 'ledger-view':
+      return <LedgerViewMock />;
+    case 'invoice-status':
+      return <InvoiceStatusMock />;
+    case 'reconciliation-matrix':
+      return <ReconciliationMatrixMock />;
+    case 'order-queue':
+      return <OrderQueueMock />;
+    case 'inventory-grid':
+      return <InventoryGridMock />;
+    case 'marketplace-connector':
+      return <MarketplaceConnectorMock />;
     default:
       return null;
   }

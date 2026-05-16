@@ -30,6 +30,12 @@ export interface HostAgentPhaseOptions<T> {
   outputSchema: z.ZodTypeAny;
   /** Имя файла output'а в pipeline dir (без расширения). */
   outputName: string;
+  /**
+   * Опциональный semantic validator. Вызывается после успешной schema-валидации.
+   * Если возвращает errors[] не пустой — фаза переходит в status='error' с
+   * этими сообщениями. Warnings проходят в PhaseResult.messages.
+   */
+  postValidate?: (parsed: T) => Promise<{ errors: string[]; warnings: string[] }>;
 }
 
 export async function runHostAgentPhase<T>(
@@ -47,6 +53,15 @@ export async function runHostAgentPhase<T>(
     const raw = await readFile(outputPath, 'utf-8');
     const parsed = outputSchema.safeParse(JSON.parse(raw));
     if (parsed.success) {
+      // Schema OK — теперь semantic validation если задана.
+      if (options.postValidate) {
+        const sem = await options.postValidate(parsed.data as T);
+        for (const w of sem.warnings) messages.push(`semantic warning: ${w}`);
+        if (sem.errors.length > 0) {
+          errors.push(...sem.errors.map((e) => `semantic validation failed: ${e}`));
+          return { phase, status: 'error', artifactPath: outputPath, messages, errors };
+        }
+      }
       messages.push(`artifact уже существует и валиден: ${relative(ctx.root, outputPath)}`);
       return {
         phase,

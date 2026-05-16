@@ -16,6 +16,11 @@ import {
   TabbedFeatureSection,
   ScenarioWalkthroughSection,
   IndustryPickerSection,
+  ComparisonTable,
+  TimelineRoadmap,
+  BentoGrid,
+  LogoCloud,
+  TestimonialQuote,
 } from '@buffalo/ui/landing';
 import type { LandingSpec, Section } from '../schemas/landing-spec';
 
@@ -61,6 +66,16 @@ function RenderSection({ section }: { section: Section }) {
       return <ScenarioWalkthroughSection {...section.props} />;
     case 'IndustryPickerSection':
       return <IndustryPickerSection {...section.props} />;
+    case 'ComparisonTable':
+      return <ComparisonTable {...section.props} />;
+    case 'TimelineRoadmap':
+      return <TimelineRoadmap {...section.props} />;
+    case 'BentoGrid':
+      return <BentoGrid {...section.props} />;
+    case 'LogoCloud':
+      return <LogoCloud {...section.props} />;
+    case 'TestimonialQuote':
+      return <TestimonialQuote {...section.props} />;
     default: {
       const _exhaustive: never = section;
       void _exhaustive;

@@ -1,11 +1,24 @@
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { getAllowedVariants, getDomainEntry } from '../../registry/domain-visual';
-import { AudienceIntentPlanSchema } from '../../schemas/audience-intent-plan';
-import { LayoutDecisionSchema } from '../../schemas/layout-decision';
-import { SectionPlanSchema } from '../../schemas/section-plan';
-import { MockAllocationSchema } from '../../schemas/mock-allocation';
+import {
+  getAllowedVariants,
+  getDomainEntry,
+  resolveDomainFromBrief,
+} from '../../registry/domain-visual';
+import {
+  AudienceIntentPlanSchema,
+  type AudienceIntentPlan,
+} from '../../schemas/audience-intent-plan';
+import { LayoutDecisionSchema, type LayoutDecision } from '../../schemas/layout-decision';
+import { SectionPlanSchema, type SectionPlan } from '../../schemas/section-plan';
+import { MockAllocationSchema, type MockAllocation } from '../../schemas/mock-allocation';
 import { LandingSpecSchema } from '../../schemas/landing-spec';
+import {
+  validateLayoutAwarenessFit,
+  validateMockSemanticFit,
+  validateSectionPlanIntent,
+  validateSectionPlanMockChoice,
+} from '../../validators/index';
 import { runHostAgentPhase } from './host-agent-phase';
 import type { PhaseContext, PhaseResult } from './types';
 
@@ -67,7 +80,8 @@ export async function runP1AudienceIntent(ctx: PhaseContext): Promise<PhaseResul
 export async function runP2LayoutSelection(ctx: PhaseContext): Promise<PhaseResult> {
   const normalized = await loadArtifact(ctx, 'p0-brief-normalized.json');
   const audience = await loadArtifact(ctx, 'p1-audience-intent.json');
-  return runHostAgentPhase({
+  const audienceParsed = AudienceIntentPlanSchema.safeParse(JSON.parse(audience || '{}'));
+  return runHostAgentPhase<LayoutDecision>({
     phase: 'P2',
     ctx,
     title: 'Layout Selection',
@@ -84,12 +98,22 @@ export async function runP2LayoutSelection(ctx: PhaseContext): Promise<PhaseResu
         body:
           '- `enterprise-modular-saas`\n- `single-module-deep-dive`\n- `compliance-first-enterprise`\n' +
           '- `comparison-vs-competitor`\n- `story-led-unaware`\n- `depersonalized-product-tour`\n' +
-          '- `crm-product-tour`\n\n' +
+          '- `crm-product-tour`\n- `migration-from-competitor`\n- `product-launch`\n' +
+          '- `case-study-deep-dive`\n\n' +
           'Полный каталог с описанием — `wiki/layouts/index.md`.',
       },
     ],
     outputSchema: LayoutDecisionSchema,
     outputName: 'p2-layout-decision',
+    postValidate: audienceParsed.success
+      ? async (parsed) => {
+          const result = validateLayoutAwarenessFit(parsed, audienceParsed.data);
+          return {
+            errors: result.errors.map((e) => e.message),
+            warnings: result.warnings.map((w) => w.message),
+          };
+        }
+      : undefined,
   });
 }
 
@@ -99,7 +123,8 @@ export async function runP4SectionArchitect(ctx: PhaseContext): Promise<PhaseRes
   const audience = await loadArtifact(ctx, 'p1-audience-intent.json');
   const layout = await loadArtifact(ctx, 'p2-layout-decision.json');
   const coverage = await loadArtifact(ctx, 'p3-coverage-report.json');
-  return runHostAgentPhase({
+  const audienceParsed = AudienceIntentPlanSchema.safeParse(JSON.parse(audience || '{}'));
+  return runHostAgentPhase<SectionPlan>({
     phase: 'P4',
     ctx,
     title: 'Section Architect',
@@ -119,6 +144,18 @@ export async function runP4SectionArchitect(ctx: PhaseContext): Promise<PhaseRes
     ],
     outputSchema: SectionPlanSchema,
     outputName: 'p4-section-plan',
+    postValidate: async (parsed) => {
+      const errors: string[] = [];
+      const warnings: string[] = [];
+      const mockChoice = validateSectionPlanMockChoice(parsed);
+      errors.push(...mockChoice.errors.map((e) => e.message));
+      if (audienceParsed.success) {
+        const intent = validateSectionPlanIntent(parsed, audienceParsed.data);
+        errors.push(...intent.errors.map((e) => e.message));
+        warnings.push(...intent.warnings.map((w) => w.message));
+      }
+      return { errors, warnings };
+    },
   });
 }
 
@@ -126,7 +163,8 @@ export async function runP4SectionArchitect(ctx: PhaseContext): Promise<PhaseRes
 export async function runP5MockAllocation(ctx: PhaseContext): Promise<PhaseResult> {
   const sectionPlan = await loadArtifact(ctx, 'p4-section-plan.json');
   const coverage = await loadArtifact(ctx, 'p3-coverage-report.json');
-  return runHostAgentPhase({
+  const domain = resolveDomainFromBrief(ctx.brief);
+  return runHostAgentPhase<MockAllocation>({
     phase: 'P5',
     ctx,
     title: 'Mock Allocation Refinement',
@@ -139,9 +177,21 @@ export async function runP5MockAllocation(ctx: PhaseContext): Promise<PhaseResul
     contextBlocks: [
       { heading: 'p4-section-plan.json', body: '```json\n' + sectionPlan + '\n```' },
       { heading: 'p3-coverage-report.json', body: '```json\n' + coverage + '\n```' },
+      {
+        heading: 'Разрешённые variants для домена',
+        body:
+          `Domain: \`${domain}\`\nVariants: ${getAllowedVariants(domain).join(', ') || '<нет mocks для домена>'}`,
+      },
     ],
     outputSchema: MockAllocationSchema,
     outputName: 'p5-mock-allocation',
+    postValidate: async (parsed) => {
+      const result = validateMockSemanticFit(parsed, domain);
+      return {
+        errors: result.errors.map((e) => e.message),
+        warnings: result.warnings.map((w) => w.message),
+      };
+    },
   });
 }
 

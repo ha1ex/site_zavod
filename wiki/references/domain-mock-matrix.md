@@ -157,36 +157,31 @@ SLA, эскалация, BPMN, узкое место.
 
 **Reference:** [`wiki/landings/bpm-reference.md`](../landings/bpm-reference.md).
 
-### Домены, которые ждут своего набора mock'ов
-
-При первом лендинге в каждом из этих доменов — создавать набор mock'ов
-**перед написанием spec**, потом заводить reference-файл. Никаких подмен.
-
-#### Finance / Accounting
+### Finance / Accounting
 
 Аудитория: главбух, CFO, финансовые контролёры. Лексика: проводка, счёт,
 сверка, бюджет, P&L, дебиторка/кредиторка.
 
-Нужные mock'и:
-- `LedgerViewMock` (`ledger-view`) — фрагмент главной книги с проводками,
-  дебет/кредит, балансом.
-- `InvoiceStatusMock` (`invoice-status`) — список счетов с компанией, суммой,
-  сроком оплаты, статусом просрочки.
-- `ReconciliationMatrixMock` (`reconciliation-matrix`) — матрица сверки
-  банк × ERP с расхождениями.
+| Mock | Variant slug | Что показывает |
+|---|---|---|
+| `LedgerViewMock` | `ledger-view` | Главная книга: проводки с датой, документом, счётами дебет/кредит, балансом |
+| `InvoiceStatusMock` | `invoice-status` | Список счетов с компанией, суммой, сроком оплаты, статусом просрочки |
+| `ReconciliationMatrixMock` | `reconciliation-matrix` | Матрица сверки банк × ERP с расхождениями: match/diff/missing |
 
-#### E-commerce / Retail operations
+**Reference:** [`wiki/landings/finance-reference.md`](../landings/finance-reference.md).
+
+### E-commerce / Retail operations
 
 Аудитория: владельцы магазинов, retail-менеджеры. Лексика: SKU, заказ,
 остаток, доставка, маркетплейс, повторная покупка.
 
-Нужные mock'и:
-- `OrderQueueMock` (`order-queue`) — лента заказов с маркетплейсов и сайта,
-  статус сборки/доставки.
-- `InventoryGridMock` (`inventory-grid`) — каталог товаров с остатками по
-  складам, минимальным запасом.
-- `MarketplaceConnectorMock` (`marketplace-connector`) — статус подключения к
-  Wildberries / Ozon / Я.Маркет с числом активных карточек.
+| Mock | Variant slug | Что показывает |
+|---|---|---|
+| `OrderQueueMock` | `order-queue` | Лента заказов с маркетплейсов и сайта со статусами сборки/доставки |
+| `InventoryGridMock` | `inventory-grid` | Каталог SKU × склады с остатками, минимальным запасом, цвет-кодом наличия |
+| `MarketplaceConnectorMock` | `marketplace-connector` | Статус коннекторов Wildberries / Ozon / Я.Маркет / AliExpress |
+
+**Reference:** [`wiki/landings/ecommerce-reference.md`](../landings/ecommerce-reference.md).
 
 ## Жёсткие правила (повторно — для системного prompt'а)
 

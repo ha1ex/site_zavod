@@ -46,6 +46,12 @@ export const AssetRefSchema = z.object({
       'process-flowchart',
       'approval-chain',
       'sla-tracker',
+      'ledger-view',
+      'invoice-status',
+      'reconciliation-matrix',
+      'order-queue',
+      'inventory-grid',
+      'marketplace-connector',
       'generic',
     ])
     .optional(),
@@ -259,6 +265,12 @@ const MediaCopySchema = z.object({
         'process-flowchart',
         'approval-chain',
         'sla-tracker',
+        'ledger-view',
+        'invoice-status',
+        'reconciliation-matrix',
+        'order-queue',
+        'inventory-grid',
+        'marketplace-connector',
       ])
       .optional(),
     /**
@@ -487,6 +499,12 @@ export const MockVariantSchema = z.enum([
   'process-flowchart',
   'approval-chain',
   'sla-tracker',
+  'ledger-view',
+  'invoice-status',
+  'reconciliation-matrix',
+  'order-queue',
+  'inventory-grid',
+  'marketplace-connector',
 ]);
 export type MockVariant = z.infer<typeof MockVariantSchema>;
 
