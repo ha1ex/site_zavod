@@ -17,163 +17,11 @@ export type Cta = z.infer<typeof CtaSchema>;
 export const AssetRefSchema = z.object({
   type: z.enum(['product_screenshot', 'illustration', 'logo_cloud', 'photo']),
   assetId: z.string(),
+  src: z.string().optional(),
+  alt: z.string().optional(),
+  variant: z.enum(['support-board', 'generic']).optional(),
 });
 export type AssetRef = z.infer<typeof AssetRefSchema>;
-
-/* ─── MockUiSpec ──────────────────────────────────────────────────── */
-/**
- * MockUiSpec — HTML/Tailwind UI-мок, который рендерится внутри секции
- * (рядом с текстом или вместо `visual`). 7 шаблонов выведены из эталонного
- * лендинга `wiki/landings/kaiten-techsupport-reference.md`. Правила —
- * `packages/harness/src/prompts/section-mock-skill.md` (загружается в
- * системный промпт LLM-генератора). Все content-строки — domain-specific
- * (имена клиентов, темы обращений, реальные KPI), Lorem запрещён.
- *
- * Backwards-compatible: `mockUi` на секциях опционален; компоненты, которые
- * его не поддерживают, игнорируют prop без ошибки.
- */
-
-const MockAccentTone = z.enum(['primary', 'green', 'orange', 'red', 'blue']);
-const MockBadgeTone = z.enum(['red', 'amber', 'emerald', 'neutral', 'blue']);
-
-const BoardMockSchema = z.object({
-  template: z.literal('board'),
-  content: z.object({
-    tabs: z.array(z.string().min(1).max(40)).min(2).max(6),
-    activeTab: z.string().min(1).max(40).optional(),
-    columns: z
-      .array(
-        z.object({
-          title: z.string().min(1).max(40),
-          count: z.number().int().nonnegative().optional(),
-          cards: z
-            .array(
-              z.object({
-                title: z.string().min(2).max(80),
-                meta: z.string().max(80).optional(),
-                accent: MockAccentTone,
-                badges: z
-                  .array(
-                    z.object({
-                      label: z.string().min(1).max(20),
-                      tone: MockBadgeTone,
-                    }),
-                  )
-                  .max(3)
-                  .optional(),
-                active: z.boolean().optional(),
-                dim: z.boolean().optional(),
-              }),
-            )
-            .min(1)
-            .max(4),
-        }),
-      )
-      .min(3)
-      .max(5),
-    activeEmoji: z.enum(['☝️', '✋']).nullable().optional(),
-  }),
-});
-
-const ChatMockSchema = z.object({
-  template: z.literal('chat'),
-  content: z.object({
-    ticketId: z.string().min(1).max(20),
-    ticketTitle: z.string().min(2).max(80),
-    ticketSubtitle: z.string().max(120).optional(),
-    messages: z
-      .array(
-        z.object({
-          role: z.enum(['in', 'out']),
-          author: z.string().max(40).optional(),
-          text: z.string().min(2).max(300),
-        }),
-      )
-      .min(2)
-      .max(4),
-    checklist: z
-      .array(z.object({ label: z.string().min(2).max(80), done: z.boolean() }))
-      .min(2)
-      .max(5)
-      .optional(),
-  }),
-});
-
-const ChecklistMockSchema = z.object({
-  template: z.literal('checklist'),
-  content: z.object({
-    title: z.string().max(80).optional(),
-    items: z
-      .array(z.object({ label: z.string().min(2).max(120), done: z.boolean() }))
-      .min(3)
-      .max(6),
-  }),
-});
-
-const ArticleMockSchema = z.object({
-  template: z.literal('article'),
-  content: z.object({
-    sidebarItems: z
-      .array(z.object({ label: z.string().min(2).max(40), active: z.boolean() }))
-      .min(3)
-      .max(7),
-    emoji: z.enum(['📌', '🧑‍💻', '📋', '📒', '🔒']).nullable().optional(),
-    badge: z.object({
-      label: z.string().min(1).max(30),
-      tone: z.enum(['violet', 'blue', 'emerald', 'amber']),
-    }),
-    title: z.string().min(2).max(80),
-    subtitle: z.string().max(120).optional(),
-    bodyBars: z.union([z.literal(3), z.literal(4)]).default(3),
-  }),
-});
-
-const KpiMockSchema = z.object({
-  template: z.literal('kpi'),
-  content: z.object({
-    tiles: z
-      .array(
-        z.object({
-          value: z.string().min(1).max(12),
-          trend: z
-            .object({
-              direction: z.enum(['up', 'down']),
-              tone: z.enum(['positive', 'negative']),
-            })
-            .optional(),
-          label: z.string().min(2).max(60),
-        }),
-      )
-      .min(3)
-      .max(4),
-  }),
-});
-
-const ConsoleMockSchema = z.object({
-  template: z.literal('console'),
-  content: z.object({
-    title: z.string().max(60).optional(),
-    lines: z
-      .array(
-        z.object({
-          kind: z.enum(['comment', 'cmd', 'output', 'success', 'error']),
-          text: z.string().min(1).max(200),
-        }),
-      )
-      .min(4)
-      .max(10),
-  }),
-});
-
-export const MockUiSchema = z.discriminatedUnion('template', [
-  BoardMockSchema,
-  ChatMockSchema,
-  ChecklistMockSchema,
-  ArticleMockSchema,
-  KpiMockSchema,
-  ConsoleMockSchema,
-]);
-export type MockUi = z.infer<typeof MockUiSchema>;
 
 /* ─── HeroSection ─────────────────────────────────────────────────── */
 const HeroSectionSchema = z.object({
@@ -181,12 +29,13 @@ const HeroSectionSchema = z.object({
   component: z.literal('HeroSection'),
   props: z.object({
     eyebrow: z.string().max(80).optional(),
-    title: z.string().min(4).max(80),
-    subtitle: z.string().min(10).max(200),
+    title: z.string().min(4).max(120),
+    accentWord: z.string().max(40).optional(),
+    subtitle: z.string().min(10).max(280),
     primaryCta: CtaSchema,
     secondaryCta: CtaSchema.nullable().optional(),
     visual: AssetRefSchema.nullable().optional(),
-    mockUi: MockUiSchema.nullable().optional(),
+    visualPosition: z.enum(['side', 'below']).optional(),
   }),
 });
 
@@ -209,7 +58,6 @@ const FeatureGridSchema = z.object({
       .min(2)
       .max(8),
     columns: z.union([z.literal(2), z.literal(3), z.literal(4)]).default(3),
-    mockUi: MockUiSchema.nullable().optional(),
   }),
 });
 
@@ -267,7 +115,163 @@ const FinalCtaSchema = z.object({
     description: z.string().max(200).optional(),
     primaryCta: CtaSchema,
     secondaryCta: CtaSchema.nullable().optional(),
-    mockUi: MockUiSchema.nullable().optional(),
+  }),
+});
+
+/* ─── SocialProof (cases) ─────────────────────────────────────────── */
+const SocialProofSchema = z.object({
+  id: z.literal('social_proof'),
+  component: z.literal('SocialProof'),
+  props: z.object({
+    eyebrow: z.string().max(80).optional(),
+    title: z.string().min(4).max(80).optional(),
+    description: z.string().max(200).optional(),
+    cases: z
+      .array(
+        z.object({
+          brand: z.string().min(1).max(60),
+          brandInitial: z.string().max(4).optional(),
+          quote: z.string().min(10).max(400),
+          metric: z.string().max(120).optional(),
+          href: z.string().optional(),
+        }),
+      )
+      .min(2)
+      .max(6),
+  }),
+});
+
+/* ─── ProcessSteps ────────────────────────────────────────────────── */
+const ProcessStepsSchema = z.object({
+  id: z.literal('process'),
+  component: z.literal('ProcessSteps'),
+  props: z.object({
+    eyebrow: z.string().max(80).optional(),
+    title: z.string().min(4).max(80),
+    description: z.string().max(200).optional(),
+    steps: z
+      .array(
+        z.object({
+          icon: z.string().optional().describe('lucide-icon name'),
+          title: z.string().min(2).max(80),
+          description: z.string().min(10).max(280),
+        }),
+      )
+      .min(2)
+      .max(6),
+  }),
+});
+
+/* ─── CtaBanner (inline) ──────────────────────────────────────────── */
+const CtaBannerSchema = z.object({
+  id: z.literal('cta_banner'),
+  component: z.literal('CtaBanner'),
+  props: z.object({
+    title: z.string().min(4).max(120),
+    description: z.string().max(280).optional(),
+    primaryCta: CtaSchema,
+    secondaryCta: CtaSchema.nullable().optional(),
+  }),
+});
+
+/* ─── MediaCopy (alternating text+screenshot) ─────────────────────── */
+const MediaCopySchema = z.object({
+  id: z.literal('media_copy'),
+  component: z.literal('MediaCopy'),
+  props: z.object({
+    eyebrow: z.string().max(80).optional(),
+    title: z.string().min(4).max(120),
+    description: z.string().max(400).optional(),
+    checklist: z
+      .array(
+        z.object({
+          icon: z.string().optional(),
+          text: z.string().min(2).max(180),
+        }),
+      )
+      .max(8)
+      .optional(),
+    mediaPosition: z.enum(['left', 'right']).optional(),
+    mediaPlaceholder: z.string().max(80).optional(),
+    mediaVariant: z
+      .enum(['default', 'support-board', 'request-card', 'kb-public', 'kb-internal'])
+      .optional(),
+    primaryCta: CtaSchema.optional(),
+    secondaryCta: CtaSchema.nullable().optional(),
+  }),
+});
+
+/* ─── BenefitsStrip (thin marketing strip under hero) ─────────────── */
+const BenefitsStripSchema = z.object({
+  id: z.literal('benefits_strip'),
+  component: z.literal('BenefitsStrip'),
+  props: z.object({
+    items: z.array(z.string().min(2).max(60)).min(2).max(6),
+  }),
+});
+
+/* ─── MetricsSplit (text + 2x2 metrics + optional bullets) ────────── */
+const MetricsSplitSchema = z.object({
+  id: z.literal('metrics_split'),
+  component: z.literal('MetricsSplit'),
+  props: z.object({
+    eyebrow: z.string().max(80).optional(),
+    title: z.string().min(4).max(120),
+    description: z.string().max(300).optional(),
+    metrics: z
+      .array(
+        z.object({
+          value: z.string().min(1).max(20),
+          label: z.string().min(2).max(80),
+          trend: z.enum(['up', 'down', 'flat']).optional(),
+        }),
+      )
+      .min(2)
+      .max(6),
+    bullets: z
+      .array(
+        z.object({
+          title: z.string().min(2).max(80),
+          description: z.string().min(10).max(200),
+        }),
+      )
+      .max(6)
+      .optional(),
+  }),
+});
+
+/* ─── StatStrip ───────────────────────────────────────────────────── */
+const StatStripSchema = z.object({
+  id: z.literal('stats'),
+  component: z.literal('StatStrip'),
+  props: z.object({
+    eyebrow: z.string().max(80).optional(),
+    title: z.string().min(4).max(120).optional(),
+    description: z.string().max(300).optional(),
+    stats: z
+      .array(
+        z.object({
+          value: z.string().min(1).max(20),
+          label: z.string().min(2).max(80),
+          description: z.string().max(160).optional(),
+        }),
+      )
+      .min(2)
+      .max(5),
+  }),
+});
+
+/* ─── PromoBanner (full-bleed accent CTA) ─────────────────────────── */
+const PromoBannerSchema = z.object({
+  id: z.literal('promo_banner'),
+  component: z.literal('PromoBanner'),
+  props: z.object({
+    eyebrow: z.string().max(80).optional(),
+    title: z.string().min(4).max(140),
+    description: z.string().max(300).optional(),
+    primaryCta: CtaSchema,
+    secondaryCta: CtaSchema.nullable().optional(),
+    tone: z.enum(['violet', 'soft']).optional(),
   }),
 });
 
@@ -298,10 +302,18 @@ const LandingFooterSchema = z.object({
 export const SectionSchema = z.discriminatedUnion('component', [
   HeroSectionSchema,
   FeatureGridSchema,
+  SocialProofSchema,
+  ProcessStepsSchema,
+  CtaBannerSchema,
   PricingPlansSchema,
   FAQAccordionSchema,
   FinalCtaSchema,
   LandingFooterSchema,
+  MediaCopySchema,
+  StatStripSchema,
+  PromoBannerSchema,
+  BenefitsStripSchema,
+  MetricsSplitSchema,
 ]);
 export type Section = z.infer<typeof SectionSchema>;
 

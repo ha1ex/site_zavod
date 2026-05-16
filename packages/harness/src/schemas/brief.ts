@@ -21,6 +21,13 @@ export const BriefSchema = z.object({
     .enum(['saas', 'waitlist', 'enterprise'])
     .default('saas')
     .describe('Тип лендинга — выбирается из доступных archetype'),
+  resolvedSegments: z
+    .array(z.string())
+    .optional()
+    .describe(
+      'Резолвленные id сегментов из wiki/audiences/kaiten-scoring.json (опционально). ' +
+        'Заполняется host-LLM после audience-research, когда lexical-match по audience/market не сработал.',
+    ),
 });
 
 export type Brief = z.infer<typeof BriefSchema>;

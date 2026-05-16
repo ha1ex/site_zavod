@@ -1,5 +1,8 @@
 @import "tailwindcss";
-@import "@buffalo/ui/src/tokens.css";
+@import "../../../packages/ui/src/tokens.css";
+
+@source "../../../packages/ui/src/**/*.{ts,tsx}";
+@source "../../../packages/harness/src/**/*.{ts,tsx}";
 
 html {
   background: var(--color-surface-page);

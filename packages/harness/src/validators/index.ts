@@ -16,3 +16,14 @@ export {
   type LandingBusinessError,
   type LandingBusinessResult,
 } from './landing-business';
+export {
+  validateLandingAudience,
+  formatAudienceReportMarkdown,
+  formatLandingAudienceErrors,
+  type LandingAudienceError,
+  type LandingAudienceResult,
+  type AudienceErrorKind,
+  type SubscoreBreakdown,
+  type CtaType,
+  type ValidateAudienceOptions,
+} from './landing-audience';

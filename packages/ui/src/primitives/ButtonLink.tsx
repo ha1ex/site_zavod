@@ -26,6 +26,11 @@ const variantClasses: Record<ButtonVariant, string> = {
     'border border-(--button-outline-border)',
     'hover:bg-(--button-outline-bg-hover) hover:text-(--button-outline-text-hover) hover:border-(--button-outline-border-hover)',
   ].join(' '),
+  invert: ['bg-white text-(--color-action-primary)', 'hover:bg-white/90'].join(' '),
+  'ghost-on-violet': [
+    'bg-transparent text-white border border-white/40',
+    'hover:bg-white/10 hover:border-white/60',
+  ].join(' '),
 };
 
 export function ButtonLink({

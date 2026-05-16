@@ -3,7 +3,7 @@
 import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from 'react';
 import { cn } from './cn';
 
-export type ButtonVariant = 'fill' | 'outline';
+export type ButtonVariant = 'fill' | 'outline' | 'invert' | 'ghost-on-violet';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -31,6 +31,11 @@ const variantClasses: Record<ButtonVariant, string> = {
     'border border-(--button-outline-border)',
     'hover:bg-(--button-outline-bg-hover) hover:text-(--button-outline-text-hover) hover:border-(--button-outline-border-hover)',
     'disabled:text-(--button-outline-text-disabled) disabled:hover:bg-(--button-outline-bg) disabled:hover:border-(--button-outline-border)',
+  ].join(' '),
+  invert: ['bg-white text-(--color-action-primary)', 'hover:bg-white/90'].join(' '),
+  'ghost-on-violet': [
+    'bg-transparent text-white border border-white/40',
+    'hover:bg-white/10 hover:border-white/60',
   ].join(' '),
 };
 

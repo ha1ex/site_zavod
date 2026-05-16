@@ -3,11 +3,16 @@ import { dirname, relative, resolve } from 'node:path';
 import { z } from 'zod';
 import { BriefSchema, type Brief } from '../schemas/brief';
 import { LandingSpecSchema, type LandingSpec } from '../schemas/landing-spec';
+import { loadAudienceScoring } from '../schemas/audience-scoring';
 import {
   validateLandingBrand,
   validateLandingBusiness,
+  validateLandingAudience,
+  formatAudienceReportMarkdown,
   type LandingBrandError,
   type LandingBusinessError,
+  type LandingAudienceError,
+  type LandingAudienceResult,
 } from '../validators/index';
 import { renderLandingToTSX } from '../render/index';
 import { buildLandingSystemPromptWithMeta } from '../prompts/system';
@@ -16,7 +21,7 @@ import { appendLog, fileLandingToWiki } from '../wiki/index';
 export type IngestStage = 'read' | 'parse' | 'validate' | 'render' | 'file-back' | 'done';
 
 export interface IngestLandingError {
-  kind: 'parse' | 'brand' | 'business';
+  kind: 'parse' | 'brand' | 'business' | 'audience';
   message: string;
   path?: string;
   code?: string;
@@ -34,6 +39,10 @@ export interface IngestLandingOptions {
   noFileBack?: boolean;
   /** Generator label (for spec.meta) — defaults to "host-agent". */
   generator?: string;
+  /** Минимальный Audience Score для прохождения гейта (default — из scoring config, обычно 70). */
+  audienceThreshold?: number;
+  /** Полностью отключить audience-score gate (не запускать валидатор). */
+  noAudienceGate?: boolean;
 }
 
 export interface IngestLandingResult {
@@ -51,6 +60,11 @@ export interface IngestLandingResult {
   archetype?: string;
   sources: string[];
   previewUrl: string;
+  /** Audience-score gate result (undefined если гейт выключен или scoring config недоступен). */
+  audienceScore?: LandingAudienceResult;
+  /** Пути отчётов audience-score (если гейт отработал). */
+  audienceReportJsonRel?: string;
+  audienceReportMdRel?: string;
 }
 
 export async function ingestLanding(opts: IngestLandingOptions): Promise<IngestLandingResult> {
@@ -158,6 +172,40 @@ export async function ingestLanding(opts: IngestLandingOptions): Promise<IngestL
     }
   }
 
+  // Audience-score gate (этап 4½). Запускается даже при ошибках brand/business,
+  // чтобы host-LLM видел весь список того, что нужно поправить, за одну итерацию.
+  let audienceScore: LandingAudienceResult | undefined;
+  let audienceReportJsonRel: string | undefined;
+  let audienceReportMdRel: string | undefined;
+  let audienceScoreMarkdown: string | undefined;
+  if (!opts.noAudienceGate) {
+    try {
+      const scoring = await loadAudienceScoring(opts.root);
+      audienceScore = validateLandingAudience(spec, scoring, {
+        brief,
+        threshold: opts.audienceThreshold,
+      });
+      const reportAt = new Date().toISOString();
+      audienceScoreMarkdown = formatAudienceReportMarkdown(opts.slug, audienceScore, reportAt);
+
+      const reportJsonAbs = resolve(opts.root, '.context', 'audience-score', `${opts.slug}.json`);
+      const reportMdAbs = resolve(opts.root, '.context', 'audience-score', `${opts.slug}.md`);
+      await mkdir(dirname(reportJsonAbs), { recursive: true });
+      await writeFile(reportJsonAbs, JSON.stringify({ generatedAt: reportAt, ...audienceScore }, null, 2) + '\n', 'utf-8');
+      await writeFile(reportMdAbs, audienceScoreMarkdown + '\n', 'utf-8');
+      audienceReportJsonRel = relative(opts.root, reportJsonAbs);
+      audienceReportMdRel = relative(opts.root, reportMdAbs);
+
+      if (!audienceScore.ok) {
+        for (const e of audienceScore.errors) errors.push(landingAudienceToIngestError(e));
+      }
+    } catch (err) {
+      warnings.push(
+        `audience-score gate пропущен: ${(err as Error).message}. Проверь wiki/audiences/kaiten-scoring.json.`,
+      );
+    }
+  }
+
   const hasErrors = errors.length > 0;
 
   if (hasErrors && opts.strict) {
@@ -171,6 +219,9 @@ export async function ingestLanding(opts: IngestLandingOptions): Promise<IngestL
       sectionsCount: spec.sections.length,
       sources: [],
       previewUrl: previewUrlFor(opts.slug),
+      audienceScore,
+      audienceReportJsonRel,
+      audienceReportMdRel,
     };
   }
 
@@ -224,6 +275,7 @@ export async function ingestLanding(opts: IngestLandingOptions): Promise<IngestL
         durationMs: 0,
         generator: spec.meta?.generator ?? 'host-agent',
         tokenEstimate,
+        audienceScoreMarkdown,
       });
       wikiPathRel = relative(opts.root, wikiPath);
     } catch (err) {
@@ -231,11 +283,12 @@ export async function ingestLanding(opts: IngestLandingOptions): Promise<IngestL
     }
   }
 
+  const scoreNote = audienceScore ? ` audienceScore=${audienceScore.score}/${audienceScore.threshold}` : '';
   await appendLog(opts.root, {
     op: 'generate',
     slug: opts.slug,
     status: hasErrors ? 'fail' : 'ok',
-    note: `agent-ingest archetype=${archetype} sections=${spec.sections.length} errors=${errors.length}`,
+    note: `agent-ingest archetype=${archetype} sections=${spec.sections.length} errors=${errors.length}${scoreNote}`,
   }).catch(() => {});
 
   return {
@@ -253,6 +306,9 @@ export async function ingestLanding(opts: IngestLandingOptions): Promise<IngestL
     archetype,
     sources,
     previewUrl: previewUrlFor(opts.slug),
+    audienceScore,
+    audienceReportJsonRel,
+    audienceReportMdRel,
   };
 }
 
@@ -275,5 +331,15 @@ function landingBusinessToIngestError(e: LandingBusinessError): IngestLandingErr
     message: e.message,
     path: e.where,
     code: e.rule,
+  };
+}
+
+function landingAudienceToIngestError(e: LandingAudienceError): IngestLandingError {
+  const suggestionSuffix = e.suggestion ? ` — ${e.suggestion}` : '';
+  return {
+    kind: 'audience',
+    message: `${e.message}${suggestionSuffix}`,
+    path: e.where,
+    code: e.ruleId ?? e.kind,
   };
 }

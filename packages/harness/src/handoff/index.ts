@@ -181,6 +181,19 @@ export async function buildHandoff(slug: string, opts: BuildOptions): Promise<Ha
     });
   }
 
+  // Mocks (детализированные mock-визуалы, используются HeroSection и MediaCopy).
+  // Копируем всю папку — она маленькая, проще чем парсить импорты компонентов.
+  const mocksDir = resolve(uiSrc, 'landing', 'mocks');
+  if (await fileExists(mocksDir)) {
+    for (const f of await readdir(mocksDir)) {
+      if (!/\.(tsx?|ts)$/.test(f)) continue;
+      files.push({
+        archivePath: `landing-${slug}/components/mocks/${f}`,
+        content: await readUtf8(resolve(mocksDir, f)),
+      });
+    }
+  }
+
   // Illustrations — берём по spec.illustrationSpecs (PascalCase из id)
   const illustrationNames: string[] = [];
   const illustrationsDir = resolve(uiSrc, 'illustrations');

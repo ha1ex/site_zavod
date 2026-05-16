@@ -1,5 +1,5 @@
 import { cn } from '../primitives/cn';
-import { SectionMock, type SectionMockUi } from './SectionMock';
+import { Icon } from '../primitives/Icon';
 
 export interface FeatureItemProps {
   icon: string;
@@ -13,7 +13,6 @@ export interface FeatureGridProps {
   description?: string;
   items: FeatureItemProps[];
   columns?: 2 | 3 | 4;
-  mockUi?: SectionMockUi | null;
 }
 
 const colsClass: Record<NonNullable<FeatureGridProps['columns']>, string> = {
@@ -28,7 +27,6 @@ export function FeatureGrid({
   description,
   items,
   columns = 3,
-  mockUi,
 }: FeatureGridProps) {
   return (
     <section
@@ -49,32 +47,26 @@ export function FeatureGrid({
         )}
       </div>
 
-      {mockUi && (
-        <div className="mb-10">
-          <SectionMock mock={mockUi} />
-        </div>
-      )}
-
-      <div className={cn('grid grid-cols-1 gap-8', colsClass[columns])}>
+      <div className={cn('grid grid-cols-1 gap-6', colsClass[columns])}>
         {items.map((item, i) => (
           <div
             key={i}
             className={cn(
-              'rounded-(--radius-2xl) border border-(--color-border-default)',
-              'bg-(--color-surface-card) p-6',
+              'group rounded-(--radius-2xl) border border-(--color-border-default)',
+              'bg-(--color-surface-card) p-6 transition',
+              'hover:-translate-y-0.5 hover:border-(--color-action-primary)/40 hover:shadow-sm',
             )}
           >
             <div
               className={cn(
-                'mb-4 inline-flex h-12 w-12 items-center justify-center',
+                'mb-5 inline-flex h-11 w-11 items-center justify-center',
                 'rounded-(--radius-xl) bg-(--color-action-primary-soft) text-(--color-text-accent)',
               )}
-              aria-hidden
             >
-              <span className="text-lg">◆</span>
+              <Icon name={item.icon} className="h-5 w-5" />
             </div>
-            <h3 className="text-lg font-semibold">{item.title}</h3>
-            <p className="mt-2 text-base text-(--color-text-secondary)">
+            <h3 className="text-lg font-semibold leading-snug">{item.title}</h3>
+            <p className="mt-2 text-base leading-relaxed text-(--color-text-secondary)">
               {item.description}
             </p>
           </div>

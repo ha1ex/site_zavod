@@ -39,3 +39,4 @@ test-results
 npm-debug.log*
 pnpm-debug.log*
 yarn-debug.log*
+.playwright-mcp/

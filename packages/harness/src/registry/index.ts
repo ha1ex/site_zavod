@@ -9,7 +9,19 @@
 
 export interface ComponentEntry {
   name: string;
-  category: 'hero' | 'features' | 'pricing' | 'faq' | 'cta' | 'footer';
+  category:
+    | 'hero'
+    | 'features'
+    | 'pricing'
+    | 'faq'
+    | 'cta'
+    | 'footer'
+    | 'social_proof'
+    | 'process'
+    | 'banner'
+    | 'media_copy'
+    | 'stats'
+    | 'promo';
   description: string;
   props: Record<string, string>;
   constraints: string[];
@@ -25,41 +37,32 @@ export const REGISTRY: ComponentEntry[] = [
     sectionId: 'hero',
     category: 'hero',
     description:
-      'Главный hero-блок: eyebrow (опц.), заголовок, подзаголовок, primary CTA + опционально outline secondary CTA, и визуал справа (xl+). Визуал — либо `visual` (статичная картинка), либо `mockUi` (HTML/Tailwind UI-мок: board / chat / kpi / article / checklist / console). Если задан mockUi — он приоритетен над visual.',
+      'Главный hero-блок: eyebrow (опц.), заголовок (с опц. accentWord-pill), подзаголовок, primary CTA + опционально outline secondary CTA, и визуал. Визуал задаётся через `visual.variant`: `support-board` рендерит специализированный SupportBoardMock (mock канбан-доски), `generic` — статичную картинку из visual.src. Новые специализированные mock-компоненты создаются в `packages/ui/src/landing/mocks/` по правилам `packages/harness/src/prompts/section-mock-skill.md` — после создания добавь новое значение в enum `visual.variant`.',
     props: {
       eyebrow: 'string (<=80) | undefined',
-      title: 'string (4..80)',
-      subtitle: 'string (10..200)',
+      title: 'string (4..120)',
+      accentWord: 'string (<=40) | undefined — кусок title в фиолетовой pill',
+      subtitle: 'string (10..280)',
       primaryCta: '{ label: string<=40; href: string }',
       secondaryCta: '{ label; href } | null | undefined',
       visual:
-        "{ type: 'product_screenshot'|'illustration'|'logo_cloud'|'photo'; assetId: string } | null | undefined",
-      mockUi:
-        "MockUi | null | undefined — discriminated union по template: 'board'|'chat'|'checklist'|'article'|'kpi'|'console'. Правила контента — см. section-mock-skill.md.",
+        "{ type: 'product_screenshot'|'illustration'|'logo_cloud'|'photo'; assetId: string; src?: string; alt?: string; variant?: 'support-board'|'generic' } | null | undefined",
+      visualPosition: "'side' (default) | 'below' — раскладка mock'а относительно текста",
     },
-    constraints: [
-      'title <= 80',
-      'subtitle 10..200',
-      'must_have_primary_cta',
-      'one_hero_per_landing',
-      'mockUi_or_visual_not_both_required',
-    ],
+    constraints: ['title <= 120', 'subtitle 10..280', 'must_have_primary_cta', 'one_hero_per_landing'],
   },
   {
     name: 'FeatureGrid',
     specComponent: 'FeatureGrid',
     sectionId: 'features',
     category: 'features',
-    description:
-      'Grid карточек "иконка + заголовок + описание". 2-8 items, 2/3/4 колонки. Опционально перед грид-карточек можно показать UI-мок (mockUi: board / chat / kpi / article / checklist / console) — например, доска заявок для секции про поток обращений.',
+    description: 'Grid карточек "иконка + заголовок + описание". 2-8 items, 2/3/4 колонки.',
     props: {
       eyebrow: 'string (<=80) | undefined',
       title: 'string (4..80)',
       description: 'string (<=200) | undefined',
       items: 'Array<{ icon: string; title: 2..60; description: 10..200 }> (2..8)',
       columns: '2 | 3 | 4 (default 3)',
-      mockUi:
-        "MockUi | null | undefined — опциональный UI-мок над гридом. Правила контента — см. section-mock-skill.md.",
     },
     constraints: ['min_2_items', 'max_8_items', 'titles_unique_per_section'],
   },
@@ -97,15 +100,12 @@ export const REGISTRY: ComponentEntry[] = [
     specComponent: 'FinalCta',
     sectionId: 'final_cta',
     category: 'cta',
-    description:
-      'Финальный CTA-блок: заголовок + описание + primary CTA + опционально secondary. Опционально снизу можно показать дополнительный UI-мок (mockUi) — например, kpi-плитки с социальным доказательством.',
+    description: 'Финальный CTA-блок: заголовок + описание + primary CTA + опционально secondary.',
     props: {
       title: 'string (4..80)',
       description: 'string (<=200) | undefined',
       primaryCta: '{ label; href }',
       secondaryCta: '{ label; href } | null | undefined',
-      mockUi:
-        "MockUi | null | undefined — опциональный UI-мок под кнопками. Правила — см. section-mock-skill.md.",
     },
     constraints: ['must_have_primary_cta', 'final_cta_matches_page_goal'],
   },
@@ -122,6 +122,105 @@ export const REGISTRY: ComponentEntry[] = [
       copyright: 'string (<=200) | undefined',
     },
     constraints: ['always_last_section'],
+  },
+  {
+    name: 'SocialProof',
+    specComponent: 'SocialProof',
+    sectionId: 'social_proof',
+    category: 'social_proof',
+    description:
+      'Карточки клиентских кейсов: 2-6 карточек с brand-инициалом, цитатой и опц. metric/href на полный кейс.',
+    props: {
+      eyebrow: 'string (<=80) | undefined',
+      title: 'string (4..80) | undefined',
+      description: 'string (<=200) | undefined',
+      cases:
+        'Array<{ brand: 1..60; brandInitial?: <=4; quote: 10..400; metric?: <=120; href? }> (2..6)',
+    },
+    constraints: ['min_2_cases', 'max_6_cases'],
+  },
+  {
+    name: 'ProcessSteps',
+    specComponent: 'ProcessSteps',
+    sectionId: 'process',
+    category: 'process',
+    description:
+      'Шаги процесса с большими цифрами: 2-6 пронумерованных карточек с lucide-иконкой, заголовком и описанием.',
+    props: {
+      eyebrow: 'string (<=80) | undefined',
+      title: 'string (4..80)',
+      description: 'string (<=200) | undefined',
+      steps:
+        'Array<{ icon?: lucide-name; title: 2..80; description: 10..280 }> (2..6)',
+    },
+    constraints: ['min_2_steps', 'max_6_steps'],
+  },
+  {
+    name: 'CtaBanner',
+    specComponent: 'CtaBanner',
+    sectionId: 'cta_banner',
+    category: 'banner',
+    description:
+      'Inline CTA-баннер между секциями: заголовок, опц. описание, primary + опц. secondary CTA. Фиолетовый фон.',
+    props: {
+      title: 'string (4..120)',
+      description: 'string (<=280) | undefined',
+      primaryCta: '{ label; href }',
+      secondaryCta: '{ label; href } | null | undefined',
+    },
+    constraints: ['must_have_primary_cta'],
+  },
+  {
+    name: 'MediaCopy',
+    specComponent: 'MediaCopy',
+    sectionId: 'media_copy',
+    category: 'media_copy',
+    description:
+      'Флагманский Kaiten-блок: текст с чек-листом по одну сторону и большой mock продуктового UI по другую. Используется 3-5 раз на странице (alternating).',
+    props: {
+      eyebrow: 'string (<=80) | undefined',
+      title: 'string (4..120)',
+      description: 'string (<=400) | undefined',
+      checklist: 'Array<{ icon?: lucide-name; text: 2..180 }> (<=8) | undefined',
+      mediaPosition: '"left" | "right" (default "right")',
+      mediaPlaceholder: 'string (label inside window-chrome)',
+      primaryCta: '{ label; href } | undefined',
+      secondaryCta: '{ label; href } | null | undefined',
+    },
+    constraints: ['alternate_media_position_when_repeated'],
+  },
+  {
+    name: 'StatStrip',
+    specComponent: 'StatStrip',
+    sectionId: 'stats',
+    category: 'stats',
+    description:
+      'Горизонтальная полоса 2-5 цифровых фактов (например: 235+ обращений, 500 сотрудников, 30 минут запуск). Используется как social-proof выше fold или итоги секции.',
+    props: {
+      eyebrow: 'string (<=80) | undefined',
+      title: 'string (4..120) | undefined',
+      description: 'string (<=300) | undefined',
+      stats:
+        'Array<{ value: 1..20; label: 2..80; description?: <=160 }> (2..5)',
+    },
+    constraints: ['min_2_stats', 'max_5_stats'],
+  },
+  {
+    name: 'PromoBanner',
+    specComponent: 'PromoBanner',
+    sectionId: 'promo_banner',
+    category: 'promo',
+    description:
+      'Большая полноширинная акцентная секция (фиолетовый или мягкий фон) с центрированным заголовком и CTA. Заменяет CtaBanner когда нужен сильный визуальный акцент.',
+    props: {
+      eyebrow: 'string (<=80) | undefined',
+      title: 'string (4..140)',
+      description: 'string (<=300) | undefined',
+      primaryCta: '{ label; href }',
+      secondaryCta: '{ label; href } | null | undefined',
+      tone: '"violet" | "soft" (default "violet")',
+    },
+    constraints: ['must_have_primary_cta'],
   },
 ];
 

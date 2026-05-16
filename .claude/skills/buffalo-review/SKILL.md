@@ -24,6 +24,8 @@ Read these in parallel:
 - `content/landings/<slug>.json` — the LandingSpec.
 - `content/approvals/<slug>.json` — current approval (if any).
 - `generated/landings/<slug>/page.tsx` — the derived TSX.
+- `.context/audience-score/<slug>.md` — последний отчёт audience-score gate (если есть).
+- `wiki/landings/<slug>.md` — секция `## Audience score` (часть досье).
 
 Report what's present vs missing.
 
@@ -43,6 +45,23 @@ Programmatically run the same checks the repair-loop uses. The fastest way is to
 - `validateLandingBusiness` rules: hero first, footer last, single hero, ≤1 highlighted plan, `href` shape, hero `primaryCta.label` aligned with `brief.cta`.
 
 Report any failures with `path → message → evidence`.
+
+### 3½. Audience-score gate
+
+```bash
+pnpm -w run harness agent score landing \
+  --slug <slug> \
+  --brief content/briefs/<slug>.json
+```
+
+Это пересчитает Audience-Adjusted Score без апплая и положит отчёт в `.context/audience-score/<slug>.{json,md}`. Прочитай `.md` — он содержит per-story coverage breakdown.
+
+**Что блокирует approval:**
+
+- Итоговый score < `threshold` (default 70) → block.
+- Любое must-pass правило падает (IT нуждается в сравнении/Trial; Финансы/Госсектор нуждаются в security+Demo; SEO не таргетит приоритет; антипрофиль primary) → block.
+
+Должно быть ✅ pass. Если ❌ fail — это не «soft suggestion», а **hard blocker**: лендинг не закрывает приоритетный intent целевой аудитории. Возвращай на регенерацию по подсказкам из `suggestions[]` в отчёте.
 
 ### 4. Illustration AST check (if applicable)
 

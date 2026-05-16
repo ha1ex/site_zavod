@@ -16,14 +16,26 @@ export type { FinalCtaProps } from './FinalCta';
 export { LandingFooter } from './LandingFooter';
 export type { LandingFooterProps, FooterColumnProps } from './LandingFooter';
 
-export { SectionMock } from './SectionMock';
-export type {
-  SectionMockProps,
-  SectionMockUi,
-  BoardMockProps,
-  ChatMockProps,
-  ChecklistMockProps,
-  ArticleMockProps,
-  KpiMockProps,
-  ConsoleMockProps,
-} from './SectionMock';
+export { SocialProof } from './SocialProof';
+export type { SocialProofProps, CaseProps } from './SocialProof';
+
+export { ProcessSteps } from './ProcessSteps';
+export type { ProcessStepsProps, ProcessStepProps } from './ProcessSteps';
+
+export { CtaBanner } from './CtaBanner';
+export type { CtaBannerProps, CtaBannerCtaProps } from './CtaBanner';
+
+export { MediaCopy } from './MediaCopy';
+export type { MediaCopyProps, MediaCopyCheckItemProps, MediaCopyCtaProps } from './MediaCopy';
+
+export { StatStrip } from './StatStrip';
+export type { StatStripProps, StatItemProps } from './StatStrip';
+
+export { PromoBanner } from './PromoBanner';
+export type { PromoBannerProps, PromoBannerCtaProps } from './PromoBanner';
+
+export { BenefitsStrip } from './BenefitsStrip';
+export type { BenefitsStripProps } from './BenefitsStrip';
+
+export { MetricsSplit } from './MetricsSplit';
+export type { MetricsSplitProps, MetricCellProps } from './MetricsSplit';

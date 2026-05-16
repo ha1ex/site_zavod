@@ -1,22 +1,14 @@
 import { ButtonLink } from '../primitives/ButtonLink';
 import { cn } from '../primitives/cn';
-import { SectionMock, type SectionMockUi } from './SectionMock';
 
 export interface FinalCtaProps {
   title: string;
   description?: string;
   primaryCta: { label: string; href: string };
   secondaryCta?: { label: string; href: string } | null;
-  mockUi?: SectionMockUi | null;
 }
 
-export function FinalCta({
-  title,
-  description,
-  primaryCta,
-  secondaryCta,
-  mockUi,
-}: FinalCtaProps) {
+export function FinalCta({ title, description, primaryCta, secondaryCta }: FinalCtaProps) {
   return (
     <section
       className={cn(
@@ -60,11 +52,6 @@ export function FinalCta({
             </ButtonLink>
           )}
         </div>
-        {mockUi && (
-          <div className="relative z-10 mt-10">
-            <SectionMock mock={mockUi} />
-          </div>
-        )}
       </div>
     </section>
   );

@@ -175,6 +175,37 @@ Tablet: `768px` artboard, 6-column stretch grid, `100px` columns, `24px` gutters
 
 Mobile: `360px` artboard, 4-column stretch grid, `70px` columns, `16px` gutters, `16px` side margins.
 
+## Full-bleed & decorative layers (CRITICAL — частый баг)
+
+Section background, gradient glows, mesh blobs, hero halos и любая декоративная подложка ОБЯЗАНЫ занимать **всю** ширину своего ближайшего `position: relative` родителя. Контентом капится только **content container**, не декорации.
+
+Правила:
+
+- Декоративный absolute-слой использует `inset-0` (или `inset-x-0 top-…` для частичного) **БЕЗ** `max-w-*` и **БЕЗ** `mx-auto`. Иначе на мониторах шире `1440px`/`1920px` фон обрезается полосами по бокам.
+- Родитель такого слоя — `relative isolate overflow-hidden`. `overflow-hidden` нужен, чтобы фон не «вылезал» из секции, `isolate` — чтобы `-z-10` не уходил под предыдущие секции.
+- Только контентный wrapper получает `mx-auto w-full max-w-(--container-kaiten)` (1216px). Это слой текста/карточек, не фона.
+- Радиальные/линейные градиенты задавай в процентах (`60% 60% at 70% 0%`), чтобы они переезжали вместе с шириной экрана, а не «уплывали» в угол.
+- Перед сдачей проверяй макет на 1440 / 1920 / 2560 шириной — фон должен доходить до краёв вьюпорта.
+
+Anti-pattern (НЕ ДЕЛАЙ ТАК):
+
+```tsx
+// ❌ на ширине >1440px фон обрезается полосами слева/справа
+<div class="absolute inset-x-0 -top-32 -z-10 mx-auto h-[720px] max-w-[1440px] bg-[radial-gradient(...)]" />
+```
+
+Pattern (ДЕЛАЙ ТАК):
+
+```tsx
+// ✅ фон тянется на всю ширину секции, контент капится отдельно
+<section class="relative isolate overflow-hidden">
+  <div aria-hidden class="pointer-events-none absolute inset-x-0 -top-32 -z-10 h-[720px] bg-[radial-gradient(...)]" />
+  <div class="mx-auto w-full max-w-(--container-kaiten) px-4 md:px-6">
+    {/* content */}
+  </div>
+</section>
+```
+
 ## Radius
 
 Use:

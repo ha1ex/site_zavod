@@ -32,6 +32,8 @@ Open `content/briefs/<slug>.json`. If it does not exist:
 - Ask the user for: product, audience, market, primary goal (`book_demo` / `signup` / `waitlist` / `contact_sales` / `try_free` / `download`), main pain, main promise, 3 proof points, tone (default: "clear, practical, confident, no hype"), CTA label, `pageArchetype` (`saas` / `waitlist` / `enterprise`).
 - Write the brief to `content/briefs/<slug>.json` matching `BriefSchema` from `@buffalo/harness/schemas`.
 
+**Audience pre-resolve (optional but speeds up the gate):** если знаешь явно — какие сегменты из [`wiki/audiences/kaiten-scoring.md`](../../../wiki/audiences/kaiten-scoring.md) подходят к брифу — добавь `resolvedSegments: ["IT", ...]`. Если не уверен — оставь пустым, audience-score gate сам сделает lexical-match. Если match провалится — на шаге 4½ сделаешь audience research и впишешь.
+
 ### 2. Prepare prompt (CLI emits it; no LLM call)
 
 ```bash
@@ -66,31 +68,34 @@ You are the LLM. From the brief + system prompt, write ONE JSON object matching 
 
 Write the JSON to `content/landings/<slug>.json` (the `outputPath` from prepare).
 
-### 3a. Mock authoring stage (для секций с `mockUi`)
+### 3a. Mock authoring stage (специализированные mock-компоненты)
 
-`HeroSection`, `FeatureGrid` и `FinalCta` поддерживают опциональный `mockUi` — HTML/Tailwind UI-мок, который рендерится через компонент `SectionMock` (см. `packages/ui/src/landing/SectionMock.tsx`). Шесть шаблонов: `board`, `chat`, `checklist`, `article`, `kpi`, `console`. Эталон — `wiki/landings/kaiten-techsupport-reference.md` (snapshot + распаковка приёмов). Правила — `packages/harness/src/prompts/section-mock-skill.md` (грузится в системный промпт).
+**Архитектура:** mock'и — отдельные TSX-компоненты в [`packages/ui/src/landing/mocks/`](../../../packages/ui/src/landing/mocks/), с захардкоженными доменными данными. Spec выбирает mock через enum-поле — например, `HeroSection.visual.variant: 'support-board'` (рендерит `<SupportBoardMock />`), или через `variant` параметры специализированных секций (`MediaCopy`, и т.д.).
 
-**Цель этапа:** заменить «голые» секции (только текст + кнопки) на секции с живой иллюстрацией продукта. На крупном SaaS-лендинге целевая пропорция — один Hero-mock + 3-5 mock'ов в body-секциях.
+**Эталон визуального качества** — `wiki/landings/kaiten-techsupport-reference.md` + `apps/web/public/reference/kaiten-support.html` (открывается на `localhost:3000/reference/kaiten-support.html` после `pnpm dev`). Правила реализации mock'а — `packages/harness/src/prompts/section-mock-skill.md` (грузится в системный промпт).
 
-**Что делать:**
+**Цель этапа:** заменить «голые» секции (только текст + кнопки) на секции с живой иллюстрацией продукта. Целевая пропорция: один Hero-mock + 3-5 mock'ов в body-секциях.
+
+**Существующие mock-компоненты** (`packages/ui/src/landing/mocks/`):
+
+| Mock | Что иллюстрирует | Используется через |
+|---|---|---|
+| `SupportBoardMock` | Канбан-доска заявок | `HeroSection.visual.variant: 'support-board'`, `MediaCopy.variant: 'support-board'` |
+| `RequestCardMock` | Карточка заявки с чатом + чек-листом | секции про «контекст в одной карточке» |
+| `KnowledgeBaseMock` (`variant: 'public' | 'internal'`) | Превью статьи КБ или внутреннего регламента | секции про «база знаний» / «документы» |
+
+**Алгоритм:**
 
 1. Для каждой секции из spec'а реши, нужен ли mock:
-   - Hero → почти всегда нужен (board / chat / kpi — что лучше всего иллюстрирует main promise брифа).
-   - FeatureGrid → нужен, если секция про конкретный workflow (поток заявок, чат, БЗ). Не нужен, если секция — общий список «возможностей».
-   - FinalCta → нужен только для social-proof KPI («87% закрыто в SLA», «120 команд»).
-2. Выбери шаблон по правилам из section-mock-skill.md §0. Один шаблон на секцию.
-3. Заполни `content` доменной конкретикой ИЗ БРИФА. Все строки — реальные:
-   - Темы обращений / названия задач — из `brief.audience` + `brief.mainPain`.
-   - Имена клиентов / агентов — generic-русские (Анна Петрова, Команда поддержки), либо из `brief.proofPoints`.
-   - KPI-числа — из `brief.proofPoints` (если бриф даёт метрики) или маркетинг-разумные (78-95% для positive, единицы для negative).
-   - Чат-диалоги — пара «жалоба → решение» по сценарию из `brief.mainPain`.
-   - Никаких "Item 1", "Card", "Title", "Lorem ipsum".
-4. Соблюди ось цвета: одна семантическая ось на mock (`accent`-цвета карточек = только статус, ИЛИ только приоритет, ИЛИ только тип — не смешивать).
-5. Один активный элемент на mock (`active: true`), остальные приглушены (`dim: true` в board, `done: true/false` mix в checklist).
-6. Эмодзи — 0 или 1 на mock, из разрешённого набора шаблона.
-7. **Чек-лист самопроверки** (из section-mock-skill.md §4) — пройди мысленно по каждому пункту до записи spec'а в файл.
+   - Hero → почти всегда (выбери `visual.variant: 'support-board'` или попроси добавить новый mock).
+   - body-секции (`MediaCopy`, `FeatureGrid` нарративные) → нужен, если секция про конкретный workflow.
+   - CTA-баннеры (`PromoBanner`, `FinalCta`), FAQ, footer, BenefitsStrip → mock не нужен.
+2. Если подходящий mock УЖЕ есть в `packages/ui/src/landing/mocks/` — просто укажи его в spec'е через `variant`.
+3. Если mock'а нет — НЕ выдумывай данные в spec'е. Попроси добавить новый специализированный mock-компонент по правилам [`section-mock-skill.md`](../../../packages/harness/src/prompts/section-mock-skill.md) §3 (Алгоритм добавления). Это отдельная инкрементальная задача: создать `<Name>Mock.tsx` в `mocks/`, расширить enum `variant` в schema/registry, подключить case в `HeroVisual` / `MediaCopy`.
+4. Все доменные тексты в новом mock'е — из брифа (`brief.audience`, `brief.mainPain`, `brief.proofPoints`). Никаких «Item 1», «Lorem», абстрактных «Tag/Status».
+5. **Чек-лист самопроверки** для созданного mock'а — `section-mock-skill.md` §4.
 
-**Пример (Hero для kaiten-техподдержки):**
+**Пример spec-фрагмента, использующего существующий `SupportBoardMock`:**
 
 ```json
 {
@@ -98,47 +103,22 @@ Write the JSON to `content/landings/<slug>.json` (the `outputPath` from prepare)
   "component": "HeroSection",
   "props": {
     "eyebrow": "Кайтен для техподдержки",
-    "title": "Служба поддержки без потерянных заявок",
+    "title": "Служба поддержки без потерянных заявок и разбросанных чатов",
+    "accentWord": "потерянных",
     "subtitle": "Принимайте обращения из почты, мессенджера и с портала на одной доске.",
-    "primaryCta": { "label": "Получить демо", "href": "/demo" },
-    "secondaryCta": { "label": "Как это работает", "href": "#how" },
-    "mockUi": {
-      "template": "board",
-      "content": {
-        "tabs": ["Заявки", "Очередь", "SLA", "Ответы", "Фильтры"],
-        "activeTab": "Заявки",
-        "columns": [
-          {
-            "title": "Новые",
-            "count": 8,
-            "cards": [
-              { "title": "Не приходит код подтверждения", "meta": "Telegram · новый клиент", "accent": "primary", "badges": [{ "label": "P1", "tone": "red" }], "active": true },
-              { "title": "Ошибка в личном кабинете", "meta": "Передать в разработку", "accent": "red", "badges": [{ "label": "Bug", "tone": "red" }, { "label": "SLA 2ч", "tone": "neutral" }], "dim": true }
-            ]
-          },
-          {
-            "title": "В работе",
-            "cards": [
-              { "title": "Нужен акт сверки", "meta": "Почта · бухгалтерия", "accent": "orange" },
-              { "title": "Восстановить доступ", "meta": "Чат · повторное обращение", "accent": "primary", "dim": true }
-            ]
-          },
-          {
-            "title": "Готово",
-            "cards": [
-              { "title": "Доступ восстановлен", "meta": "Оценка: 5/5", "accent": "green", "badges": [{ "label": "Закрыта", "tone": "emerald" }] },
-              { "title": "Возврат оплаты обработан", "meta": "Telegram", "accent": "green", "dim": true }
-            ]
-          }
-        ],
-        "activeEmoji": "☝️"
-      }
-    }
+    "primaryCta": { "label": "Попробовать бесплатно", "href": "/signup" },
+    "secondaryCta": { "label": "Хочу записаться на демо", "href": "#demo" },
+    "visual": {
+      "type": "product_screenshot",
+      "assetId": "kaiten-support-board",
+      "variant": "support-board"
+    },
+    "visualPosition": "side"
   }
 }
 ```
 
-Если mock для секции не нужен — просто не клади `mockUi` в props.
+Если для секции mock не нужен — просто не клади `visual` либо укажи `variant: 'generic'` + `src`.
 
 ### 4. Apply (validate + render TSX) — deterministic, no LLM
 
@@ -158,9 +138,44 @@ This will:
 
 On success, you get the preview URL.
 
+### 4½. Audience-score gate (новое — обязательно)
+
+После того как brand + business валидаторы прошли и TSX отрендерен, `agent apply` **автоматически** прогоняет audience-score gate из `wiki/audiences/kaiten-scoring.json`. Это последний барьер перед preview.
+
+**Что считается:**
+
+- `S1 Story coverage (×0.4)` — закрыты ли top-N user stories (Score ≥ 87 — must-have; см. `wiki/audiences/kaiten-scoring.md`).
+- `S2 Segment fit (×0.3)` — упоминаются ли резолвленные сегменты в hero/features/FAQ.
+- `S3 Role addressability (×0.2)` — Тимлид/PM и ЛПР закрыты явно; для финансов/госа — плюс IT-директор (on-prem/ГОСТ).
+- `S4 CTA alignment (×0.1)` — CTA соответствуют preferred типу сегмента (Trial для PLG-сегментов, Demo для Sales-Enable).
+
+**Гейт по умолчанию:** `score ≥ 70` И все must-pass правила green. Если нет — `agent apply` exits с error, отчёт пишется в:
+
+- `.context/audience-score/<slug>.{json,md}` (детально, по каждой story / роли / правилу)
+- секцию `## Audience score` в `wiki/landings/<slug>.md` (часть досье)
+
+**Что делать при `audience-resolve-needed`:**
+
+Этот маркер появляется, когда в brief.audience/market нет ни одного известного сегмента из scoring-конфига. Тогда:
+
+1. Сделай короткий audience-research для темы брифа: «кто типично использует продукт такого типа, кто принимает решение». РФ/СНГ — в первую очередь, мир — во вторую.
+2. Запиши результат в `content/briefs/<slug>.json` в поле `resolvedSegments` (массив id из `wiki/audiences/kaiten-scoring.md`, напр. `["IT", "Агентства"]`).
+3. По желанию — заведи `wiki/audiences/<slug>.md` с обоснованием выбора (аудит-след).
+4. Запусти apply снова — теперь scoring сразу попадёт.
+
+**Что делать при `score < threshold` или must-pass fail:**
+
+Прочитай `.context/audience-score/<slug>.md` — там для каждой непокрытой story есть suggestion со списком ключевых слов и типом контента, которого не хватает. Правь `content/landings/<slug>.json` точечно: добавляй секции/копи/CTA по подсказкам. Repeat apply.
+
+**Бюджет:** до 3 итераций аудиенс-исправлений (как brand/business). Если за 3 итерации не сошлось — сообщи пользователю, не пытайся бесконечно.
+
+**Эскейп-хатч:** `agent apply landing --no-audience-gate` отключает гейт целиком (для отладки, не для регулярного использования). `--audience-threshold 60` — мягче порог.
+
+**Пересчитать score без апплая:** `agent score landing --slug <slug> --brief <path>`.
+
 ### 5. Repair loop (still no LLM call)
 
-If apply returns errors, the CLI lists them per-section. Use `--json` to get machine-readable output:
+If apply returns errors (brand / business / audience), the CLI lists them per-section. Use `--json` to get machine-readable output:
 
 ```bash
 pnpm -w run harness agent apply landing --slug <slug> --brief content/briefs/<slug>.json --json
@@ -190,14 +205,16 @@ Self-contained ZIP for the frontend team.
 - **Never invent components.** Only the 6 in the registry. Check with `pnpm -w run harness registry`.
 - **Never hand-edit `generated/landings/<slug>/page.tsx`** — it's derived from the spec. Re-run apply.
 - If the spec already exists, you can skip prepare and start from apply (e.g. for re-validation after manual edits).
-- **Never skip mock authoring** на SaaS-лендингах. Лендинг без mock'ов в Hero и body-секциях выглядит «голым» — это блокер ревью (см. memory `visual-review-required`). Минимум: Hero + 2 body-секции с mockUi.
+- **Never skip mock authoring** на SaaS-лендингах. Лендинг без mock'ов в Hero и body-секциях выглядит «голым» — это блокер ревью (см. memory `visual-review-required`). Минимум: Hero с `visual.variant: 'support-board'` (или другой реальный mock) + 2 body-секции с встроенными mock-компонентами (`MediaCopy`/`MetricsSplit`/`ProcessSteps` etc.).
 
 ## Anti-patterns
 
 - Calling external APIs or asking the user for API keys (the whole point of agent-mode is to avoid this).
 - Writing markdown fences or commentary into the spec JSON — apply only accepts pure JSON.
 - Regenerating illustrations on every landing run — they are stable artifacts in `packages/ui/src/illustrations/`.
-- Lorem-style or abstract content inside `mockUi.content` (e.g. `"title": "Card 1"`, `"meta": "Source · Tag"`). Use domain-specific copy from the brief.
-- Mixing two semantic color axes inside one mock (priority + type via `accent`). One axis per mock.
-- Two or more emoji glyphs inside one `mockUi.content` block. Zero or one.
-- A landing where every body section has the same layout (text+mock, text+mock, …). Apply zigzag: alternating sections with mocks left/right (the renderer can flip via CSS — but plan visually).
+- Lorem-style или abstract данные в новом mock-компоненте. Контент — domain-specific из брифа.
+- Mixing two semantic color axes inside one mock (priority + type через accent-bar). One axis per mock.
+- Two or more эмодзи в одном mock-компоненте. Zero or one.
+- A landing where every body section has the same layout (text+mock, text+mock, …). Apply zigzag: alternating sections with mocks left/right (`MediaCopy.reverse: true` в каждой второй).
+- Reuse того же mock-компонента в двух разных сценариях через `variant` без визуального обоснования. Если сценарии визуально разные — это два разных компонента.
+- Props на content в mock-компоненте (`tickets: Ticket[]`, `messages: Message[]`). Контент — хардкод; для разветвления — только `variant: 'a' | 'b'`.
