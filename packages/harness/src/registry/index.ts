@@ -300,3 +300,32 @@ export function describeRegistry(): string {
     2,
   );
 }
+
+export {
+  DOMAIN_REGISTRY,
+  getAllowedVariants,
+  getCoveredDomains,
+  getDomainEntry,
+  getDomainOfVariant,
+  getMissingMocksForDomain,
+  getUncoveredDomains,
+  isVariantValidForDomain,
+  resolveDomainFromBrief,
+} from './domain-visual';
+export type { Domain, DomainEntry, DomainMockEntry, MissingMockHint } from './domain-visual';
+
+export {
+  UsageEntrySchema,
+  UsageRegistrySchema,
+  clearLandingUsage,
+  countMockUsesGlobal,
+  fingerprintLandingSemantics,
+  fingerprintLandingStructure,
+  listLandingSlugs,
+  listUsagesForLanding,
+  loadUsageRegistry,
+  recordMockUse,
+  saveUsageRegistry,
+  structureDistance,
+} from './global-illustration-usage';
+export type { UsageEntry, UsageRegistry } from './global-illustration-usage';

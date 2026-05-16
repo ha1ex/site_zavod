@@ -171,7 +171,38 @@ stale: false
 ## Audience score
 
 <!-- gen:audience-score -->
-_(автогенерируется audience-score gate'ом при agent apply)_
+# Audience score — `crm`
+
+- **Score:** 78.49 / 100 (threshold 70) — ❌ fail
+- **Resolved segments:** IT
+- **CTA types detected:** Trial, Demo, Unknown
+- **Generated:** 2026-05-16T06:48:24.766Z
+
+## Breakdown
+
+| ID | Subscore | Raw | Weight | Weighted | Detail |
+|---|---|---|---|---|---|
+| S1 | Story coverage | 58.73 | 0.4 | 23.49 | top-6 stories: compare(w=0.98, c=0.30), migrate-jira(w=0.95, c=0.77), fast-check(w=0.94, c=1.00), ux-check(w=0.71, c=0.53), sandbox(w=0.62, c=0.30), security(w=0.53, c=0.47) |
+| S2 | Segment fit | 100 | 0.3 | 30 | mentioned=1/1 [IT] |
+| S3 | Role addressability | 75 | 0.2 | 15 | PM=1.00, DM=0.50 |
+| S4 | CTA alignment | 100 | 0.1 | 10 | cta-types=[Trial,Demo,Unknown], match=1/1 |
+
+## Story coverage (top-N)
+
+| Story | Weight | Covered | Status |
+|---|---|---|---|
+| compare — Хочу сравнить с тем, что уже есть | 0.98 | 0.3 | 🟡 partial — добавь ключевые слова или CTA story в копирайт |
+| migrate-jira — Хочу понять, стоит ли переезжать с Jira | 0.95 | 0.77 | ✅ covered |
+| fast-check — Хочу быстро проверить, подойдёт ли нам | 0.94 | 1 | ✅ covered |
+| ux-check — Хочу проверить UX до решения | 0.71 | 0.53 | 🟡 partial — добавь ключевые слова или CTA story в копирайт |
+| sandbox — Хочу проверить, не сломаем ли мы всё | 0.62 | 0.3 | 🟡 partial — добавь ключевые слова или CTA story в копирайт |
+| security — Хочу понять ограничения и безопасность | 0.53 | 0.48 | 🟡 partial — добавь ключевые слова или CTA story в копирайт |
+
+## Issues
+
+- **must-pass-failed** (`seo-mentions-priority`): seo.title + seo.description не упоминают ни одного резолвленного сегмента, ни ключевых слов из top-3 stories.
+  - _suggestion:_ Добавь в SEO упоминание сегмента (например, IT) или ключевое слово (сравни).
+
 <!-- /gen:audience-score -->
 
 ## Lessons (LLM-extract)

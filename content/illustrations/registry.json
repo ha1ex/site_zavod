@@ -1,0 +1,114 @@
+{
+  "version": 1,
+  "updatedAt": "2026-05-16T06:48:50.667Z",
+  "entries": [
+    {
+      "kind": "mock-use",
+      "variant": "sales-funnel",
+      "landingSlug": "crm",
+      "sectionId": "hero",
+      "sectionIdx": 0,
+      "domain": "crm",
+      "recordedAt": "2026-05-16T06:48:50.661Z"
+    },
+    {
+      "kind": "mock-use",
+      "variant": "crm-client-card",
+      "landingSlug": "crm",
+      "sectionId": "tabbed_feature",
+      "sectionIdx": 2,
+      "domain": "crm",
+      "recordedAt": "2026-05-16T06:48:50.662Z"
+    },
+    {
+      "kind": "mock-use",
+      "variant": "omnichannel-inbox",
+      "landingSlug": "crm",
+      "sectionId": "tabbed_feature",
+      "sectionIdx": 2,
+      "domain": "crm",
+      "recordedAt": "2026-05-16T06:48:50.663Z"
+    },
+    {
+      "kind": "mock-use",
+      "variant": "crm-analytics",
+      "landingSlug": "crm",
+      "sectionId": "tabbed_feature",
+      "sectionIdx": 2,
+      "domain": "crm",
+      "recordedAt": "2026-05-16T06:48:50.663Z"
+    },
+    {
+      "kind": "mock-use",
+      "variant": "omnichannel-inbox",
+      "landingSlug": "crm",
+      "sectionId": "scenario_walkthrough",
+      "sectionIdx": 4,
+      "domain": "crm",
+      "recordedAt": "2026-05-16T06:48:50.664Z"
+    },
+    {
+      "kind": "mock-use",
+      "variant": "call-overlay",
+      "landingSlug": "crm",
+      "sectionId": "scenario_walkthrough",
+      "sectionIdx": 4,
+      "domain": "crm",
+      "recordedAt": "2026-05-16T06:48:50.665Z"
+    },
+    {
+      "kind": "mock-use",
+      "variant": "crm-client-card",
+      "landingSlug": "crm",
+      "sectionId": "scenario_walkthrough",
+      "sectionIdx": 4,
+      "domain": "crm",
+      "recordedAt": "2026-05-16T06:48:50.665Z"
+    },
+    {
+      "kind": "mock-use",
+      "variant": "doc-template",
+      "landingSlug": "crm",
+      "sectionId": "scenario_walkthrough",
+      "sectionIdx": 4,
+      "domain": "crm",
+      "recordedAt": "2026-05-16T06:48:50.666Z"
+    },
+    {
+      "kind": "mock-use",
+      "variant": "crm-analytics",
+      "landingSlug": "crm",
+      "sectionId": "scenario_walkthrough",
+      "sectionIdx": 4,
+      "domain": "crm",
+      "recordedAt": "2026-05-16T06:48:50.666Z"
+    },
+    {
+      "kind": "mock-use",
+      "variant": "sales-funnel",
+      "landingSlug": "crm",
+      "sectionId": "media_copy",
+      "sectionIdx": 5,
+      "domain": "crm",
+      "recordedAt": "2026-05-16T06:48:50.667Z"
+    },
+    {
+      "kind": "mock-use",
+      "variant": "mobile-crm",
+      "landingSlug": "crm",
+      "sectionId": "media_copy",
+      "sectionIdx": 6,
+      "domain": "crm",
+      "recordedAt": "2026-05-16T06:48:50.667Z"
+    },
+    {
+      "kind": "mock-use",
+      "variant": "booking-calendar",
+      "landingSlug": "crm",
+      "sectionId": "media_copy",
+      "sectionIdx": 7,
+      "domain": "crm",
+      "recordedAt": "2026-05-16T06:48:50.667Z"
+    }
+  ]
+}

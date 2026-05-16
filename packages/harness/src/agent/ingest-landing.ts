@@ -10,6 +10,9 @@ import {
   validateLandingAudience,
   validateLandingVisualDiversity,
   validateLandingLayoutConformance,
+  validateIllustrationDomainMatch,
+  validateCrossLandingDiversity,
+  writeCrossLandingDiversityReport,
   formatAudienceReportMarkdown,
   type LandingBrandError,
   type LandingBusinessError,
@@ -17,15 +20,24 @@ import {
   type LandingAudienceResult,
   type LandingVisualDiversityError,
   type LandingLayoutConformanceError,
+  type IllustrationDomainMatchError,
+  type CrossLandingDiversityIssue,
+  type CrossLandingDiversityResult,
 } from '../validators/index';
 import { renderLandingToTSX } from '../render/index';
 import { buildLandingSystemPromptWithMeta } from '../prompts/system';
 import { appendLog, fileLandingToWiki } from '../wiki/index';
+import {
+  clearLandingUsage,
+  recordMockUse,
+  resolveDomainFromBrief,
+  type Domain,
+} from '../registry/index';
 
 export type IngestStage = 'read' | 'parse' | 'validate' | 'render' | 'file-back' | 'done';
 
 export interface IngestLandingError {
-  kind: 'parse' | 'brand' | 'business' | 'audience' | 'visual' | 'layout';
+  kind: 'parse' | 'brand' | 'business' | 'audience' | 'visual' | 'layout' | 'domain' | 'diversity';
   message: string;
   path?: string;
   code?: string;
@@ -47,6 +59,10 @@ export interface IngestLandingOptions {
   audienceThreshold?: number;
   /** Полностью отключить audience-score gate (не запускать валидатор). */
   noAudienceGate?: boolean;
+  /** Превратить cross-landing-diversity warnings в errors (блокирует ingest). */
+  strictDiversity?: boolean;
+  /** Полностью отключить cross-landing diversity audit (для отладки). */
+  noDiversityAudit?: boolean;
 }
 
 export interface IngestLandingResult {
@@ -69,6 +85,10 @@ export interface IngestLandingResult {
   /** Пути отчётов audience-score (если гейт отработал). */
   audienceReportJsonRel?: string;
   audienceReportMdRel?: string;
+  /** Cross-landing diversity audit result (undefined если выключен или без brief). */
+  diversity?: CrossLandingDiversityResult;
+  /** Путь отчёта diversity audit (если запускался). */
+  diversityReportMdRel?: string;
 }
 
 export async function ingestLanding(opts: IngestLandingOptions): Promise<IngestLandingResult> {
@@ -186,6 +206,48 @@ export async function ingestLanding(opts: IngestLandingOptions): Promise<IngestL
     warnings.push(`visual:warn ${w.where ?? '*'} — ${w.message}`);
   }
 
+  // Domain-match gate — блокирует cross-domain reuse (pm-board в CRM-лендинге).
+  // Требует brief для резолва домена. Если brief нет — skip с warning.
+  let resolvedDomain: Domain | undefined;
+  if (brief) {
+    resolvedDomain = resolveDomainFromBrief(brief);
+    const domainMatch = validateIllustrationDomainMatch(spec, brief);
+    if (!domainMatch.ok) {
+      for (const e of domainMatch.errors) errors.push(illustrationDomainMatchToIngestError(e));
+    }
+    for (const w of domainMatch.warnings) {
+      warnings.push(`domain:warn ${w.where ?? '*'} — ${w.message}`);
+    }
+  } else {
+    warnings.push(
+      'brief не передан — domain-match validator пропущен. Cross-domain reuse не будет пойман автоматически.',
+    );
+  }
+
+  // Cross-landing diversity audit — soft warns по умолчанию, hard через strictDiversity.
+  let diversity: CrossLandingDiversityResult | undefined;
+  let diversityReportMdRel: string | undefined;
+  if (!opts.noDiversityAudit) {
+    try {
+      diversity = await validateCrossLandingDiversity(spec, {
+        root: opts.root,
+        slug: opts.slug,
+        brief,
+        strict: opts.strictDiversity,
+      });
+      const reportAbs = await writeCrossLandingDiversityReport(opts.root, opts.slug, diversity);
+      diversityReportMdRel = relative(opts.root, reportAbs);
+      if (!diversity.ok) {
+        for (const e of diversity.errors) errors.push(diversityToIngestError(e));
+      }
+      for (const w of diversity.warnings) {
+        warnings.push(`diversity:warn ${w.where ?? '*'} — ${w.message}`);
+      }
+    } catch (err) {
+      warnings.push(`cross-landing diversity audit пропущен: ${(err as Error).message}`);
+    }
+  }
+
   // Layout conformance — проверяем порядок секций vs выбранный layout.
   if (layoutSlug) {
     const conformance = await validateLandingLayoutConformance(spec, {
@@ -280,6 +342,7 @@ export async function ingestLanding(opts: IngestLandingOptions): Promise<IngestL
     archetype,
     layout: layoutSlug,
     tokenEstimate,
+    domain: resolvedDomain,
   };
 
   // Persist spec (possibly с пересохранёнными meta).
@@ -293,6 +356,62 @@ export async function ingestLanding(opts: IngestLandingOptions): Promise<IngestL
     tsxPathRel = relative(opts.root, tsxPath);
     await mkdir(dirname(tsxPath), { recursive: true });
     await writeFile(tsxPath, tsx, 'utf-8');
+  }
+
+  // Запись использованных variants в global usage registry (для следующих лендингов).
+  // Делаем только при успехе и если домен резолвлен — иначе записи будут грязные.
+  if (!hasErrors && resolvedDomain && resolvedDomain !== 'unknown') {
+    try {
+      await clearLandingUsage(opts.root, opts.slug);
+      for (let i = 0; i < spec.sections.length; i++) {
+        const section = spec.sections[i]!;
+        if (section.component === 'HeroSection') {
+          const v = section.props.visual?.variant;
+          if (v && v !== 'generic') {
+            await recordMockUse(opts.root, {
+              variant: v,
+              landingSlug: opts.slug,
+              sectionId: section.id,
+              sectionIdx: i,
+              domain: resolvedDomain,
+            });
+          }
+        } else if (section.component === 'MediaCopy') {
+          const v = section.props.mediaVariant;
+          if (v && v !== 'default') {
+            await recordMockUse(opts.root, {
+              variant: v,
+              landingSlug: opts.slug,
+              sectionId: section.id,
+              sectionIdx: i,
+              domain: resolvedDomain,
+            });
+          }
+        } else if (section.component === 'TabbedFeatureSection') {
+          for (const tab of section.props.tabs) {
+            await recordMockUse(opts.root, {
+              variant: tab.mockVariant,
+              landingSlug: opts.slug,
+              sectionId: section.id,
+              sectionIdx: i,
+              domain: resolvedDomain,
+            });
+          }
+        } else if (section.component === 'ScenarioWalkthroughSection') {
+          for (const step of section.props.steps) {
+            await recordMockUse(opts.root, {
+              variant: step.mockVariant,
+              landingSlug: opts.slug,
+              sectionId: section.id,
+              sectionIdx: i,
+              domain: resolvedDomain,
+            });
+          }
+        }
+      }
+    } catch (err) {
+      warnings.push(`usage registry update failed: ${(err as Error).message}`);
+    }
   }
 
   let wikiPath: string | undefined;
@@ -343,6 +462,8 @@ export async function ingestLanding(opts: IngestLandingOptions): Promise<IngestL
     audienceScore,
     audienceReportJsonRel,
     audienceReportMdRel,
+    diversity,
+    diversityReportMdRel,
   };
 }
 
@@ -390,6 +511,26 @@ function landingVisualToIngestError(e: LandingVisualDiversityError): IngestLandi
 function landingLayoutToIngestError(e: LandingLayoutConformanceError): IngestLandingError {
   return {
     kind: 'layout',
+    message: e.message,
+    path: e.where,
+    code: e.rule,
+  };
+}
+
+function illustrationDomainMatchToIngestError(
+  e: IllustrationDomainMatchError,
+): IngestLandingError {
+  return {
+    kind: 'domain',
+    message: e.message,
+    path: e.where,
+    code: e.rule,
+  };
+}
+
+function diversityToIngestError(e: CrossLandingDiversityIssue): IngestLandingError {
+  return {
+    kind: 'diversity',
     message: e.message,
     path: e.where,
     code: e.rule,

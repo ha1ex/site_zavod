@@ -483,6 +483,14 @@ export const LandingSpecMetaSchema = z
     layout: z.string().optional().describe('Slug выбранного layout из wiki/layouts/'),
     tokenEstimate: z.number().optional(),
     promptVersion: z.string().optional(),
+    domain: z
+      .enum(['pm', 'support', 'crm', 'hr', 'marketing', 'bpm', 'finance', 'ecommerce', 'unknown'])
+      .optional()
+      .describe(
+        'Резолвленный домен продукта (из brief.product/market/audience). Используется ' +
+          'illustration-domain-match валидатором для блокировки cross-domain reuse. ' +
+          'Если не задан явно — резолвится из brief при ingest. См. wiki/references/domain-mock-matrix.md.',
+      ),
   })
   .optional();
 export type LandingSpecMeta = z.infer<typeof LandingSpecMetaSchema>;

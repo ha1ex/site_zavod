@@ -41,3 +41,20 @@ export {
   type LandingLayoutConformanceResult,
   type LandingLayoutConformanceOptions,
 } from './landing-layout-conformance';
+export {
+  validateIllustrationDomainMatch,
+  formatIllustrationDomainMatchErrors,
+  type IllustrationDomainMatchError,
+  type IllustrationDomainMatchResult,
+  type IllustrationDomainMatchOptions,
+  type IllustrationDomainMatchRule,
+} from './illustration-domain-match';
+export {
+  validateCrossLandingDiversity,
+  formatCrossLandingDiversityErrors,
+  writeCrossLandingDiversityReport,
+  type CrossLandingDiversityIssue,
+  type CrossLandingDiversityResult,
+  type CrossLandingDiversityOptions,
+  type CrossLandingDiversityRule,
+} from './cross-landing-diversity';
