@@ -90,7 +90,7 @@ async function collectMarkdown(root: string, dir: string): Promise<string[]> {
 function extractFirstHeading(body: string): string | null {
   for (const line of body.split(/\r?\n/)) {
     const m = line.match(/^#\s+(.+)$/);
-    if (m) return m[1].trim();
+    if (m && m[1]) return m[1].trim();
   }
   return null;
 }
@@ -130,7 +130,7 @@ function renderIndex(grouped: Record<string, WikiPage[]>, now: Date): string {
     meta: 'Meta',
   };
 
-  for (const type of Object.keys(TYPE_ORDER).sort((a, b) => TYPE_ORDER[a] - TYPE_ORDER[b])) {
+  for (const type of Object.keys(TYPE_ORDER).sort((a, b) => (TYPE_ORDER[a] ?? 0) - (TYPE_ORDER[b] ?? 0))) {
     const pages = grouped[type];
     if (!pages || pages.length === 0) continue;
     lines.push('', `## ${labels[type] ?? type}`, '');
@@ -143,6 +143,7 @@ function renderIndex(grouped: Record<string, WikiPage[]>, now: Date): string {
   for (const type of Object.keys(grouped)) {
     if (type in TYPE_ORDER) continue;
     const pages = grouped[type];
+    if (!pages) continue;
     lines.push('', `## ${type}`, '');
     for (const p of pages) {
       lines.push(`- [\`${p.relPath}\`](${p.relPath}) — ${p.description}`);

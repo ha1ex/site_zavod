@@ -269,7 +269,7 @@ function mergeStringArrays(a: string[], b: string[]): string[] {
   return [...set];
 }
 
-function asArray(v: FrontMatter[string]): string[] {
+function asArray(v: FrontMatter[string] | undefined): string[] {
   if (Array.isArray(v)) return v.map(String);
   return [];
 }

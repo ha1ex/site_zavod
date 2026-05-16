@@ -113,7 +113,7 @@ export function suggestLessonFromIncident(input: {
   archetype?: string;
 }): ProposedLessonFromIncident | null {
   if (input.errors.length === 0) return null;
-  const e = input.errors[0];
+  const e = input.errors[0]!;
   const constraint = e.path.replace(/sections\[\d+\]\.props\./, '').replace(/\[\d+\]/g, '');
   const slug = `${input.archetype ?? 'general'}-${constraint.replace(/\./g, '-')}`.toLowerCase();
   return {

@@ -46,7 +46,25 @@ export type MediaCopyVariant =
   | 'booking-calendar'
   | 'crm-analytics'
   | 'doc-template'
-  | 'mobile-crm';
+  | 'mobile-crm'
+  | 'hiring-pipeline'
+  | 'candidate-card'
+  | 'onboarding-checklist'
+  | 'org-chart'
+  | 'performance-review'
+  | 'campaign-dashboard'
+  | 'email-sequence'
+  | 'ab-test-results'
+  | 'audience-segments'
+  | 'process-flowchart'
+  | 'approval-chain'
+  | 'sla-tracker'
+  | 'ledger-view'
+  | 'invoice-status'
+  | 'reconciliation-matrix'
+  | 'order-queue'
+  | 'inventory-grid'
+  | 'marketplace-connector';
 
 export interface MediaCopyProps {
   eyebrow?: string;
@@ -58,6 +76,11 @@ export interface MediaCopyProps {
   mediaVariant?: MediaCopyVariant;
   primaryCta?: MediaCopyCtaProps;
   secondaryCta?: MediaCopyCtaProps | null;
+  /**
+   * Reference to an auto-generated unique SVG illustration (P8 phase).
+   * Currently passed through but not rendered (M4 full integration upcoming).
+   */
+  customIllustrationId?: string;
 }
 
 /**

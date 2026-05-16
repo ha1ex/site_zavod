@@ -42,7 +42,7 @@ function parseFmBlock(lines: string[]): FrontMatter {
   const result: FrontMatter = {};
   let i = 0;
   while (i < lines.length) {
-    const line = lines[i];
+    const line = lines[i]!;
     if (!line.trim() || line.trim().startsWith('#')) {
       i++;
       continue;
@@ -55,11 +55,11 @@ function parseFmBlock(lines: string[]): FrontMatter {
     const key = line.slice(0, colonIdx).trim();
     const rawValue = line.slice(colonIdx + 1).trim();
 
-    if (rawValue === '' && i + 1 < lines.length && lines[i + 1].trimStart().startsWith('- ')) {
+    if (rawValue === '' && i + 1 < lines.length && lines[i + 1]!.trimStart().startsWith('- ')) {
       const arr: string[] = [];
       i++;
-      while (i < lines.length && lines[i].trimStart().startsWith('- ')) {
-        const item = lines[i].trimStart().slice(2).trim();
+      while (i < lines.length && lines[i]!.trimStart().startsWith('- ')) {
+        const item = lines[i]!.trimStart().slice(2).trim();
         arr.push(unquote(item));
         i++;
       }

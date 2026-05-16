@@ -41,7 +41,31 @@ export interface AssetRefProps {
     | 'crm-analytics'
     | 'doc-template'
     | 'mobile-crm'
+    | 'hiring-pipeline'
+    | 'candidate-card'
+    | 'onboarding-checklist'
+    | 'org-chart'
+    | 'performance-review'
+    | 'campaign-dashboard'
+    | 'email-sequence'
+    | 'ab-test-results'
+    | 'audience-segments'
+    | 'process-flowchart'
+    | 'approval-chain'
+    | 'sla-tracker'
+    | 'ledger-view'
+    | 'invoice-status'
+    | 'reconciliation-matrix'
+    | 'order-queue'
+    | 'inventory-grid'
+    | 'marketplace-connector'
     | 'generic';
+  /**
+   * Reference to an auto-generated unique SVG illustration (P8 phase).
+   * When set, renderer uses it instead of variant. Currently passed through
+   * but not rendered (M4 full integration upcoming).
+   */
+  illustrationId?: string;
 }
 
 export interface HeroSectionProps {

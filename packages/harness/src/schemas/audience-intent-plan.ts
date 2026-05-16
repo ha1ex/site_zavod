@@ -21,8 +21,12 @@ export type AwarenessLevel = z.infer<typeof AwarenessLevelSchema>;
 export const DecisionMakerSchema = z.enum(['dm', 'itdir', 'exec', 'end-user']);
 export type DecisionMaker = z.infer<typeof DecisionMakerSchema>;
 
-export const CtaTypeSchema = z.enum(['Trial', 'Demo', 'PDF', 'Partner', 'Blog']);
-export type CtaType = z.infer<typeof CtaTypeSchema>;
+/**
+ * Префикс `AudienceIntent` чтобы не конфликтовать с `CtaType` из
+ * landing-audience validator (там тоже Enum CTA-типов).
+ */
+export const AudienceIntentCtaTypeSchema = z.enum(['Trial', 'Demo', 'PDF', 'Partner', 'Blog']);
+export type AudienceIntentCtaType = z.infer<typeof AudienceIntentCtaTypeSchema>;
 
 export const AudienceIntentPlanSchema = z.object({
   resolvedSegments: z
@@ -45,7 +49,7 @@ export const AudienceIntentPlanSchema = z.object({
     .default([])
     .describe('Intent-тэги, которых быть НЕ должно (антипрофиль / другой сегмент)'),
   preferredCtaTypes: z
-    .array(CtaTypeSchema)
+    .array(AudienceIntentCtaTypeSchema)
     .min(1)
     .describe('Предпочтительные типы CTA для этого сегмента'),
   rationale: z

@@ -53,6 +53,7 @@ export function resolveColorRef(ref: string, tokens: DesignTokens): string {
   const match = ref.match(/^\{([\w-]+)\.([\w-]+)\}$/);
   if (!match) return ref;
   const [, group, key] = match;
+  if (!group || !key) return ref;
   const colorGroup = (tokens.colors as Record<string, Record<string, string>>)[group];
   if (!colorGroup) return ref;
   const value = colorGroup[key];

@@ -1,7 +1,17 @@
 import { Icon } from '../../primitives/Icon';
 import { cn } from '../../primitives/cn';
 
-const KPIS = [
+type Trend = 'up' | 'down';
+
+interface Kpi {
+  value: string;
+  label: string;
+  delta: string;
+  trend: Trend;
+  accent?: boolean;
+}
+
+const KPIS: Kpi[] = [
   { value: '8,4 млн ₽', label: 'Выручка за май', delta: '+18%', trend: 'up', accent: true },
   { value: '34%', label: 'Конверсия в оплату', delta: '+4 пп', trend: 'up' },
   { value: '1 240 ₽', label: 'Стоимость лида', delta: '−12%', trend: 'down' },
@@ -23,8 +33,8 @@ const SOURCES = [
   { name: 'Партнёры', value: 58, share: 'w-1/4', tone: 'bg-(--color-green-100)' },
 ];
 
-const TREND_ICON: Record<string, string> = { up: 'TrendingUp', down: 'TrendingDown' };
-const TREND_CLASS: Record<string, string> = {
+const TREND_ICON: Record<Trend, string> = { up: 'TrendingUp', down: 'TrendingDown' };
+const TREND_CLASS: Record<Trend, string> = {
   up: 'text-green-700 bg-(--color-green-12)',
   down: 'text-green-700 bg-(--color-green-12)',
 };

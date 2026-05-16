@@ -51,7 +51,7 @@ export function parseLessons(content: string): Lesson[] {
 
   for (const line of lines) {
     const headingMatch = line.match(LESSON_HEADING);
-    if (headingMatch) {
+    if (headingMatch && headingMatch[1]) {
       finalize();
       current = { slug: headingMatch[1], rule: '', constraint: '', raw: '' };
       buffer = [line];
@@ -64,11 +64,11 @@ export function parseLessons(content: string): Lesson[] {
     const appliesMatch = line.match(/^-\s+\*\*applies_to:\*\*\s+(.+)$/i);
     const reasonMatch = line.match(/^-\s+\*\*reason:\*\*\s+(.+)$/i);
     const firstMatch = line.match(/^-\s+\*\*first_observed:\*\*\s+(.+)$/i);
-    if (ruleMatch) current.rule = ruleMatch[1].trim();
-    if (constraintMatch) current.constraint = constraintMatch[1].trim();
-    if (appliesMatch) current.appliesTo = appliesMatch[1].trim();
-    if (reasonMatch) current.reason = reasonMatch[1].trim();
-    if (firstMatch) current.firstObserved = firstMatch[1].trim();
+    if (ruleMatch?.[1]) current.rule = ruleMatch[1].trim();
+    if (constraintMatch?.[1]) current.constraint = constraintMatch[1].trim();
+    if (appliesMatch?.[1]) current.appliesTo = appliesMatch[1].trim();
+    if (reasonMatch?.[1]) current.reason = reasonMatch[1].trim();
+    if (firstMatch?.[1]) current.firstObserved = firstMatch[1].trim();
   }
 
   finalize();
