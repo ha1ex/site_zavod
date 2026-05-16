@@ -37,7 +37,7 @@ export const REGISTRY: ComponentEntry[] = [
     sectionId: 'hero',
     category: 'hero',
     description:
-      'Главный hero-блок: eyebrow (опц.), заголовок (с опц. accentWord-pill), подзаголовок, primary CTA + опционально outline secondary CTA, и визуал. Визуал задаётся через `visual.variant`: `support-board` рендерит специализированный SupportBoardMock (mock канбан-доски), `generic` — статичную картинку из visual.src. Новые специализированные mock-компоненты создаются в `packages/ui/src/landing/mocks/` по правилам `packages/harness/src/prompts/section-mock-skill.md` — после создания добавь новое значение в enum `visual.variant`.',
+      'Главный hero-блок: eyebrow (опц.), заголовок (с опц. accentWord-pill), подзаголовок, primary CTA + опционально outline secondary CTA, и визуал. Визуал задаётся через `visual.variant` — выбери из реестра mock-компонентов под смысл лендинга. ОБЯЗАТЕЛЬНО осознанный выбор: `generic` РАЗРЕШЁН ТОЛЬКО когда ни один из реальных mock\'ов смыслово не подходит. Доступные варианты: `support-board` — канбан службы поддержки; `pm-board` — канбан PM-команды с эпиками, story points и спринтами; `analytics-kpi` — дашборд руководителя с 2×2 KPI и загрузкой команд; `integrations-console` — лента событий из 1С/AmoCRM/Telegram/GitLab; `modules-matrix` — bento-grid модулей платформы. Новые специализированные mock-компоненты создаются в `packages/ui/src/landing/mocks/` по правилам `packages/harness/src/prompts/section-mock-skill.md` — после создания добавь новое значение в enum `visual.variant`.',
     props: {
       eyebrow: 'string (<=80) | undefined',
       title: 'string (4..120)',
@@ -46,7 +46,7 @@ export const REGISTRY: ComponentEntry[] = [
       primaryCta: '{ label: string<=40; href: string }',
       secondaryCta: '{ label; href } | null | undefined',
       visual:
-        "{ type: 'product_screenshot'|'illustration'|'logo_cloud'|'photo'; assetId: string; src?: string; alt?: string; variant?: 'support-board'|'generic' } | null | undefined",
+        "{ type: 'product_screenshot'|'illustration'|'logo_cloud'|'photo'; assetId: string; src?: string; alt?: string; variant: 'support-board'|'pm-board'|'analytics-kpi'|'integrations-console'|'modules-matrix'|'generic' } | null | undefined",
       visualPosition: "'side' (default) | 'below' — раскладка mock'а относительно текста",
     },
     constraints: ['title <= 120', 'subtitle 10..280', 'must_have_primary_cta', 'one_hero_per_landing'],
@@ -176,18 +176,24 @@ export const REGISTRY: ComponentEntry[] = [
     sectionId: 'media_copy',
     category: 'media_copy',
     description:
-      'Флагманский Kaiten-блок: текст с чек-листом по одну сторону и большой mock продуктового UI по другую. Используется 3-5 раз на странице (alternating).',
+      'Флагманский Kaiten-блок: текст с чек-листом по одну сторону и большой mock продуктового UI по другую. Используется 3-5 раз на странице с alternating mediaPosition. ОБЯЗАТЕЛЬНО для каждой MediaCopy явно указать mediaVariant под смысл секции — НЕЛЬЗЯ оставлять `default` ради лени: это generic-placeholder, который выглядит одинаково везде и нарушает уникальность лендинга. Если ни один существующий variant не подходит — создай новый mock-компонент по правилам section-mock-skill.md.',
     props: {
       eyebrow: 'string (<=80) | undefined',
       title: 'string (4..120)',
       description: 'string (<=400) | undefined',
       checklist: 'Array<{ icon?: lucide-name; text: 2..180 }> (<=8) | undefined',
-      mediaPosition: '"left" | "right" (default "right")',
-      mediaPlaceholder: 'string (label inside window-chrome)',
+      mediaPosition: '"left" | "right" (default "right") — alternating обязательно при 2+ MediaCopy подряд',
+      mediaPlaceholder: 'string (label inside window-chrome, виден только при mediaVariant=default)',
+      mediaVariant:
+        '"support-board" (канбан поддержки) | "request-card" (карточка заявки с чатом) | "kb-public" (статья КБ для клиентов) | "kb-internal" (внутренний регламент) | "pm-board" (канбан PM-команды) | "analytics-kpi" (дашборд KPI) | "integrations-console" (лента интеграций) | "modules-matrix" (модули платформы) | "default" (generic — ТОЛЬКО когда оправдано)',
       primaryCta: '{ label; href } | undefined',
       secondaryCta: '{ label; href } | null | undefined',
     },
-    constraints: ['alternate_media_position_when_repeated'],
+    constraints: [
+      'alternate_media_position_when_repeated',
+      'media_variant_must_be_explicit_unless_no_fit',
+      'default_variant_max_1_per_landing',
+    ],
   },
   {
     name: 'StatStrip',

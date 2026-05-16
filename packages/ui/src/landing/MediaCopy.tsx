@@ -1,7 +1,15 @@
 import { ButtonLink } from '../primitives/ButtonLink';
 import { Icon } from '../primitives/Icon';
 import { cn } from '../primitives/cn';
-import { KnowledgeBaseMock, RequestCardMock, SupportBoardMock } from './mocks';
+import {
+  AnalyticsKpiMock,
+  IntegrationsConsoleMock,
+  KnowledgeBaseMock,
+  ModulesMatrixMock,
+  PmBoardMock,
+  RequestCardMock,
+  SupportBoardMock,
+} from './mocks';
 
 export interface MediaCopyCheckItemProps {
   icon?: string;
@@ -18,7 +26,11 @@ export type MediaCopyVariant =
   | 'support-board'
   | 'request-card'
   | 'kb-public'
-  | 'kb-internal';
+  | 'kb-internal'
+  | 'pm-board'
+  | 'analytics-kpi'
+  | 'integrations-console'
+  | 'modules-matrix';
 
 export interface MediaCopyProps {
   eyebrow?: string;
@@ -132,6 +144,14 @@ function MediaCopyVisual({
       return <KnowledgeBaseMock variant="public" />;
     case 'kb-internal':
       return <KnowledgeBaseMock variant="internal" />;
+    case 'pm-board':
+      return <PmBoardMock />;
+    case 'analytics-kpi':
+      return <AnalyticsKpiMock />;
+    case 'integrations-console':
+      return <IntegrationsConsoleMock />;
+    case 'modules-matrix':
+      return <ModulesMatrixMock />;
     default:
       return <ProductMock label={placeholder} />;
   }

@@ -19,7 +19,16 @@ export const AssetRefSchema = z.object({
   assetId: z.string(),
   src: z.string().optional(),
   alt: z.string().optional(),
-  variant: z.enum(['support-board', 'generic']).optional(),
+  variant: z
+    .enum([
+      'support-board',
+      'pm-board',
+      'analytics-kpi',
+      'integrations-console',
+      'modules-matrix',
+      'generic',
+    ])
+    .optional(),
 });
 export type AssetRef = z.infer<typeof AssetRefSchema>;
 
@@ -194,7 +203,17 @@ const MediaCopySchema = z.object({
     mediaPosition: z.enum(['left', 'right']).optional(),
     mediaPlaceholder: z.string().max(80).optional(),
     mediaVariant: z
-      .enum(['default', 'support-board', 'request-card', 'kb-public', 'kb-internal'])
+      .enum([
+        'default',
+        'support-board',
+        'request-card',
+        'kb-public',
+        'kb-internal',
+        'pm-board',
+        'analytics-kpi',
+        'integrations-console',
+        'modules-matrix',
+      ])
       .optional(),
     primaryCta: CtaSchema.optional(),
     secondaryCta: CtaSchema.nullable().optional(),
@@ -324,6 +343,7 @@ export const LandingSpecMetaSchema = z
     generatedAt: z.string().optional(),
     generator: z.string().optional(),
     archetype: z.string().optional(),
+    layout: z.string().optional().describe('Slug выбранного layout из wiki/layouts/'),
     tokenEstimate: z.number().optional(),
     promptVersion: z.string().optional(),
   })

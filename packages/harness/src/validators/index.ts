@@ -27,3 +27,17 @@ export {
   type CtaType,
   type ValidateAudienceOptions,
 } from './landing-audience';
+export {
+  validateLandingVisualDiversity,
+  formatLandingVisualDiversityErrors,
+  type LandingVisualDiversityError,
+  type LandingVisualDiversityResult,
+  type LandingVisualDiversityOptions,
+} from './landing-visual-diversity';
+export {
+  validateLandingLayoutConformance,
+  formatLandingLayoutConformanceErrors,
+  type LandingLayoutConformanceError,
+  type LandingLayoutConformanceResult,
+  type LandingLayoutConformanceOptions,
+} from './landing-layout-conformance';

@@ -4,6 +4,7 @@ import { dirname, resolve } from 'node:path';
 import { describeRegistry } from '../registry/index';
 import { findRepoRoot, loadDesignSystem as loadDesignSystemPages } from '../wiki/load-design-system';
 import { selectContext } from '../wiki/select-context';
+import { loadLayoutPlaybook } from '../wiki/load-layouts';
 import type { Brief } from '../schemas/brief';
 import type { IllustrationSpec } from '../schemas/illustration-spec';
 
@@ -127,25 +128,40 @@ export async function buildLandingSystemPromptWithMeta(
 ): Promise<BuildSystemPromptResult> {
   const ds = await composeDesignSystemBlock(options);
   const sectionMockSkill = await loadSectionMockSkill();
+  const repoRoot = await findRepoRoot(__dirname);
+  const layoutPlaybook = await loadLayoutPlaybook(repoRoot, options.brief?.pageLayout);
 
   const sources = [...ds.sources];
   if (sectionMockSkill.trim()) {
     sources.push('packages/harness/src/prompts/section-mock-skill.md');
   }
+  sources.push(...layoutPlaybook.sources);
 
   const mockUiSection = sectionMockSkill.trim()
     ? `
 
 ## Section Mock skill (правила mock-UI внутри секций)
 
-Любая секция, у которой в схеме есть опциональный \`mockUi\` (HeroSection, FeatureGrid, FinalCta), может содержать HTML/Tailwind UI-мок. Шаблоны (\`board\`, \`chat\`, \`checklist\`, \`article\`, \`kpi\`, \`console\`), hard/soft-rules, чек-лист самопроверки и anti-patterns — ниже. Это **mock authoring stage**: если в секции уместен mock из эталона (см. \`wiki/landings/kaiten-techsupport-reference.md\`), заполни \`mockUi\` доменной конкретикой из брифа.
+Любая визуальная секция (HeroSection, MediaCopy, FeatureGrid, FinalCta) обязана выбрать осознанный mock-вариант. ЗАПРЕЩЕНО оставлять \`mediaVariant: 'default'\` или \`visual.variant: 'generic'\` ради экономии — это создаёт однотипные лендинги. Если ни один существующий variant не подходит — попроси разработчика добавить новый mock-компонент по правилам ниже, потом продолжай spec.
+
+Шаблоны (\`board\`, \`chat\`, \`checklist\`, \`article\`, \`kpi\`, \`console\`), hard/soft-rules, чек-лист самопроверки и anti-patterns — ниже.
 
 ${sectionMockSkill}`
     : '';
 
+  const layoutSection = layoutPlaybook.body.trim()
+    ? `
+
+## Layout playbook (обязательная структура и mock-рекомендации для выбранного layout)
+
+ПРЯМАЯ ИНСТРУКЦИЯ: следуй порядку секций и per-slot mock-рекомендациям из layout-плейбука ниже. Не миксуй порядок «по вкусу» — это и приводило к однотипным лендингам. Если в брифе указан \`pageLayout\`, используй именно его layout; если нет — изучи index и выбери осознанно (опиши свой выбор в spec.meta.layout).
+
+${layoutPlaybook.body}`
+    : '';
+
   const system = `You are a senior product copywriter and UI architect operating inside a controlled harness for generating SaaS landing pages.
 
-Your job is NOT to invent layouts or copy from scratch — you ASSEMBLE a landing page from a fixed set of allowed components, using the user's brief, and you OUTPUT a strictly structured JSON LandingSpec that downstream tools will render deterministically.
+Your job is NOT to invent layouts or copy from scratch — you ASSEMBLE a landing page from a fixed set of allowed components, using the user's brief and the layout playbook, and you OUTPUT a strictly structured JSON LandingSpec that downstream tools will render deterministically.
 
 ## Operator rules
 
@@ -156,8 +172,9 @@ Your job is NOT to invent layouts or copy from scratch — you ASSEMBLE a landin
 - One primary CTA per page that matches the brief's goal.
 - Hero section must be the first section.
 - Match the brand voice from \`wiki/design-system/voice.md\` (see below). Banned hype words are listed there — never use them.
-- Follow the conversion-landing skill (if present below) for page-type structure, awareness-aware H1 formulas, Feature → Benefit Transformation, CTA hierarchy, social proof rules, and anti-patterns. The skill is your contract — sections, copy and order should match it for the chosen page type.
-- For sections that support \`mockUi\` (Hero, FeatureGrid, FinalCta) — follow the Section Mock skill rules (see below). Use domain-specific copy from the brief, never Lorem-style placeholders. Pattern coverage: один крупный Hero-mock + 3-5 средних mock'ов в body-секциях.
+- Follow the conversion-landing skill (if present below) for page-type structure, awareness-aware H1 formulas, Feature → Benefit Transformation, CTA hierarchy, social proof rules, and anti-patterns.
+- **Pick a layout from \`wiki/layouts/\` BEFORE writing sections.** Brief может уже содержать \`pageLayout\` — используй его. Если не указан, прочитай \`wiki/layouts/index.md\` и выбери осознанно. Запиши выбор в \`spec.meta.layout\`.
+- **Mock authoring per section is MANDATORY.** Для каждой визуальной секции явно выбери mock-variant из реестра компонентов — НЕЛЬЗЯ оставлять \`mediaVariant: 'default'\` или \`visual.variant: 'generic'\` ради скорости. Это приводит к лендингам, где все блоки выглядят одинаково. Если нужен новый mock — попроси разработчика добавить компонент.
 
 ## Component registry (allowed components only)
 
@@ -167,11 +184,11 @@ ${describeRegistry()}
 
 ## Kaiten V01 design system + archetype rules + conversion-landing skill
 
-${ds.body}${mockUiSection}
+${ds.body}${layoutSection}${mockUiSection}
 
 ## Output
 
-Return ONE JSON object that strictly matches the LandingSpec schema provided by the runtime. No text before or after.`;
+Return ONE JSON object that strictly matches the LandingSpec schema provided by the runtime. No text before or after. Don't forget to set \`spec.meta.layout\` to the chosen layout slug.`;
 
   return {
     system,

@@ -20,8 +20,8 @@
         },
         "visual": {
           "type": "product_screenshot",
-          "assetId": "kaiten-platform-board",
-          "variant": "generic"
+          "assetId": "kaiten-pm-board",
+          "variant": "pm-board"
         },
         "visualPosition": "below"
       }
@@ -111,7 +111,7 @@
           }
         ],
         "mediaPosition": "right",
-        "mediaVariant": "default",
+        "mediaVariant": "pm-board",
         "primaryCta": {
           "label": "Попробовать бесплатно",
           "href": "/signup"
@@ -173,7 +173,7 @@
           }
         ],
         "mediaPosition": "right",
-        "mediaVariant": "default",
+        "mediaVariant": "modules-matrix",
         "primaryCta": {
           "label": "Посмотреть все модули",
           "href": "/modules"
@@ -260,6 +260,64 @@
           }
         ],
         "columns": 4
+      }
+    },
+    {
+      "id": "media_copy",
+      "component": "MediaCopy",
+      "props": {
+        "eyebrow": "Интеграции",
+        "title": "Подключите 1С, AmoCRM и корпоративные системы",
+        "description": "Двусторонняя синхронизация с 1С: Документооборотом, AmoCRM, Telegram, почтой и GitLab. События из внешних систем приходят в ленту и автоматически создают задачи и согласования. Для нестандартных систем — открытый REST API и веб-хуки.",
+        "checklist": [
+          {
+            "icon": "Building2",
+            "text": "1С: Документооборот, ERP, Бухгалтерия — двусторонний sync"
+          },
+          {
+            "icon": "Handshake",
+            "text": "AmoCRM и собственные CRM через коннекторы и API"
+          },
+          {
+            "icon": "Send",
+            "text": "Telegram-боты для приёма заявок и уведомлений"
+          },
+          {
+            "icon": "Webhook",
+            "text": "REST API и веб-хуки для любых корпоративных систем"
+          }
+        ],
+        "mediaPosition": "left",
+        "mediaVariant": "integrations-console"
+      }
+    },
+    {
+      "id": "media_copy",
+      "component": "MediaCopy",
+      "props": {
+        "eyebrow": "Аналитика для руководителя",
+        "title": "Видите всё, что происходит в командах — без таблиц вручную",
+        "description": "Дашборды по нагрузке, спринтам, SLA и срокам обновляются автоматически. Руководитель видит, где команда перегружена и какие задачи в зоне риска — до того, как сорвётся дедлайн.",
+        "checklist": [
+          {
+            "icon": "TrendingUp",
+            "text": "Спринт в срок, цикл задач и доля выполненных в SLA"
+          },
+          {
+            "icon": "Users",
+            "text": "Загрузка команд и сотрудников — кто перегружен, кто свободен"
+          },
+          {
+            "icon": "AlertTriangle",
+            "text": "Задачи в зоне риска: подсветка просрочек и зависших"
+          },
+          {
+            "icon": "FileDown",
+            "text": "Экспорт отчётов для совета директоров и инвестиционных комитетов"
+          }
+        ],
+        "mediaPosition": "right",
+        "mediaVariant": "analytics-kpi"
       }
     },
     {
@@ -544,8 +602,8 @@
     }
   ],
   "seo": {
-    "title": "Кайтен — российская платформа для команд: задачи, документы, процессы",
-    "description": "Глубокий project management, база знаний и сервисные модули в одной платформе. Реестр отечественного ПО, on-premise, оплата в рублях."
+    "title": "Кайтен — российская PM-платформа для ИТ-команд и руководителей",
+    "description": "Платформа для ИТ и сравните альтернативы Jira: Kanban, Scrum, Gantt, база знаний, поддержка, аналитика, интеграции с 1С. Реестр отечественного ПО, on-premise."
   },
   "illustrationSpecs": [],
   "meta": {
@@ -566,11 +624,15 @@
       "wiki/design-system/components/footer.md",
       "wiki/design-system/components/button.md",
       "wiki/archetypes/saas_landing.md",
-      "packages/harness/src/skills/conversion-landing.md"
+      "packages/harness/src/skills/conversion-landing.md",
+      "packages/harness/src/prompts/section-mock-skill.md",
+      "wiki/layouts/enterprise-modular-saas.md",
+      "wiki/layouts/index.md"
     ],
-    "generatedAt": "2026-05-16T05:08:21.767Z",
+    "generatedAt": "2026-05-16T05:33:14.587Z",
     "generator": "host-agent",
     "archetype": "saas_landing",
+    "layout": "enterprise-modular-saas",
     "tokenEstimate": 15165
   }
 }

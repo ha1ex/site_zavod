@@ -21,6 +21,20 @@ export const BriefSchema = z.object({
     .enum(['saas', 'waitlist', 'enterprise'])
     .default('saas')
     .describe('Тип лендинга — выбирается из доступных archetype'),
+  pageLayout: z
+    .enum([
+      'enterprise-modular-saas',
+      'single-module-deep-dive',
+      'compliance-first-enterprise',
+      'comparison-vs-competitor',
+      'story-led-unaware',
+    ])
+    .optional()
+    .describe(
+      'Выбранный layout из wiki/layouts/ — определяет порядок секций и per-slot mock-рекомендации. ' +
+        'Если не указан, prepare попробует подобрать по эвристике (pageArchetype + audience), но это fallback. ' +
+        'Лучшая практика: явно выбрать в брифе после прочтения wiki/layouts/index.md.',
+    ),
   resolvedSegments: z
     .array(z.string())
     .optional()

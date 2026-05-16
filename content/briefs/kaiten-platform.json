@@ -22,5 +22,6 @@
   ],
   "tone": "clear, practical, confident, no hype",
   "cta": "Попробовать бесплатно",
-  "pageArchetype": "saas"
+  "pageArchetype": "saas",
+  "pageLayout": "enterprise-modular-saas"
 }

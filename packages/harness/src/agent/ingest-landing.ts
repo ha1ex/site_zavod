@@ -8,11 +8,15 @@ import {
   validateLandingBrand,
   validateLandingBusiness,
   validateLandingAudience,
+  validateLandingVisualDiversity,
+  validateLandingLayoutConformance,
   formatAudienceReportMarkdown,
   type LandingBrandError,
   type LandingBusinessError,
   type LandingAudienceError,
   type LandingAudienceResult,
+  type LandingVisualDiversityError,
+  type LandingLayoutConformanceError,
 } from '../validators/index';
 import { renderLandingToTSX } from '../render/index';
 import { buildLandingSystemPromptWithMeta } from '../prompts/system';
@@ -21,7 +25,7 @@ import { appendLog, fileLandingToWiki } from '../wiki/index';
 export type IngestStage = 'read' | 'parse' | 'validate' | 'render' | 'file-back' | 'done';
 
 export interface IngestLandingError {
-  kind: 'parse' | 'brand' | 'business' | 'audience';
+  kind: 'parse' | 'brand' | 'business' | 'audience' | 'visual' | 'layout';
   message: string;
   path?: string;
   code?: string;
@@ -172,6 +176,35 @@ export async function ingestLanding(opts: IngestLandingOptions): Promise<IngestL
     }
   }
 
+  // Visual diversity gate — блокирует MediaCopy default >1 и collision подряд.
+  const layoutSlug = brief?.pageLayout ?? spec.meta?.layout;
+  const visual = validateLandingVisualDiversity(spec, { layout: layoutSlug });
+  if (!visual.ok) {
+    for (const e of visual.errors) errors.push(landingVisualToIngestError(e));
+  }
+  for (const w of visual.warnings) {
+    warnings.push(`visual:warn ${w.where ?? '*'} — ${w.message}`);
+  }
+
+  // Layout conformance — проверяем порядок секций vs выбранный layout.
+  if (layoutSlug) {
+    const conformance = await validateLandingLayoutConformance(spec, {
+      root: opts.root,
+      layout: layoutSlug,
+    });
+    if (!conformance.ok) {
+      for (const e of conformance.errors) errors.push(landingLayoutToIngestError(e));
+    }
+    for (const w of conformance.warnings) {
+      warnings.push(`layout:warn ${w.where ?? '*'} — ${w.message}`);
+    }
+  } else {
+    warnings.push(
+      'layout не указан ни в brief.pageLayout, ни в spec.meta.layout — layout-conformance пропущен. ' +
+        'Лучшая практика: выбрать осознанно из wiki/layouts/index.md.',
+    );
+  }
+
   // Audience-score gate (этап 4½). Запускается даже при ошибках brand/business,
   // чтобы host-LLM видел весь список того, что нужно поправить, за одну итерацию.
   let audienceScore: LandingAudienceResult | undefined;
@@ -245,6 +278,7 @@ export async function ingestLanding(opts: IngestLandingOptions): Promise<IngestL
     generatedAt: new Date().toISOString(),
     generator: opts.generator ?? 'host-agent',
     archetype,
+    layout: layoutSlug,
     tokenEstimate,
   };
 
@@ -341,5 +375,23 @@ function landingAudienceToIngestError(e: LandingAudienceError): IngestLandingErr
     message: `${e.message}${suggestionSuffix}`,
     path: e.where,
     code: e.ruleId ?? e.kind,
+  };
+}
+
+function landingVisualToIngestError(e: LandingVisualDiversityError): IngestLandingError {
+  return {
+    kind: 'visual',
+    message: e.message,
+    path: e.where,
+    code: e.rule,
+  };
+}
+
+function landingLayoutToIngestError(e: LandingLayoutConformanceError): IngestLandingError {
+  return {
+    kind: 'layout',
+    message: e.message,
+    path: e.where,
+    code: e.rule,
   };
 }

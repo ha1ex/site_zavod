@@ -1,6 +1,12 @@
 import { ButtonLink } from '../primitives/ButtonLink';
 import { cn } from '../primitives/cn';
-import { SupportBoardMock } from './mocks';
+import {
+  AnalyticsKpiMock,
+  IntegrationsConsoleMock,
+  ModulesMatrixMock,
+  PmBoardMock,
+  SupportBoardMock,
+} from './mocks';
 
 export interface CtaProps {
   label: string;
@@ -13,7 +19,13 @@ export interface AssetRefProps {
   src?: string;
   alt?: string;
   /** Built-in detailed mocks (see ./mocks). When set, ignores src. */
-  variant?: 'support-board' | 'generic';
+  variant?:
+    | 'support-board'
+    | 'pm-board'
+    | 'analytics-kpi'
+    | 'integrations-console'
+    | 'modules-matrix'
+    | 'generic';
 }
 
 export interface HeroSectionProps {
@@ -196,6 +208,18 @@ interface HeroVisualProps {
 function HeroVisual({ src, alt, variant, large = false }: HeroVisualProps) {
   if (variant === 'support-board') {
     return <SupportBoardMock />;
+  }
+  if (variant === 'pm-board') {
+    return <PmBoardMock />;
+  }
+  if (variant === 'analytics-kpi') {
+    return <AnalyticsKpiMock />;
+  }
+  if (variant === 'integrations-console') {
+    return <IntegrationsConsoleMock />;
+  }
+  if (variant === 'modules-matrix') {
+    return <ModulesMatrixMock />;
   }
   if (src) {
     return (

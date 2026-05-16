@@ -25,11 +25,26 @@ Use this skill whenever the user wants to assemble a Kaiten-style SaaS landing f
 
 ## End-to-end flow
 
+### 0. Pick a layout from the library — ОБЯЗАТЕЛЬНО
+
+**Это первый шаг. Не пропускать.** Раньше у нас был один `pageArchetype: saas` с фиксированным порядком секций — это привело к проблеме «все лендинги одинаковые». Library of 5 layouts в [`wiki/layouts/`](../../../wiki/layouts/) покрывает основные сценарии.
+
+1. Открой [`wiki/layouts/index.md`](../../../wiki/layouts/index.md) и сопоставь бриф с одним из 5 layouts:
+   - `enterprise-modular-saas` — платформа с ядром + модулями (PM + KB + поддержка + …), B2B mid+enterprise, импортозамещение.
+   - `single-module-deep-dive` — один модуль с прозрачным сценарием (поддержка, HR, BPM).
+   - `compliance-first-enterprise` — фокус на безопасность, реестр ПО, on-premise, госсектор.
+   - `comparison-vs-competitor` — vs-страница (миграция с Jira / Notion / Yandex.Трекер).
+   - `story-led-unaware` — холодная аудитория, эмоциональный путь.
+2. Открой `wiki/layouts/<slug>.md` и прочитай: when-to-use, audience, awareness, **обязательную последовательность секций с per-slot mock-рекомендациями**, anti-patterns.
+3. Запиши выбор в `content/briefs/<slug>.json` поле `pageLayout: '<slug>'`. Это включит layout-плейбук в system prompt prepare-команды и активирует `landing-layout-conformance` валидатор.
+
+**Если ни один layout не подходит:** не миксуй секции на лету. Опиши новый кейс пользователю → добавь шестой layout в `wiki/layouts/` по образцу существующих → потом собирай лендинг. Лучше потратить время на инфраструктуру, чем выпустить ещё один однотипный лендинг.
+
 ### 1. Lock the brief
 
 Open `content/briefs/<slug>.json`. If it does not exist:
 
-- Ask the user for: product, audience, market, primary goal (`book_demo` / `signup` / `waitlist` / `contact_sales` / `try_free` / `download`), main pain, main promise, 3 proof points, tone (default: "clear, practical, confident, no hype"), CTA label, `pageArchetype` (`saas` / `waitlist` / `enterprise`).
+- Ask the user for: product, audience, market, primary goal (`book_demo` / `signup` / `waitlist` / `contact_sales` / `try_free` / `download`), main pain, main promise, 3 proof points, tone (default: "clear, practical, confident, no hype"), CTA label, `pageArchetype` (`saas` / `waitlist` / `enterprise`), **`pageLayout`** (slug из шага 0).
 - Write the brief to `content/briefs/<slug>.json` matching `BriefSchema` from `@buffalo/harness/schemas`.
 
 **Audience pre-resolve (optional but speeds up the gate):** если знаешь явно — какие сегменты из [`wiki/audiences/kaiten-scoring.md`](../../../wiki/audiences/kaiten-scoring.md) подходят к брифу — добавь `resolvedSegments: ["IT", ...]`. Если не уверен — оставь пустым, audience-score gate сам сделает lexical-match. Если match провалится — на шаге 4½ сделаешь audience research и впишешь.
@@ -55,7 +70,7 @@ Read the artifact carefully. The schema is the source of truth — every field, 
 
 ### 3. Generate the LandingSpec yourself
 
-You are the LLM. From the brief + system prompt, write ONE JSON object matching `LandingSpec`. Constraints to remember:
+You are the LLM. From the brief + system prompt + layout playbook, write ONE JSON object matching `LandingSpec`. Constraints to remember:
 
 - `sections[0].id === "hero"` and uses `HeroSection`.
 - `sections[last].id === "footer"` and uses `LandingFooter` (if present).
@@ -64,61 +79,85 @@ You are the LLM. From the brief + system prompt, write ONE JSON object matching 
 - Primary CTA copy aligns with the brief's `cta` (or `primaryGoal`).
 - Brand voice: no hype words ("revolutionary", "world-class", "game-changer", "next-generation", "cutting-edge", "best-in-class", "10x", "supercharge", "AI-powered" used as filler, …). Use clear, practical language.
 - Title/subtitle/description length limits per the schema (e.g. title 4..80, subtitle 10..200).
-- Only the 6 registered components: `HeroSection`, `FeatureGrid`, `PricingPlans`, `FAQAccordion`, `FinalCta`, `LandingFooter`.
+- Follow `wiki/layouts/<slug>.md` table — порядок секций обязателен. Layout-conformance валидатор провалит spec, если порядок required секций нарушен.
+- **Set `spec.meta.layout`** to the chosen layout slug (так apply сохранит его в досье и в дальнейших проверках).
+- Доступные components (актуальный список см. `pnpm -w run harness registry`): `HeroSection`, `FeatureGrid`, `PricingPlans`, `FAQAccordion`, `FinalCta`, `LandingFooter`, `SocialProof`, `ProcessSteps`, `CtaBanner`, `MediaCopy`, `StatStrip`, `PromoBanner`, `BenefitsStrip`, `MetricsSplit`.
 
 Write the JSON to `content/landings/<slug>.json` (the `outputPath` from prepare).
 
-### 3a. Mock authoring stage (специализированные mock-компоненты)
+### 3a. Mock authoring stage — ОБЯЗАТЕЛЬНО для каждой визуальной секции
 
-**Архитектура:** mock'и — отдельные TSX-компоненты в [`packages/ui/src/landing/mocks/`](../../../packages/ui/src/landing/mocks/), с захардкоженными доменными данными. Spec выбирает mock через enum-поле — например, `HeroSection.visual.variant: 'support-board'` (рендерит `<SupportBoardMock />`), или через `variant` параметры специализированных секций (`MediaCopy`, и т.д.).
+**Архитектура:** mock'и — отдельные TSX-компоненты в [`packages/ui/src/landing/mocks/`](../../../packages/ui/src/landing/mocks/), с захардкоженными доменными данными. Spec выбирает mock через enum-поле — например, `HeroSection.visual.variant: 'pm-board'` (рендерит `<PmBoardMock />`), `MediaCopy.mediaVariant: 'analytics-kpi'` и т.д.
 
-**Эталон визуального качества** — `wiki/landings/kaiten-techsupport-reference.md` + `apps/web/public/reference/kaiten-support.html` (открывается на `localhost:3000/reference/kaiten-support.html` после `pnpm dev`). Правила реализации mock'а — `packages/harness/src/prompts/section-mock-skill.md` (грузится в системный промпт).
+**Эталон визуального качества** — `wiki/landings/kaiten-techsupport-reference.md`. Правила реализации mock'а — `packages/harness/src/prompts/section-mock-skill.md` (грузится в системный промпт).
 
-**Цель этапа:** заменить «голые» секции (только текст + кнопки) на секции с живой иллюстрацией продукта. Целевая пропорция: один Hero-mock + 3-5 mock'ов в body-секциях.
+**КРИТИЧЕСКОЕ ПРАВИЛО:** `mediaVariant: 'default'` и `visual.variant: 'generic'` — это generic three-bar placeholder. Если ты ставишь его «потому что не нашёл подходящий» — ты создаёшь ту самую проблему, ради которой существует эта библиотека. Валидатор `landing-visual-diversity` теперь блокирует:
+- ❌ Больше 1 MediaCopy с `default` на лендинг (исключение — нарративный `story-led-unaware` layout).
+- ⚠️ Hero `generic` без обоснования.
+- ❌ Одинаковый `mediaVariant` в 2+ MediaCopy подряд (нужно чередовать).
 
 **Существующие mock-компоненты** (`packages/ui/src/landing/mocks/`):
 
-| Mock | Что иллюстрирует | Используется через |
-|---|---|---|
-| `SupportBoardMock` | Канбан-доска заявок | `HeroSection.visual.variant: 'support-board'`, `MediaCopy.variant: 'support-board'` |
-| `RequestCardMock` | Карточка заявки с чатом + чек-листом | секции про «контекст в одной карточке» |
-| `KnowledgeBaseMock` (`variant: 'public' | 'internal'`) | Превью статьи КБ или внутреннего регламента | секции про «база знаний» / «документы» |
+| Mock | Variant slug | Что иллюстрирует | Для каких сценариев |
+|---|---|---|---|
+| `SupportBoardMock` | `support-board` | Канбан-доска заявок поддержки | Лендинги модуля поддержки, обращения, SLA |
+| `RequestCardMock` | `request-card` | Карточка заявки с чатом + чек-листом | «контекст в одной карточке», переписка |
+| `KnowledgeBaseMock` | `kb-public` / `kb-internal` | Превью статьи КБ или внутреннего регламента | База знаний, документы, статьи |
+| `PmBoardMock` | `pm-board` | Канбан PM-команды с эпиками, story points, спринтами | PM-ядро платформы, Kanban/Scrum/Gantt |
+| `AnalyticsKpiMock` | `analytics-kpi` | Дашборд руководителя с 2×2 KPI + загрузка команд | Аналитика, отчёты, метрики команд |
+| `IntegrationsConsoleMock` | `integrations-console` | Лента событий из 1С/AmoCRM/Telegram/GitLab | Интеграции, API, корпоративные системы |
+| `ModulesMatrixMock` | `modules-matrix` | Bento-grid модулей платформы (PM, KB, поддержка, BPM, BI, AI) | Модульность платформы, выбор тарифа |
 
-**Алгоритм:**
+**Алгоритм (для каждой секции отдельно):**
 
-1. Для каждой секции из spec'а реши, нужен ли mock:
-   - Hero → почти всегда (выбери `visual.variant: 'support-board'` или попроси добавить новый mock).
-   - body-секции (`MediaCopy`, `FeatureGrid` нарративные) → нужен, если секция про конкретный workflow.
-   - CTA-баннеры (`PromoBanner`, `FinalCta`), FAQ, footer, BenefitsStrip → mock не нужен.
-2. Если подходящий mock УЖЕ есть в `packages/ui/src/landing/mocks/` — просто укажи его в spec'е через `variant`.
-3. Если mock'а нет — НЕ выдумывай данные в spec'е. Попроси добавить новый специализированный mock-компонент по правилам [`section-mock-skill.md`](../../../packages/harness/src/prompts/section-mock-skill.md) §3 (Алгоритм добавления). Это отдельная инкрементальная задача: создать `<Name>Mock.tsx` в `mocks/`, расширить enum `variant` в schema/registry, подключить case в `HeroVisual` / `MediaCopy`.
-4. Все доменные тексты в новом mock'е — из брифа (`brief.audience`, `brief.mainPain`, `brief.proofPoints`). Никаких «Item 1», «Lorem», абстрактных «Tag/Status».
-5. **Чек-лист самопроверки** для созданного mock'а — `section-mock-skill.md` §4.
+1. Открой layout-плейбук — там для каждой секции есть колонка «Mock-рекомендация» с конкретным slug-ом. Это default-выбор.
+2. Если рекомендация подходит по смыслу контента — используй её.
+3. Если контент брифа сильно отличается (например, в лендинге не PM, а DevOps) — выбери другой существующий variant из таблицы выше.
+4. Если ни один не подходит по смыслу — НЕ ставь `default`. Останови spec, опиши пользователю что нужен новый mock, создай его по [`section-mock-skill.md`](../../../packages/harness/src/prompts/section-mock-skill.md):
+   - `<Name>Mock.tsx` в `packages/ui/src/landing/mocks/`
+   - Хардкод доменных данных из брифа
+   - Прогон через чек-лист §4
+   - Расширить enum в `landing-spec.ts` (AssetRefSchema.variant или MediaCopy.mediaVariant)
+   - Подключить case в HeroVisual / MediaCopy
+   - Обновить registry description
+5. После создания нового mock'а — возвращайся к spec и используй его.
 
-**Пример spec-фрагмента, использующего существующий `SupportBoardMock`:**
+**Это допустимо.** Лучше потратить 30 минут на новый mock-компонент, чем оставить лендинг с тремя `default` placeholder'ами.
+
+**Пример spec-фрагмента — Hero с PmBoardMock:**
 
 ```json
 {
   "id": "hero",
   "component": "HeroSection",
   "props": {
-    "eyebrow": "Кайтен для техподдержки",
-    "title": "Служба поддержки без потерянных заявок и разбросанных чатов",
-    "accentWord": "потерянных",
-    "subtitle": "Принимайте обращения из почты, мессенджера и с портала на одной доске.",
+    "eyebrow": "Российская платформа управления работой",
+    "title": "Задачи, документы и процессы в одной платформе",
+    "accentWord": "одной",
+    "subtitle": "Глубокий PM, база знаний, сервисные модули — в едином контуре.",
     "primaryCta": { "label": "Попробовать бесплатно", "href": "/signup" },
-    "secondaryCta": { "label": "Хочу записаться на демо", "href": "#demo" },
+    "secondaryCta": { "label": "Записаться на демо", "href": "/demo" },
     "visual": {
       "type": "product_screenshot",
-      "assetId": "kaiten-support-board",
-      "variant": "support-board"
+      "assetId": "kaiten-pm-board",
+      "variant": "pm-board"
     },
-    "visualPosition": "side"
+    "visualPosition": "below"
   }
 }
 ```
 
-Если для секции mock не нужен — просто не клади `visual` либо укажи `variant: 'generic'` + `src`.
+**Пример MediaCopy с уникальными mock'ами в трёх секциях подряд (для enterprise-modular-saas):**
+
+```json
+[
+  { "id": "media_copy", "component": "MediaCopy", "props": { "title": "Ядро PM", "mediaVariant": "pm-board", "mediaPosition": "right", "...": "..." }},
+  { "id": "media_copy", "component": "MediaCopy", "props": { "title": "База знаний", "mediaVariant": "kb-internal", "mediaPosition": "left", "...": "..." }},
+  { "id": "media_copy", "component": "MediaCopy", "props": { "title": "Модули", "mediaVariant": "modules-matrix", "mediaPosition": "right", "...": "..." }}
+]
+```
+
+Если для секции mock реально не нужен (FAQ, footer, BenefitsStrip) — просто не используй секцию с mock-slot'ом. НЕ ставь `default` ради заполнения слота.
 
 ### 4. Apply (validate + render TSX) — deterministic, no LLM
 
@@ -132,9 +171,12 @@ This will:
 
 1. Parse the spec against `LandingSpecSchema` (zod).
 2. Run brand-voice deny-list + business-rules validators.
-3. Enrich `spec.meta` (sources, archetype, generator: "host-agent", generatedAt).
-4. Render TSX to `generated/landings/<slug>/page.tsx`.
-5. File back to `wiki/landings/<slug>.md`.
+3. **Run `landing-visual-diversity` validator** — блокирует `default` >1, collision variant'ов подряд.
+4. **Run `landing-layout-conformance` validator** — если задан `pageLayout`, проверяет порядок required секций.
+5. Run audience-score gate (см. 4½).
+6. Enrich `spec.meta` (sources, archetype, layout, generator: "host-agent", generatedAt).
+7. Render TSX to `generated/landings/<slug>/page.tsx`.
+8. File back to `wiki/landings/<slug>.md`.
 
 On success, you get the preview URL.
 
@@ -205,7 +247,9 @@ Self-contained ZIP for the frontend team.
 - **Never invent components.** Only the 6 in the registry. Check with `pnpm -w run harness registry`.
 - **Never hand-edit `generated/landings/<slug>/page.tsx`** — it's derived from the spec. Re-run apply.
 - If the spec already exists, you can skip prepare and start from apply (e.g. for re-validation after manual edits).
-- **Never skip mock authoring** на SaaS-лендингах. Лендинг без mock'ов в Hero и body-секциях выглядит «голым» — это блокер ревью (см. memory `visual-review-required`). Минимум: Hero с `visual.variant: 'support-board'` (или другой реальный mock) + 2 body-секции с встроенными mock-компонентами (`MediaCopy`/`MetricsSplit`/`ProcessSteps` etc.).
+- **Never skip mock authoring** на SaaS-лендингах. Лендинг без mock'ов в Hero и body-секциях выглядит «голым» — это блокер ревью (см. memory `visual-review-required`). Минимум: Hero с `visual.variant: '<specific>'` (НЕ `generic`) + 2-4 body-секции с уникальными mock'ами (НЕ `default`).
+- **Never skip layout selection.** Если в брифе нет `pageLayout` — выбери его перед написанием spec, опираясь на `wiki/layouts/index.md`. Запиши в `spec.meta.layout`.
+- **Never use `mediaVariant: 'default'` twice на одном лендинге.** Валидатор завалит. Создай новый mock-компонент или подбери другой variant из реестра.
 
 ## Anti-patterns
 
