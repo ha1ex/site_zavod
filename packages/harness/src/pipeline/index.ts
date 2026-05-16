@@ -24,3 +24,11 @@ export {
   type RepairResult,
   type RepairAttemptLog,
 } from './repair';
+
+export {
+  runPhasedPipeline,
+  formatPhasedRunReport,
+  type RunPhasedOptions,
+  type PhasedRunReport,
+} from './orchestrator';
+export type { PhaseId, PhaseStatus, PhaseResult, PhaseContext } from './phases/types';

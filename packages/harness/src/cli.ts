@@ -13,6 +13,9 @@ import {
   pascalCase,
   renderIllustrationStory,
   renderIllustrationStub,
+  runPhasedPipeline,
+  formatPhasedRunReport,
+  type PhaseId,
 } from './pipeline/index';
 import { renderLandingToTSX } from './render/index';
 import { describeRegistry, REGISTRY } from './registry/index';
@@ -577,6 +580,114 @@ agent
         if (e.suggestion) console.log(chalk.dim(`     → ${e.suggestion}`));
       }
       console.log(chalk.dim(`\n         full report → ${relative(root, mdAbs)}`));
+      process.exit(result.ok ? 0 : 1);
+    },
+  );
+
+agent
+  .command('run')
+  .description(
+    'Phased pipeline: end-to-end orchestrator (P0..P8). Идемпотентен — пропускает уже сделанные фазы.',
+  )
+  .argument('<kind>', 'тип артефакта: landing')
+  .option('-s, --slug <slug>', 'slug черновика')
+  .option('-b, --brief <path>', 'путь к brief.json (обязателен)')
+  .action(async (kind: string, opts: { slug?: string; brief?: string }) => {
+    const root = await findRepoRoot(ROOT);
+    if (kind !== 'landing') {
+      console.error(chalk.red(`[harness] agent run: kind=${kind} не поддерживается`));
+      process.exit(1);
+    }
+    if (!opts.slug || !opts.brief) {
+      console.error(chalk.red('[harness] agent run landing: --slug и --brief обязательны'));
+      process.exit(1);
+    }
+    const report = await runPhasedPipeline({
+      root,
+      slug: opts.slug,
+      briefPath: opts.brief,
+    });
+    console.log(formatPhasedRunReport(report));
+    process.exit(report.ok ? 0 : 1);
+  });
+
+agent
+  .command('run-phase')
+  .description(
+    'Запустить одну фазу phased pipeline (для debugging / rerun). Артефакты других фаз должны существовать.',
+  )
+  .argument('<kind>', 'тип артефакта: landing')
+  .argument('<phase>', 'фаза: P0, P1, P2, P3, P4, P5, P6, P7, P8')
+  .option('-s, --slug <slug>', 'slug черновика')
+  .option('-b, --brief <path>', 'путь к brief.json (обязателен)')
+  .action(
+    async (
+      kind: string,
+      phase: string,
+      opts: { slug?: string; brief?: string },
+    ) => {
+      const root = await findRepoRoot(ROOT);
+      if (kind !== 'landing') {
+        console.error(chalk.red(`[harness] agent run-phase: kind=${kind} не поддерживается`));
+        process.exit(1);
+      }
+      if (!opts.slug || !opts.brief) {
+        console.error(chalk.red('[harness] agent run-phase: --slug и --brief обязательны'));
+        process.exit(1);
+      }
+      const phaseId = phase.toUpperCase() as PhaseId;
+      if (!['P0', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8'].includes(phaseId)) {
+        console.error(chalk.red(`[harness] agent run-phase: phase=${phase} не валидна`));
+        process.exit(1);
+      }
+      const report = await runPhasedPipeline({
+        root,
+        slug: opts.slug,
+        briefPath: opts.brief,
+        onlyPhase: phaseId,
+      });
+      console.log(formatPhasedRunReport(report));
+      process.exit(report.ok ? 0 : 1);
+    },
+  );
+
+program
+  .command('diversity')
+  .description('Standalone cross-landing diversity audit (без orchestrator).')
+  .argument('<action>', 'audit')
+  .option('-s, --slug <slug>', 'slug лендинга')
+  .option('-b, --brief <path>', 'путь к brief.json (для резолва домена)')
+  .option('--strict', 'превратить warnings в errors', false)
+  .action(
+    async (
+      action: string,
+      opts: { slug?: string; brief?: string; strict: boolean },
+    ) => {
+      const root = await findRepoRoot(ROOT);
+      if (action !== 'audit') {
+        console.error(chalk.red(`[harness] diversity: action=${action} не поддерживается`));
+        process.exit(1);
+      }
+      if (!opts.slug) {
+        console.error(chalk.red('[harness] diversity audit: --slug обязателен'));
+        process.exit(1);
+      }
+      const { validateCrossLandingDiversity, formatCrossLandingDiversityErrors, writeCrossLandingDiversityReport } =
+        await import('./validators/cross-landing-diversity');
+      const specRaw = await readFile(resolve(root, 'content', 'landings', `${opts.slug}.json`), 'utf-8');
+      const spec = LandingSpecSchema.parse(JSON.parse(specRaw));
+      const brief = opts.brief
+        ? BriefSchema.parse(JSON.parse(await readFile(resolve(root, opts.brief), 'utf-8')))
+        : undefined;
+      const result = await validateCrossLandingDiversity(spec, {
+        root,
+        slug: opts.slug,
+        brief,
+        strict: opts.strict,
+      });
+      const reportAbs = await writeCrossLandingDiversityReport(root, opts.slug, result);
+      console.log(formatCrossLandingDiversityErrors(result));
+      console.log(chalk.dim(`\nreport → ${relative(root, reportAbs)}`));
       process.exit(result.ok ? 0 : 1);
     },
   );
