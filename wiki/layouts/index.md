@@ -46,6 +46,7 @@ stale: false
 | [`compliance-first-enterprise`](./compliance-first-enterprise.md) | Enterprise-предложение с акцентом на безопасность, реестр ПО, on-premise | Служба безопасности, IT-Compliance, госсектор | most-aware | Medium (2-3 mock'а, упор на трасты) |
 | [`comparison-vs-competitor`](./comparison-vs-competitor.md) | Vs-страница «миграция с X» (Jira, Notion, Asana, Trello) | ИТ-руководитель, выбирающий PM-инструмент | product-aware (сравнивает) | Medium (1 board side-by-side + 2 поддержки) |
 | [`story-led-unaware`](./story-led-unaware.md) | Cold-аудитория / unaware top-funnel, когда нужно сначала эмпатия, потом продукт | Топ-менеджер, не идентифицирующий проблему как «PM-проблему» | unaware → problem-aware | Low (1 крупный mock, остальное — нарратив) |
+| [`depersonalized-product-tour`](./depersonalized-product-tour.md) | Обезличенный SMB SaaS (CRM, white-label, материнский landing). Длинный product tour без брендов и без Pricing на странице | Владелец SMB, РОП, маркетолог, операционный директор | problem-aware → solution-aware | High (6+ MediaCopy с разными mock-вариантами) |
 
 ## Жёсткие правила выбора
 

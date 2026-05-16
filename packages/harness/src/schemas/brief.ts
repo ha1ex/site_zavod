@@ -28,6 +28,7 @@ export const BriefSchema = z.object({
       'compliance-first-enterprise',
       'comparison-vs-competitor',
       'story-led-unaware',
+      'depersonalized-product-tour',
     ])
     .optional()
     .describe(
