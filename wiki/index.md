@@ -16,6 +16,7 @@
 - `audiences/` — профили целевых аудиторий (создаются `harness ingest brief`).
 - `patterns/` — выжимки удачных паттернов из прошлых лендингов: `headlines/`, `proof-points/`, `ctas/`.
 - `landings/` — filed back результаты успешных генераций: brief-ref, использованные sources, LLM-extract lessons, reviewer notes.
+- `references/` — внешние эталоны (мировые лидеры визуального языка) для вдохновения mock-компонентов: [`external-mock-references.md`](references/external-mock-references.md) — Linear, Notion, Vercel Analytics, Stripe, Intercom и др. с гайдами «как читать в DevTools».
 
 ## External knowledge (не в wiki/, но связано)
 

@@ -311,7 +311,8 @@ shadow-[0_30px_80px_-30px_rgba(125,76,207,0.30)]
 
 ## 6. Связанные источники
 
-- [`wiki/landings/kaiten-techsupport-reference.md`](../../../../wiki/landings/kaiten-techsupport-reference.md) — эталонный лендинг (snapshot + распаковка приёмов + mapping на `mocks/*`).
+- [`wiki/references/external-mock-references.md`](../../../../wiki/references/external-mock-references.md) — **внешние мировые эталоны** (Linear / Notion / Vercel Analytics / Stripe / Intercom + Nice-to-have) с приёмами и DevTools-гайдами. **Стартовая точка** для нового mock'а — посмотри эталон в нужной категории.
+- [`wiki/landings/kaiten-techsupport-reference.md`](../../../../wiki/landings/kaiten-techsupport-reference.md) — internal reference (наш kaiten.ru snapshot + mapping на `mocks/*`). Не эталон, а проверочный референс.
 - [`wiki/lessons.md`](../../../../wiki/lessons.md) — теги `mock.*` (удобно цитировать в repair-loop).
 - [`packages/ui/src/landing/mocks/SupportBoardMock.tsx`](../../ui/src/landing/mocks/SupportBoardMock.tsx) — эталон архетипа `board`.
 - [`packages/ui/src/landing/mocks/RequestCardMock.tsx`](../../ui/src/landing/mocks/RequestCardMock.tsx) — эталон `chat` + `checklist`.

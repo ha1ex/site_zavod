@@ -23,16 +23,22 @@ tags:
 stale: false
 ---
 
-# Kaiten для техподдержки — reference
+# Kaiten для техподдержки — **internal** reference (не мировой эталон)
 
-> **Что это.** Эталонный лендинг, на котором калибруется визуальный язык mock-иллюстраций для harness'а. Не генерировался автоматически — собран вручную, чтобы зафиксировать «как должно выглядеть качество с первого раза». Все правила из [`wiki/lessons.md`](../lessons.md) (теги `mock.*`) и весь skill [`section-mock-skill.md`](../../packages/harness/src/prompts/section-mock-skill.md) выведены из этого лендинга.
+> ⚠️ **Это внутренний референс «лучшее что у нас получилось», а не мировой эталон.** Для настоящих эталонов визуального языка mock-иллюстраций см. [`wiki/references/external-mock-references.md`](../references/external-mock-references.md) — там Linear, Notion, Vercel Analytics, Stripe, Intercom и др. Используй этот файл только для **проверки соответствия** реализованных mock'ов нашему DS, не для **вдохновения**.
+>
+> **Что это.** Зафиксированная версия лендинга kaiten.ru, на которой проверяются правила [`wiki/lessons.md`](../lessons.md) (теги `mock.*`) и skill [`section-mock-skill.md`](../../packages/harness/src/prompts/section-mock-skill.md). Не генерировался автоматически — собран вручную.
 >
 > **Где живёт эталон в репо:**
-> - Полный HTML-snapshot — [`apps/web/public/reference/kaiten-support.html`](../../apps/web/public/reference/kaiten-support.html) (открывается прямо в браузере по `http://localhost:3000/reference/kaiten-support.html` после `pnpm dev`).
+> - HTML-snapshot — [`apps/web/public/reference/kaiten-support.html`](../../apps/web/public/reference/kaiten-support.html) (открывается прямо в браузере по `http://localhost:3000/reference/kaiten-support.html` после `pnpm dev`).
 > - Реализованные mock-компоненты — [`packages/ui/src/landing/mocks/`](../../packages/ui/src/landing/mocks/) (`SupportBoardMock`, `RequestCardMock`, `KnowledgeBaseMock`).
 > - Сгенерированная страница, использующая моки — [`wiki/landings/kaiten-support.md`](kaiten-support.md) (live spec) + [`content/landings/kaiten-support.json`](../../content/landings/kaiten-support.json).
 >
-> **Использование:** при mock-authoring новой секции — открыть snapshot.html в браузере, найти секцию по теме, посмотреть соответствующий компонент в `mocks/`, скопировать структуру слоёв в новый специализированный mock-компонент (см. [`section-mock-skill.md`](../../packages/harness/src/prompts/section-mock-skill.md)).
+> **Workflow для нового mock'а:**
+> 1. Открыть [`wiki/references/external-mock-references.md`](../references/external-mock-references.md) → найти эталон в нужной категории → выписать приёмы.
+> 2. Сверить с правилами [`wiki/lessons.md`](../lessons.md) — если эталон делает что-то новое, добавить правило.
+> 3. Открыть этот internal-snapshot и существующие mocks в `packages/ui/src/landing/mocks/` — понять как наши приёмы реализованы в DS-токенах.
+> 4. Реализовать mock-компонент по [`section-mock-skill.md`](../../packages/harness/src/prompts/section-mock-skill.md) §3.
 
 ## Состав моков в эталоне
 
