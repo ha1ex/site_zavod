@@ -25,6 +25,50 @@ Use this skill whenever the user wants to assemble a Kaiten-style SaaS landing f
 
 ## End-to-end flow
 
+### 🚀 РЕКОМЕНДУЕМЫЙ способ — `harness agent build` (auto-routing)
+
+**Один entry point, сам определяет какой pipeline применить.** Используй это
+как default flow для нового brief'а — не нужно вручную выбирать между legacy
+и phased.
+
+```bash
+pnpm -w run harness agent build landing --slug <slug> --brief content/briefs/<slug>.json
+```
+
+Что произойдёт:
+
+1. **`routePipeline(brief)`** — deterministic анализ:
+   - Резолвит домен через `resolveDomainFromBrief` (lexical match по
+     domain-mock-matrix aliases).
+   - Считает phased score по сигналам сложности (audience-not-resolved,
+     no-page-layout, brief-too-short, complex-primary-goal, multiple-personas,
+     no-proof-points).
+2. **Routing decision** — три исхода:
+   - 🛑 **`manual-creation-required`** — домен НЕ покрыт mocks ИЛИ unknown.
+     Pipeline ОТКАЗЫВАЕТСЯ, выдаёт todo-список mock'ов к созданию.
+     Сначала создай новые mocks по [`section-mock-skill.md`](../../../packages/harness/src/prompts/section-mock-skill.md),
+     обнови [`domain-mock-matrix.md`](../../../wiki/references/domain-mock-matrix.md)
+     + `DOMAIN_REGISTRY`, заведи `wiki/landings/<domain>-reference.md`, потом
+     повтори `agent build`.
+   - ⚡️ **`legacy`** — простой brief в покрытом домене (score < 0.5).
+     Запускает one-shot prepare → write spec → apply. Быстро.
+   - 🔀 **`phased`** — сложный brief (score ≥ 0.5).
+     Запускает phased orchestrator P0..P8 с per-phase repair-loop.
+     Медленнее, но даёт фазированный контроль качества.
+3. **Decision сохраняется** в `.context/pipeline/<slug>/route-decision.json`
+   для трассировки и аудита.
+
+Флаги override (используй редко, в основном для отладки):
+- `--route-only` — только показать решение, не запускать pipeline.
+- `--force-phased` — override → phased даже если score низкий.
+- `--force-legacy` — override → legacy даже если score высокий.
+
+**Что не нужно делать вручную:**
+- ❌ Решать «legacy или phased» в голове.
+- ❌ Запускать `prepare` или `run` напрямую (это для тонкой настройки, не для
+  default flow).
+- ❌ Пропускать domain audit — `agent build` сам делает его в первую очередь.
+
 ### 0. Domain audit — ОБЯЗАТЕЛЬНО (первый шаг, не пропускать)
 
 **Зачем.** Mock-компоненты в `packages/ui/src/landing/mocks/` доменно-специфичны:

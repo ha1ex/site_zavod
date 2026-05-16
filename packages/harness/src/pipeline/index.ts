@@ -41,3 +41,11 @@ export {
   type AllocationDecision,
   type AllocationDecisionKind,
 } from './allocate-illustrations';
+
+export {
+  routePipeline,
+  formatRouteDecision,
+  type PipelineMode,
+  type RouteDecision,
+  type RouteSignal,
+} from './route-pipeline';

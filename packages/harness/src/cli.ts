@@ -15,6 +15,8 @@ import {
   renderIllustrationStub,
   runPhasedPipeline,
   formatPhasedRunReport,
+  routePipeline,
+  formatRouteDecision,
   type PhaseId,
 } from './pipeline/index';
 import { renderLandingToTSX } from './render/index';
@@ -581,6 +583,120 @@ agent
       }
       console.log(chalk.dim(`\n         full report → ${relative(root, mdAbs)}`));
       process.exit(result.ok ? 0 : 1);
+    },
+  );
+
+agent
+  .command('build')
+  .description(
+    'AUTO-ROUTING entry point: читает brief, определяет какой pipeline (legacy / phased / manual-creation) подходит, и автоматически запускает его. РЕКОМЕНДУЕМЫЙ способ запуска для нового brief.',
+  )
+  .argument('<kind>', 'тип артефакта: landing')
+  .option('-s, --slug <slug>', 'slug черновика')
+  .option('-b, --brief <path>', 'путь к brief.json (обязателен)')
+  .option('--route-only', 'только показать routing decision, не запускать pipeline', false)
+  .option('--force-phased', 'override routing → принудительно phased pipeline', false)
+  .option('--force-legacy', 'override routing → принудительно legacy pipeline', false)
+  .action(
+    async (
+      kind: string,
+      opts: {
+        slug?: string;
+        brief?: string;
+        routeOnly: boolean;
+        forcePhased: boolean;
+        forceLegacy: boolean;
+      },
+    ) => {
+      const root = await findRepoRoot(ROOT);
+      if (kind !== 'landing') {
+        console.error(chalk.red(`[harness] agent build: kind=${kind} не поддерживается`));
+        process.exit(1);
+      }
+      if (!opts.slug || !opts.brief) {
+        console.error(chalk.red('[harness] agent build landing: --slug и --brief обязательны'));
+        process.exit(1);
+      }
+
+      // Загрузка brief.
+      const briefAbs = resolve(root, opts.brief);
+      let brief;
+      try {
+        const briefRaw = await readFile(briefAbs, 'utf-8');
+        brief = BriefSchema.parse(JSON.parse(briefRaw));
+      } catch (err) {
+        console.error(
+          chalk.red(`[harness] agent build: не удалось прочитать brief: ${(err as Error).message}`),
+        );
+        process.exit(1);
+      }
+
+      // Routing.
+      let decision = routePipeline(brief, opts.slug);
+
+      if (opts.forcePhased && decision.mode !== 'manual-creation-required') {
+        console.log(chalk.yellow('[harness] --force-phased: override routing → phased'));
+        decision = { ...decision, mode: 'phased' };
+      } else if (opts.forceLegacy && decision.mode !== 'manual-creation-required') {
+        console.log(chalk.yellow('[harness] --force-legacy: override routing → legacy'));
+        decision = { ...decision, mode: 'legacy' };
+      }
+
+      console.log(formatRouteDecision(decision));
+      console.log('');
+
+      // Сохраняем decision в pipeline dir для трассировки.
+      const decisionPath = resolve(
+        root,
+        '.context',
+        'pipeline',
+        opts.slug,
+        'route-decision.json',
+      );
+      await mkdir(dirname(decisionPath), { recursive: true });
+      await writeFile(decisionPath, JSON.stringify(decision, null, 2) + '\n', 'utf-8');
+      console.log(chalk.dim(`route decision → ${relative(root, decisionPath)}`));
+      console.log('');
+
+      if (opts.routeOnly) {
+        console.log(chalk.dim('[harness] --route-only: завершено без запуска pipeline.'));
+        process.exit(0);
+      }
+
+      // HARD halt: manual-creation-required.
+      if (decision.mode === 'manual-creation-required') {
+        console.error(chalk.red('[harness] ✗ STOP. Pipeline отказывается работать.'));
+        console.error(chalk.red('       Создай нужные mock\'и (см. список выше), затем запусти заново.'));
+        process.exit(2);
+      }
+
+      // PHASED.
+      if (decision.mode === 'phased') {
+        console.log(chalk.cyan('[harness] → запуск phased pipeline...'));
+        console.log('');
+        const report = await runPhasedPipeline({
+          root,
+          slug: opts.slug,
+          briefPath: opts.brief,
+        });
+        console.log(formatPhasedRunReport(report));
+        process.exit(report.ok ? 0 : 1);
+      }
+
+      // LEGACY.
+      console.log(chalk.cyan('[harness] → запуск legacy prepare (host-agent должен написать spec)...'));
+      console.log('');
+      const artifact = await prepareLanding({
+        root,
+        briefPath: opts.brief,
+        slug: opts.slug,
+      });
+      const outAbs = resolve(root, '.context', 'agent', `${opts.slug}.prompt.md`);
+      await mkdir(dirname(outAbs), { recursive: true });
+      await writeFile(outAbs, renderPrepareAsMarkdown(artifact), 'utf-8');
+      console.log(chalk.green(`[harness] ✓ prepare → ${relative(root, outAbs)}`));
+      console.log(chalk.dim(`         next: write spec to ${artifact.outputPathRel}`));
+      console.log(chalk.dim(`               then run: ${artifact.nextCommand}`));
     },
   );
 
