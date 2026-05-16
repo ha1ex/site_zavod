@@ -15,8 +15,10 @@
 - `archetypes/` — описания типов лендингов (`saas_landing`, `waitlist_landing`, `enterprise_landing`) и их обязательных секций.
 - `audiences/` — профили целевых аудиторий (создаются `harness ingest brief`).
 - `patterns/` — выжимки удачных паттернов из прошлых лендингов: `headlines/`, `proof-points/`, `ctas/`.
-- `landings/` — filed back результаты успешных генераций: brief-ref, использованные sources, LLM-extract lessons, reviewer notes.
-- `references/` — внешние эталоны (мировые лидеры визуального языка) для вдохновения mock-компонентов: [`external-mock-references.md`](references/external-mock-references.md) — Linear, Notion, Vercel Analytics, Stripe, Intercom и др. с гайдами «как читать в DevTools».
+- `landings/` — filed back результаты успешных генераций + **internal reference docs** для каждого покрытого домена. См. [`landings/index.md`](landings/index.md) (каталог 8 покрытых доменов и production-лендингов).
+- `layouts/` — **library of 10 layout playbooks** (`enterprise-modular-saas`, `single-module-deep-dive`, `compliance-first-enterprise`, `comparison-vs-competitor`, `story-led-unaware`, `depersonalized-product-tour`, `crm-product-tour`, `migration-from-competitor`, `product-launch`, `case-study-deep-dive`). См. [`layouts/index.md`](layouts/index.md).
+- `pipeline/` — документация phased pipeline. См. [`pipeline/phase-gates.md`](pipeline/phase-gates.md) — таблица hard/soft gates per phase.
+- `references/` — внешние эталоны (Linear, Notion, Vercel Analytics, Stripe, Intercom и др. — [`external-mock-references.md`](references/external-mock-references.md)) + **rule-документы**: [`domain-mock-matrix.md`](references/domain-mock-matrix.md) (matrix domain → mocks, обязательно для domain-audit перед сборкой лендинга).
 
 ## External knowledge (не в wiki/, но связано)
 
@@ -24,7 +26,10 @@
 - [packages/harness/src/skills/](../packages/harness/src/skills/) — встроенные методички системного промпта (`conversion-landing.md`, `content-marketing.md`). _Появится после merge ветки `ha1ex/landing-skill`._
 - [packages/harness/src/prompts/svg-illustration-skill.md](../packages/harness/src/prompts/svg-illustration-skill.md) — skill для генерации одиночных SVG-сцен (Hero illustration) как TSX-файлов с AST-валидатором.
 - [packages/harness/src/prompts/section-mock-skill.md](../packages/harness/src/prompts/section-mock-skill.md) — skill для создания специализированных HTML/Tailwind mock-компонентов в `packages/ui/src/landing/mocks/` (6 архетипов: board / chat / kpi / article / checklist / console).
-- [packages/ui/src/landing/mocks/](../packages/ui/src/landing/mocks/) — реализованные mock-компоненты (`SupportBoardMock`, `RequestCardMock`, `KnowledgeBaseMock`). См. также [`wiki/landings/kaiten-techsupport-reference.md`](landings/kaiten-techsupport-reference.md).
+- [packages/ui/src/landing/mocks/](../packages/ui/src/landing/mocks/) — **27 mock-компонентов** через 8 доменов (PM/Support/CRM/HR/Marketing/BPM/Finance/Ecommerce) — выбор regulated через [`domain-mock-matrix.md`](references/domain-mock-matrix.md) и hard validator `illustration-domain-match`. См. [`wiki/landings/index.md`](landings/index.md) для domain reference docs.
+- [packages/harness/src/registry/domain-visual.ts](../packages/harness/src/registry/domain-visual.ts) — TypeScript-зеркало `domain-mock-matrix.md` для machine-validation: `resolveDomainFromBrief`, `isVariantValidForDomain`, `getAllowedVariants`.
+- [packages/harness/src/registry/global-illustration-usage.ts](../packages/harness/src/registry/global-illustration-usage.ts) + `content/illustrations/registry.json` — cross-landing tracking использования mock-вариантов (для `cross-landing-diversity` validator).
+- [packages/harness/src/pipeline/orchestrator.ts](../packages/harness/src/pipeline/orchestrator.ts) — **phased pipeline** (P0..P8 фазы с per-phase artefacts + idempotent rerun). См. [`wiki/pipeline/phase-gates.md`](pipeline/phase-gates.md).
 - [.claude/skills/buffalo-generate/SKILL.md](../.claude/skills/buffalo-generate/SKILL.md) — workflow генерации лендинга (включает шаг 3a Mock authoring).
 - [.claude/skills/buffalo-review/SKILL.md](../.claude/skills/buffalo-review/SKILL.md) — workflow review лендинга. _Появится после merge ветки со stage-7._
 - [.claude/skills/design-system-kaiten-v01/SKILL.md](../.claude/skills/design-system-kaiten-v01/SKILL.md) — Claude Code skill для DS.

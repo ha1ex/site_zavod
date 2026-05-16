@@ -249,34 +249,209 @@ export async function runP7SeoCtaPolish(ctx: PhaseContext): Promise<PhaseResult>
   });
 }
 
-/** P8 Illustration Allocation (skeleton — MVP). */
+/** P8 Illustration Allocation — полная реализация M4.
+ *
+ * Flow:
+ *   1. Читает финальный LandingSpec из p7-landing-spec-final.json.
+ *   2. Вызывает allocateIllustrations() — для каждой визуальной секции
+ *      определяет reuse-mock / generate-svg / no-op.
+ *   3. Если нет generate-svg decisions — phase ok, пишет artefact и идёт дальше.
+ *   4. Если есть generate-svg — для каждой IllustrationSpec эмитирует
+ *      host-agent prompt в .context/pipeline/<slug>/p8-illustration-<id>.prompt.md
+ *      с указанием expected output path в packages/ui/src/illustrations/generated/.
+ *      Status='awaiting-host-agent'.
+ *   5. На rerun проверяет что все expected TSX файлы существуют — если да,
+ *      загружает metadata и проходит.
+ */
 export async function runP8IllustrationAllocation(ctx: PhaseContext): Promise<PhaseResult> {
-  const normalized = await loadArtifact(ctx, 'p0-brief-normalized.json');
-  const finalSpec = await loadArtifact(ctx, 'p7-landing-spec-final.json');
-  const domain = getDomainEntry(
-    JSON.parse(normalized.startsWith('{') ? normalized : '{"resolvedDomain":"unknown"}')
-      ?.resolvedDomain ?? 'unknown',
-  );
-  return runHostAgentPhase({
-    phase: 'P8',
-    ctx,
-    title: 'Illustration Allocation',
-    taskDescription:
-      'Для секций без подходящего mock\'а — определи, нужно ли генерировать уникальную SVG. ' +
-      'MVP: для каждой Hero/MediaCopy секции с mockVariant=default или customIllustrationId — ' +
-      `сгенерируй IllustrationSpec по правилам packages/harness/src/prompts/svg-illustration-skill.md. ` +
-      'Если все секции имеют валидный domain-mock — возвращай empty allocations.',
-    contextBlocks: [
-      { heading: 'p7-landing-spec-final.json', body: '```json\n' + finalSpec + '\n```' },
+  const { mkdir, readFile: rf, writeFile } = await import('node:fs/promises');
+  const { dirname, relative, resolve } = await import('node:path');
+  const { allocateIllustrations, illustrationTsxPath } = await import('../allocate-illustrations');
+
+  const messages: string[] = [];
+  const errors: string[] = [];
+  const pipelineDir = resolve(ctx.root, '.context', 'pipeline', ctx.slug);
+
+  // Загружаем финальный spec.
+  let finalSpec;
+  try {
+    const raw = await rf(resolve(pipelineDir, 'p7-landing-spec-final.json'), 'utf-8');
+    finalSpec = JSON.parse(raw);
+  } catch {
+    // Fallback: используем оригинальный content/landings/<slug>.json
+    try {
+      const raw = await rf(resolve(ctx.root, 'content', 'landings', `${ctx.slug}.json`), 'utf-8');
+      finalSpec = JSON.parse(raw);
+    } catch (err) {
+      errors.push(`Не найден ни p7-landing-spec-final.json, ни content/landings/${ctx.slug}.json: ${(err as Error).message}`);
+      return { phase: 'P8', status: 'error', messages, errors };
+    }
+  }
+
+  // Allocation.
+  const allocation = await allocateIllustrations(finalSpec, ctx.brief, { root: ctx.root });
+  const allocationOutputPath = resolve(pipelineDir, 'p8-illustration-allocation.json');
+  await mkdir(dirname(allocationOutputPath), { recursive: true });
+  await writeFile(
+    allocationOutputPath,
+    JSON.stringify(
       {
-        heading: 'Allowed variants для домена',
-        body: domain
-          ? `Domain: \`${domain.domain}\` (${domain.displayName})\n` +
-            `Variants: ${getAllowedVariants(domain.domain).join(', ')}`
-          : 'Domain unknown — обнови brief.',
+        domain: allocation.domain,
+        decisions: allocation.decisions.map((d) => ({
+          sectionIdx: d.sectionIdx,
+          sectionId: d.sectionId,
+          intent: d.intent,
+          decision: d.decision,
+          variant: d.variant,
+          illustrationId: d.illustrationId,
+          rationale: d.rationale,
+          illustrationSpec: d.illustrationSpec,
+        })),
+        suggestions: allocation.suggestions,
+        existingFingerprints: allocation.existingFingerprints,
       },
-    ],
-    outputSchema: AudienceIntentPlanSchema, // placeholder schema — MVP, M4 заменит
-    outputName: 'p8-illustration-allocation',
-  });
+      null,
+      2,
+    ) + '\n',
+    'utf-8',
+  );
+  messages.push(
+    `allocation: ${allocation.decisions.length} decisions, ${allocation.illustrationsToGenerate.length} SVG to generate.`,
+  );
+
+  // Если нет generate-svg — phase ok.
+  if (allocation.illustrationsToGenerate.length === 0) {
+    if (allocation.suggestions.length > 0) {
+      for (const s of allocation.suggestions) messages.push(s);
+    }
+    return {
+      phase: 'P8',
+      status: 'ok',
+      artifactPath: allocationOutputPath,
+      messages,
+      errors,
+    };
+  }
+
+  // Проверяем какие TSX уже сгенерированы.
+  const pending: typeof allocation.illustrationsToGenerate = [];
+  for (const ispec of allocation.illustrationsToGenerate) {
+    const tsxAbs = resolve(ctx.root, illustrationTsxPath(allocation.domain, getIntentForSpec(allocation, ispec.id) ?? 'hero', ispec.id));
+    try {
+      await rf(tsxAbs, 'utf-8');
+      messages.push(`already-generated: ${relative(ctx.root, tsxAbs)}`);
+    } catch {
+      pending.push(ispec);
+    }
+  }
+
+  if (pending.length === 0) {
+    messages.push(`Все ${allocation.illustrationsToGenerate.length} SVG уже сгенерированы.`);
+    return {
+      phase: 'P8',
+      status: 'ok',
+      artifactPath: allocationOutputPath,
+      messages,
+      errors,
+    };
+  }
+
+  // Эмитируем host-agent prompts для каждой pending SVG.
+  for (const ispec of pending) {
+    const intent = getIntentForSpec(allocation, ispec.id) ?? 'hero';
+    const tsxRel = illustrationTsxPath(allocation.domain, intent, ispec.id);
+    const promptPath = resolve(pipelineDir, `p8-illustration-${ispec.id}.prompt.md`);
+    const prompt = buildIllustrationPrompt({
+      ispec,
+      intent,
+      domain: allocation.domain,
+      tsxRelPath: tsxRel,
+      existingFingerprints: allocation.existingFingerprints,
+      brief: ctx.brief,
+    });
+    await writeFile(promptPath, prompt, 'utf-8');
+    messages.push(`prompt: ${relative(ctx.root, promptPath)} → expected output: ${tsxRel}`);
+  }
+
+  return {
+    phase: 'P8',
+    status: 'awaiting-host-agent',
+    artifactPath: allocationOutputPath,
+    promptPath: pending[0]
+      ? resolve(pipelineDir, `p8-illustration-${pending[0]!.id}.prompt.md`)
+      : undefined,
+    messages,
+    errors,
+  };
+}
+
+function getIntentForSpec(
+  allocation: { decisions: Array<{ illustrationId?: string; intent: string }> },
+  specId: string,
+): string | undefined {
+  return allocation.decisions.find((d) => d.illustrationId === specId)?.intent;
+}
+
+function buildIllustrationPrompt(opts: {
+  ispec: import('../../schemas/illustration-spec').IllustrationSpec;
+  intent: string;
+  domain: string;
+  tsxRelPath: string;
+  existingFingerprints: string[];
+  brief: import('../../schemas/brief').Brief;
+}): string {
+  const fence = '```';
+  const lines: string[] = [];
+  lines.push(`# P8 Illustration Generation — \`${opts.ispec.id}\``);
+  lines.push('');
+  lines.push(`> Сгенерируй уникальную SVG-иллюстрацию для секции \`${opts.intent}\` лендинга в домене \`${opts.domain}\`.`);
+  lines.push('> Это **host-agent mode**: ты (LLM) пишешь TSX-код по spec ниже.');
+  lines.push('');
+  lines.push('## Output');
+  lines.push('');
+  lines.push(`Запиши TSX-файл в:`);
+  lines.push('');
+  lines.push(`\`${opts.tsxRelPath}\``);
+  lines.push('');
+  lines.push('Также создай рядом `<имя>.meta.json` с metadata (id, domain, intent, fingerprint).');
+  lines.push('');
+  lines.push('## Brief (контекст продукта)');
+  lines.push('');
+  lines.push(`${fence}json`);
+  lines.push(JSON.stringify(opts.brief, null, 2));
+  lines.push(fence);
+  lines.push('');
+  lines.push('## IllustrationSpec');
+  lines.push('');
+  lines.push(`${fence}json`);
+  lines.push(JSON.stringify(opts.ispec, null, 2));
+  lines.push(fence);
+  lines.push('');
+  if (opts.existingFingerprints.length > 0) {
+    lines.push('## Anti-duplication: уже использованные fingerprints');
+    lines.push('');
+    lines.push('**НЕ повторяй эти композиции 1:1.** Допустимые оси варьирования:');
+    lines.push('- ракурс (laptop vs phone vs split-screen)');
+    lines.push('- sub-palette из тех же tokens');
+    lines.push('- композиция decorations (растения / sparkles vs пусто)');
+    lines.push('- domain-specific UI-фрагмент (board vs chart vs list)');
+    lines.push('');
+    lines.push(`${fence}`);
+    lines.push(opts.existingFingerprints.join('\n'));
+    lines.push(fence);
+    lines.push('');
+  }
+  lines.push('## Правила');
+  lines.push('');
+  lines.push('Прочитай `packages/harness/src/prompts/svg-illustration-skill.md` целиком — там:');
+  lines.push('- hard rules (dual light/dark render, ID suffixes -d/-l, tabular-nums, нет stopColor=transparent)');
+  lines.push('- soft rules (domain-realism: внутри `<text>` нодов — реалистичные русские строки из домена)');
+  lines.push('- AST-валидатор будет жёстко проверять корректность TSX');
+  lines.push('');
+  lines.push('## После записи');
+  lines.push('');
+  lines.push('1. Запусти валидатор: `pnpm -w run harness validate illustration --path <tsxPath>`');
+  lines.push('2. Если AST-validator падает — поправь TSX по фидбеку и повтори.');
+  lines.push('3. Когда все pending SVG созданы — повторно запусти `harness agent run-phase landing P8 --slug <slug>` — orchestrator увидит готовые файлы и пройдёт фазу.');
+  return lines.join('\n');
 }

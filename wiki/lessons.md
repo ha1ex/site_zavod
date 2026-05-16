@@ -135,3 +135,38 @@
 - **applies_to:** archetype: saas_landing, enterprise_landing
 - **reason:** Меньше — лендинг выглядит «текстовым», больше — читатель устаёт. Эталон даёт ровно эту пропорцию (5 крупных + 2 средних + аккордеон на 13 секций).
 - **first_observed:** 2026-05-16 kaiten-techsupport-reference
+
+## domain-fit-mock-must-belong-to-product-domain
+- **rule:** Mock-компонент (HeroSection.visual.variant, MediaCopy.mediaVariant, TabbedFeature.tabs[].mockVariant, ScenarioWalkthrough.steps[].mockVariant) ОБЯЗАН принадлежать домену продукта из brief. Совпадения по форме (board, chat, kpi) недостаточно: `pm-board` и `sales-funnel` оба канбан-доски, но первый — про спринты со story points, второй — про сделки с суммами в рублях. Перед выбором variant: (1) определи домен через `resolveDomainFromBrief` или вручную; (2) проверь по `getAllowedVariants(domain)` или [`wiki/references/domain-mock-matrix.md`](references/domain-mock-matrix.md); (3) выбирай только из allowed; (4) если для секции нет подходящего variant — создай новый mock в этом домене, а не подменяй чужим.
+- **constraint:** `domain.cross-domain-reuse`
+- **applies_to:** все секции с mock'ами (HeroSection, MediaCopy, TabbedFeatureSection, ScenarioWalkthroughSection), все лендинги
+- **reason:** Подмена `pm-board` в CRM-лендинге = визуал противоречит продукту, лендинг получается неубедительный. Это самый частый и грубый блокер ревью. Закрыто на трёх уровнях: (1) `domain-mock-matrix.md` (human rule), (2) `illustration-domain-match` hard validator (ingest-level), (3) `mock-semantic-fit` validator (P5 phase-level).
+- **first_observed:** 2026-05-16 crm-incident-pm-board
+
+## hero-must-use-domain-hero-mock
+- **rule:** Hero — единственная секция, где cross-domain reuse недопустим в любом случае (даже с обоснованием). Hero задаёт «о чём этот продукт». Если для домена нет hero-варианта (например, новый домен в `missingMocks` matrix) — нужно создать в первую очередь именно его, остальное можно отложить. Использование `generic` в Hero (HeroSection.visual.variant) — только в `story-led-unaware` layout с явным обоснованием.
+- **constraint:** `domain.hero-must-be-domain-specific`
+- **applies_to:** HeroSection.visual.variant
+- **reason:** Hero — главный визуальный сигнал. Если он чужой/generic — весь нижний контент лендинга бессилен исправить впечатление «продукт не понятно про что». Поэтому Hero — приоритет №1 при создании нового domain set.
+- **first_observed:** 2026-05-16 crm-incident-pm-board
+
+## phased-pipeline-deterministic-fail-fast
+- **rule:** В phased pipeline (P0..P8) deterministic фазы (P0 Brief Normalize, P3 Coverage Audit) должны падать БЫСТРО (до отправки prompt'а host-LLM) если что-то не так с входом. Если домен не резолвится — P0 ставит `resolvedDomain='unknown'` и P3 падает с `domain-missing` (либо `cross-domain-reuse` от illustration-domain-match) сразу, не тратя токены LLM на P1/P2/P4. Это экономит время host-agent и не накапливает мусорные артефакты в `.context/pipeline/<slug>/`.
+- **constraint:** `phase.deterministic-fail-fast`
+- **applies_to:** packages/harness/src/pipeline/orchestrator.ts, packages/harness/src/pipeline/phases/p0-brief-normalize.ts, packages/harness/src/pipeline/phases/p3-coverage-audit.ts
+- **reason:** В одно-shot режиме (legacy `agent prepare → write → apply`) ошибка домена обнаруживается только на этапе ingest, после того как host-LLM уже потратил контекст. Phased pipeline решает это вынося coverage audit в P3 (deterministic), который запускается до Section Architect (P4) и тем более до Copy Generation (P6).
+- **first_observed:** 2026-05-16 phased-pipeline-M2
+
+## cross-landing-diversity-soft-by-default-strict-by-flag
+- **rule:** Cross-landing diversity audit (`validateCrossLandingDiversity`) запускается по умолчанию в режиме `soft` — все findings (`mock-overused-globally`, `landing-structure-duplicate`, `landing-semantic-duplicate`, `landing-copy-similarity`) идут в warnings, pipeline продолжается. Для строгого режима (CI / production deploy) — `--strict-diversity` флаг или `strictDiversity: true` опция в `ingestLanding`, тогда warnings становятся errors и блокируют ingest. Soft по умолчанию — потому что diversity-overlap иногда легитимен (две страницы одного продукта в одном домене будут похожи).
+- **constraint:** `cross-landing.diversity-mode`
+- **applies_to:** packages/harness/src/validators/cross-landing-diversity.ts, packages/harness/src/agent/ingest-landing.ts
+- **reason:** Жёсткий режим по умолчанию = false-positives (2 CRM-лендинга на разные отрасли с одинаковыми CRM-mocks → ложный alert «overused»). Soft режим + опциональный strict даёт visibility без false positives. В production-flow можно включать strict для финальных лендингов.
+- **first_observed:** 2026-05-16 cross-landing-validator-M1
+
+## domain-mock-matrix-is-source-of-truth-typescript-mirror
+- **rule:** `wiki/references/domain-mock-matrix.md` — единственный source of truth для domain → mocks. `packages/harness/src/registry/domain-visual.ts` — это **зеркало** matrix, обновляется ВМЕСТЕ. Никаких ad-hoc duplications: если добавляешь новый mock в домен (или новый домен), порядок такой: (1) сначала markdown matrix, (2) затем TypeScript registry, (3) затем `wiki/landings/<domain>-reference.md`. Без этого порядка matrix и registry разъезжаются.
+- **constraint:** `domain.matrix-registry-sync`
+- **applies_to:** wiki/references/domain-mock-matrix.md, packages/harness/src/registry/domain-visual.ts, wiki/landings/<domain>-reference.md
+- **reason:** Документация для людей, registry для машин. Если они расходятся — либо validator пропустит cross-domain reuse (registry устарел), либо новый mock не будет признан (matrix устарел). Единый порядок обновления + matrix-as-source — единственный способ это синхронизировать без CI.
+- **first_observed:** 2026-05-16 domain-visual-registry-M1
