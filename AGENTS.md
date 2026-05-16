@@ -50,7 +50,7 @@ out/                            Handoff ZIP packages (gitignored)
 
 1. **Новый brief** → `harness ingest brief <path> --slug <slug>` _(M3)_ — обновит `wiki/audiences/`, добавит entry в `wiki/log.md`.
 2. **Генерация** → `harness generate landing --brief content/briefs/<slug>.json --slug <slug>` — пишет `content/landings/<slug>.json` + `generated/landings/<slug>/page.tsx` + `wiki/landings/<slug>.md` (status=draft) + log.
-3. **Превью** → `pnpm dev` → http://localhost:3000/landings/<slug>.
+3. **Превью** → `pnpm dev` → http://localhost:3000/landings/<slug>. Превью становится «готовым к показу» только после прохождения audience-score gate (`agent apply` его проверяет автоматически; standalone — `harness agent score landing --slug <slug> --brief <path>`). Конфиг: [`wiki/audiences/kaiten-scoring.md`](wiki/audiences/kaiten-scoring.md).
 4. **Approve** _(после merge stage-5)_ → через web UI `/approve/<slug>` или CLI — обновит landing-страницу + log.
 5. **Handoff** _(после merge stage-6)_ → `harness handoff <slug>` → ZIP в `out/` + log entry.
 6. **Feedback** → `harness ingest feedback <slug> "<note>"` _(M3-M4b)_ → добавит в `## Reviewer notes`, опц. в `wiki/lessons.md`.

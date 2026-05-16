@@ -1,0 +1,357 @@
+{
+  "version": "v3.0",
+  "generatedAt": "2026-02-24",
+  "source": ".context/attachments/kaiten_scoring.html",
+  "note": "B-сегмент Kaiten (20–250 лицензий). Composite Score — взвешенная сумма 5 критериев (max 100). Website Score = Composite × WIM. См. wiki/audiences/kaiten-scoring.md.",
+  "scoringFormula": {
+    "subscores": [
+      { "id": "S1", "label": "Story coverage", "weight": 0.4 },
+      { "id": "S2", "label": "Segment fit", "weight": 0.3 },
+      { "id": "S3", "label": "Role addressability", "weight": 0.2 },
+      { "id": "S4", "label": "CTA alignment", "weight": 0.1 }
+    ],
+    "defaultThreshold": 70,
+    "defaultMaxAttempts": 3
+  },
+  "segments": [
+    {
+      "id": "IT",
+      "name": "IT & Технологии",
+      "rank": 1,
+      "compositeScore": 93.0,
+      "websiteScore": 79.1,
+      "wim": 0.85,
+      "websiteZone": "PLG",
+      "ctaTypes": ["Trial", "Demo"],
+      "synonyms": ["it ", "айти", "технолог", "разработ", "разработчик", "интегратор", "аутсорс", "ит-аутсорс", "цод", "saas", "software", "tech", "стартап", "девелопер", "программист", "девопс", "devops"],
+      "mustHaveStories": ["compare", "migrate-jira"]
+    },
+    {
+      "id": "Финансы",
+      "name": "Финансы",
+      "rank": 2,
+      "compositeScore": 68.0,
+      "websiteScore": 30.6,
+      "wim": 0.45,
+      "websiteZone": "Sales-Enable",
+      "ctaTypes": ["Demo", "PDF"],
+      "synonyms": ["банк", "страхов", "мфо", "лизинг", "финтех", "финанс", "кредит", "брокер", "инвест", "цб ", "fintech"],
+      "mustHaveStories": ["security", "demo"]
+    },
+    {
+      "id": "Агентства",
+      "name": "Агентства & Медиа",
+      "rank": 3,
+      "compositeScore": 61.0,
+      "websiteScore": 54.9,
+      "wim": 0.90,
+      "websiteZone": "PLG",
+      "ctaTypes": ["Trial"],
+      "synonyms": ["агентств", "digital", "маркетингов", "креатив", "сми", "медиа", "production", "продакшн", "брендинг", "pr-агентств"],
+      "mustHaveStories": ["compare", "fast-check"]
+    },
+    {
+      "id": "Производство",
+      "name": "Производство & Промышленность",
+      "rank": 4,
+      "compositeScore": 60.0,
+      "websiteScore": 24.0,
+      "wim": 0.40,
+      "websiteZone": "Sales-Enable",
+      "ctaTypes": ["Demo"],
+      "synonyms": ["производств", "промышл", "завод", "оборудован", "добыч", "manufacturing", "литейн", "металлург", "машиностроен"],
+      "mustHaveStories": ["demo", "load-team"]
+    },
+    {
+      "id": "Госсектор",
+      "name": "Госсектор",
+      "rank": 5,
+      "compositeScore": 58.0,
+      "websiteScore": 7.9,
+      "wim": 0.15,
+      "websiteZone": "Partner-Led",
+      "ctaTypes": ["Partner", "PDF"],
+      "synonyms": ["госсектор", "госуд", "муниципал", "44-фз", "223-фз", "минцифр", "реестр по", "тендер", "ведомств"],
+      "mustHaveStories": ["security"]
+    },
+    {
+      "id": "Торговля",
+      "name": "Торговля & E-commerce",
+      "rank": 6,
+      "compositeScore": 57.0,
+      "websiteScore": 31.4,
+      "wim": 0.55,
+      "websiteZone": "Sales-Enable",
+      "ctaTypes": ["Trial", "Demo"],
+      "synonyms": ["ритейл", "торговл", "опт", "e-commerce", "ecommerce", "интернет-магазин", "маркетплейс", "ozon", "wildberries", "розниц"],
+      "mustHaveStories": ["fast-check", "demo"]
+    },
+    {
+      "id": "Транспорт",
+      "name": "Транспорт & Логистика",
+      "rank": 7,
+      "compositeScore": 49.0,
+      "websiteScore": 19.6,
+      "wim": 0.40,
+      "websiteZone": "Sales-Enable",
+      "ctaTypes": ["Demo"],
+      "synonyms": ["транспорт", "логист", "перевоз", "грузоперевоз", "склад", "warehouse", "freight", "доставк"],
+      "mustHaveStories": ["load-team"]
+    },
+    {
+      "id": "Строительство",
+      "name": "Строительство & Недвижимость",
+      "rank": 8,
+      "compositeScore": 48.0,
+      "websiteScore": 14.4,
+      "wim": 0.30,
+      "websiteZone": "Partner-Led",
+      "ctaTypes": ["Demo"],
+      "synonyms": ["строительств", "застройщик", "архбюро", "архитект", "недвижим", "тим ", "bim ", "проектиров"],
+      "mustHaveStories": ["demo"]
+    },
+    {
+      "id": "Антипрофиль",
+      "name": "Образование / Медицина / HoReCa",
+      "rank": 9,
+      "compositeScore": 30.0,
+      "websiteScore": 9.0,
+      "wim": 0.30,
+      "websiteZone": "Low",
+      "ctaTypes": [],
+      "synonyms": ["образован", "школ", "вуз", "медицин", "клиник", "ресторан", "horeca", "общепит", "кафе", "отель", "общеобраз"],
+      "mustHaveStories": [],
+      "antiProfile": true
+    }
+  ],
+  "roles": [
+    {
+      "id": "PM",
+      "name": "Тимлид / PM",
+      "type": "Champion",
+      "rank": 1,
+      "compositeScore": 89.0,
+      "synonyms": ["pm", "тимлид", "team lead", "project manager", "product manager", "scrum master", "руководитель команды", "руководитель проект"],
+      "focusKeywords": ["функционал", "шаблон", "trial", "попробовать", "сравнен", "kanban", "scrum", "доск"],
+      "preferredCta": "Trial"
+    },
+    {
+      "id": "DM",
+      "name": "ЛПР (ГД / CTO / Комм.дир)",
+      "type": "Decision Maker",
+      "rank": 2,
+      "compositeScore": 80.5,
+      "synonyms": ["цто", "cto", "гд ", "генеральный директор", "коммерческий директор", "лпр", "vp ", "ceo"],
+      "focusKeywords": ["roi", "окупаем", "кейс", "масштаб", "безопасн", "выгод"],
+      "preferredCta": "Demo"
+    },
+    {
+      "id": "COO",
+      "name": "Операционный директор",
+      "type": "Operational",
+      "rank": 3,
+      "compositeScore": 66.0,
+      "synonyms": ["coo", "операционный директор", "head of ops", "директор по операциям", "опер. директор"],
+      "focusKeywords": ["отчет", "гант", "ресурс", "загруз", "метрик", "процесс", "интеграц"],
+      "preferredCta": "Demo"
+    },
+    {
+      "id": "ITDir",
+      "name": "IT-директор",
+      "type": "Gatekeeper",
+      "rank": 4,
+      "compositeScore": 65.0,
+      "synonyms": ["ит-директор", "it-директор", "cio", "chief information officer", "ит-руководитель"],
+      "focusKeywords": ["on-prem", "on prem", "sso", "api", "иб ", "безопасн", "интеграц", "sandbox", "гост"],
+      "preferredCta": "PDF"
+    },
+    {
+      "id": "Specialist",
+      "name": "Исполнитель",
+      "type": "Researcher",
+      "rank": 5,
+      "compositeScore": 61.5,
+      "synonyms": ["исполнит", "специалист", "сотрудник", "ассистент"],
+      "focusKeywords": ["сравнительная таблица", "ценник", "цены", "1-pager", "pdf", "quick win", "скачать"],
+      "preferredCta": "PDF"
+    },
+    {
+      "id": "Buyer",
+      "name": "Закупщик / Compliance",
+      "type": "Compliance",
+      "rank": 6,
+      "compositeScore": 40.0,
+      "synonyms": ["закупщик", "compliance", "юрист", "тендерный отдел", "договорной отдел"],
+      "focusKeywords": ["реестр", "44-фз", "223-фз", "ндс", "договор", "лицензи"],
+      "preferredCta": "PDF"
+    }
+  ],
+  "userStories": [
+    {
+      "id": "compare",
+      "title": "Хочу сравнить с тем, что уже есть",
+      "rank": 1,
+      "score": 98,
+      "ctaType": "Trial",
+      "lifeSituation": "Миграция из другой системы",
+      "primarySegments": ["IT", "Агентства", "Торговля"],
+      "primaryRoles": ["PM", "DM"],
+      "keywords": ["сравни", "сравнен", " vs ", "jira", "trello", "youtrack", "excel", "альтернатив", "аналог", "vs."]
+    },
+    {
+      "id": "fast-check",
+      "title": "Хочу быстро проверить, подойдёт ли нам",
+      "rank": 2,
+      "score": 94,
+      "ctaType": "Trial",
+      "lifeSituation": "Первый раз цифровизирует",
+      "primarySegments": ["IT", "Производство", "Агентства"],
+      "primaryRoles": ["PM", "COO"],
+      "keywords": ["шаблон", "пример", "кейс", "попробовать", "быстр", "trial", "за 5 минут", "за минуту", "из коробки"]
+    },
+    {
+      "id": "migrate-jira",
+      "title": "Хочу понять, стоит ли переезжать с Jira",
+      "rank": 3,
+      "score": 95,
+      "ctaType": "Trial",
+      "lifeSituation": "Миграция из другой системы",
+      "primarySegments": ["IT", "Финансы"],
+      "primaryRoles": ["PM", "DM"],
+      "keywords": ["jira", "миграц", "переезд", "переход с", "atlassian", "импорт", "перенести"]
+    },
+    {
+      "id": "demo",
+      "title": "Хочу увидеть, как это работает на практике",
+      "rank": 4,
+      "score": 87,
+      "ctaType": "Demo",
+      "lifeSituation": "Первый раз цифровизирует",
+      "primarySegments": ["Производство", "Строительство", "Торговля"],
+      "primaryRoles": ["PM", "COO", "DM"],
+      "keywords": ["демо", "demo", "видео", "запись", "посмотрет", "увидеть", "тур", "screencast"]
+    },
+    {
+      "id": "security",
+      "title": "Хочу понять ограничения и безопасность",
+      "rank": 5,
+      "score": 88,
+      "ctaType": "Demo",
+      "lifeSituation": "On-prem / ИБ-требования",
+      "primarySegments": ["Финансы", "Госсектор"],
+      "primaryRoles": ["ITDir", "Buyer"],
+      "keywords": ["безопасн", "on-prem", "on prem", "иб ", "гост", "57580", "ssо", "права доступа", "хранение данных", "152-фз", "защит"]
+    },
+    {
+      "id": "sandbox",
+      "title": "Хочу проверить, не сломаем ли мы всё",
+      "rank": 6,
+      "score": 78,
+      "ctaType": "Trial",
+      "lifeSituation": "Любая",
+      "primarySegments": ["IT", "Финансы", "Производство", "Торговля", "Агентства"],
+      "primaryRoles": ["PM", "DM"],
+      "keywords": ["sandbox", "песочниц", "тест", "без риска", "пилот", "pilot", "пробная"]
+    },
+    {
+      "id": "load-team",
+      "title": "Хочу проверить загрузку команды",
+      "rank": 7,
+      "score": 74,
+      "ctaType": "Demo",
+      "lifeSituation": "Зоопарк инструментов",
+      "primarySegments": ["Производство", "Агентства", "Торговля"],
+      "primaryRoles": ["COO", "PM"],
+      "keywords": ["загрузк", "ресурсн", "гант", "gantt", "планирован", "capacity", "утилизац"]
+    },
+    {
+      "id": "ux-check",
+      "title": "Хочу проверить UX до решения",
+      "rank": 8,
+      "score": 71,
+      "ctaType": "Trial",
+      "lifeSituation": "Миграция / сравнение",
+      "primarySegments": ["IT", "Агентства"],
+      "primaryRoles": ["PM"],
+      "keywords": ["ux", "интерфейс", "интуитив", "удобн", "no-friction", "без регистрац", "регистраци"]
+    },
+    {
+      "id": "simple",
+      "title": "Хочу понять, не слишком ли это сложно",
+      "rank": 9,
+      "score": 65,
+      "ctaType": "Trial",
+      "lifeSituation": "Первый раз цифровизирует",
+      "primarySegments": ["Производство", "Строительство"],
+      "primaryRoles": ["COO"],
+      "keywords": ["прост", "без it-отдела", "не нужен ит", "видео-тур", "за день", "быстр", "несложн"]
+    },
+    {
+      "id": "learn",
+      "title": "Хочу понять, как вообще строить процессы",
+      "rank": 10,
+      "score": 38,
+      "ctaType": "Blog",
+      "lifeSituation": "Первый раз / Антипрофиль",
+      "primarySegments": ["Антипрофиль"],
+      "primaryRoles": ["Specialist"],
+      "keywords": ["с чего начать", "обучен", "гайд", "руководство", "процессы с нуля"],
+      "antiProfile": true
+    }
+  ],
+  "crossMap": {
+    "IT":            { "compare": 5, "fast-check": 5, "migrate-jira": 5, "demo": 3, "security": 3, "sandbox": 4, "load-team": 3, "ux-check": 5, "simple": 1, "learn": 1 },
+    "Госсектор":     { "compare": 3, "fast-check": 2, "migrate-jira": 2, "demo": 4, "security": 5, "sandbox": 3, "load-team": 2, "ux-check": 1, "simple": 2, "learn": 2 },
+    "Производство":  { "compare": 2, "fast-check": 4, "migrate-jira": 1, "demo": 5, "security": 2, "sandbox": 3, "load-team": 5, "ux-check": 2, "simple": 5, "learn": 4 },
+    "Финансы":       { "compare": 4, "fast-check": 3, "migrate-jira": 4, "demo": 4, "security": 5, "sandbox": 3, "load-team": 3, "ux-check": 2, "simple": 1, "learn": 1 },
+    "Агентства":     { "compare": 5, "fast-check": 5, "migrate-jira": 3, "demo": 3, "security": 1, "sandbox": 4, "load-team": 5, "ux-check": 4, "simple": 2, "learn": 2 },
+    "Торговля":      { "compare": 3, "fast-check": 4, "migrate-jira": 2, "demo": 4, "security": 2, "sandbox": 3, "load-team": 4, "ux-check": 2, "simple": 3, "learn": 3 },
+    "Строительство": { "compare": 2, "fast-check": 3, "migrate-jira": 1, "demo": 5, "security": 2, "sandbox": 3, "load-team": 4, "ux-check": 2, "simple": 5, "learn": 4 },
+    "Транспорт":     { "compare": 2, "fast-check": 3, "migrate-jira": 2, "demo": 4, "security": 3, "sandbox": 3, "load-team": 4, "ux-check": 2, "simple": 3, "learn": 3 },
+    "Антипрофиль":   { "compare": 1, "fast-check": 2, "migrate-jira": 1, "demo": 3, "security": 1, "sandbox": 2, "load-team": 2, "ux-check": 2, "simple": 4, "learn": 4 }
+  },
+  "mustPassRules": [
+    {
+      "id": "it-needs-compare-or-trial",
+      "when": { "segmentAnyOf": ["IT"] },
+      "expect": "Минимум одна из stories {compare, migrate-jira} покрыта ИЛИ hero.primaryCta — Trial.",
+      "rationale": "IT — primary сегмент, приходит за сравнением с Jira (53% компаний не мигрировали). Без сравнительного блока/Trial-CTA лендинг проваливает основной intent сегмента."
+    },
+    {
+      "id": "trust-segment-needs-security-and-demo",
+      "when": { "segmentAnyOf": ["Финансы", "Госсектор"] },
+      "expect": "Story 'security' покрыта (on-prem/ГОСТ/защита данных) И primary CTA включает Demo (не только Trial).",
+      "rationale": "Для финансов и госа главный гейткипер — IT-директор (ГОСТ Р 57580). Без блока безопасности и demo-CTA сделка блокируется на этапе compliance."
+    },
+    {
+      "id": "seo-mentions-priority",
+      "when": {},
+      "expect": "seo.title + seo.description суммарно упоминают хотя бы один резолвленный сегмент ИЛИ ключевое слово из top-3 stories.",
+      "rationale": "Если SEO не таргетит приоритетную аудиторию, на сайт приходит не та аудитория — score-гейт бессмысленен."
+    },
+    {
+      "id": "anti-profile-not-primary",
+      "when": {},
+      "expect": "Resolved segments не равны исключительно 'Антипрофиль'.",
+      "rationale": "Антипрофиль (образование/медицина/HoReCa) — кандидат на исключение с главной. Если лендинг таргетит только их — вернуть на пересборку."
+    }
+  ],
+  "priorities": {
+    "P0": [
+      "Сравнительные страницы vs Jira, Trello, YouTrack, Excel",
+      "Секция 'Решения по отраслям' на главной (IT, Агентства, Торговля, Финансы, Производство)"
+    ],
+    "P1": [
+      "Landing page 'Безопасность & On-prem' с формой заявки (не trial)",
+      "Лендинг 'Госсектор & Партнёры' с реестром Минцифры",
+      "Двойной CTA: 'Попробовать бесплатно' + 'Скачать для руководителя'"
+    ],
+    "P2": [
+      "Страница миграции с Jira (импорт данных, кейсы, ROI)",
+      "Видео-демо по сценариям (для production, строительство, не-IT)"
+    ],
+    "P3": [
+      "Убрать акцент на 'Обучение процессам' с главной → перенести в Блог"
+    ]
+  }
+}

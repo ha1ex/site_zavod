@@ -22,7 +22,8 @@
   },
   "scripts": {
     "cli": "tsx src/cli.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:audience": "tsx src/validators/landing-audience.test.ts"
   },
   "dependencies": {
     "ai": "^6.0.182",

@@ -32,6 +32,8 @@ Open `content/briefs/<slug>.json`. If it does not exist:
 - Ask the user for: product, audience, market, primary goal (`book_demo` / `signup` / `waitlist` / `contact_sales` / `try_free` / `download`), main pain, main promise, 3 proof points, tone (default: "clear, practical, confident, no hype"), CTA label, `pageArchetype` (`saas` / `waitlist` / `enterprise`).
 - Write the brief to `content/briefs/<slug>.json` matching `BriefSchema` from `@buffalo/harness/schemas`.
 
+**Audience pre-resolve (optional but speeds up the gate):** если знаешь явно — какие сегменты из [`wiki/audiences/kaiten-scoring.md`](../../../wiki/audiences/kaiten-scoring.md) подходят к брифу — добавь `resolvedSegments: ["IT", ...]`. Если не уверен — оставь пустым, audience-score gate сам сделает lexical-match. Если match провалится — на шаге 4½ сделаешь audience research и впишешь.
+
 ### 2. Prepare prompt (CLI emits it; no LLM call)
 
 ```bash
@@ -84,9 +86,44 @@ This will:
 
 On success, you get the preview URL.
 
+### 4½. Audience-score gate (новое — обязательно)
+
+После того как brand + business валидаторы прошли и TSX отрендерен, `agent apply` **автоматически** прогоняет audience-score gate из `wiki/audiences/kaiten-scoring.json`. Это последний барьер перед preview.
+
+**Что считается:**
+
+- `S1 Story coverage (×0.4)` — закрыты ли top-N user stories (Score ≥ 87 — must-have; см. `wiki/audiences/kaiten-scoring.md`).
+- `S2 Segment fit (×0.3)` — упоминаются ли резолвленные сегменты в hero/features/FAQ.
+- `S3 Role addressability (×0.2)` — Тимлид/PM и ЛПР закрыты явно; для финансов/госа — плюс IT-директор (on-prem/ГОСТ).
+- `S4 CTA alignment (×0.1)` — CTA соответствуют preferred типу сегмента (Trial для PLG-сегментов, Demo для Sales-Enable).
+
+**Гейт по умолчанию:** `score ≥ 70` И все must-pass правила green. Если нет — `agent apply` exits с error, отчёт пишется в:
+
+- `.context/audience-score/<slug>.{json,md}` (детально, по каждой story / роли / правилу)
+- секцию `## Audience score` в `wiki/landings/<slug>.md` (часть досье)
+
+**Что делать при `audience-resolve-needed`:**
+
+Этот маркер появляется, когда в brief.audience/market нет ни одного известного сегмента из scoring-конфига. Тогда:
+
+1. Сделай короткий audience-research для темы брифа: «кто типично использует продукт такого типа, кто принимает решение». РФ/СНГ — в первую очередь, мир — во вторую.
+2. Запиши результат в `content/briefs/<slug>.json` в поле `resolvedSegments` (массив id из `wiki/audiences/kaiten-scoring.md`, напр. `["IT", "Агентства"]`).
+3. По желанию — заведи `wiki/audiences/<slug>.md` с обоснованием выбора (аудит-след).
+4. Запусти apply снова — теперь scoring сразу попадёт.
+
+**Что делать при `score < threshold` или must-pass fail:**
+
+Прочитай `.context/audience-score/<slug>.md` — там для каждой непокрытой story есть suggestion со списком ключевых слов и типом контента, которого не хватает. Правь `content/landings/<slug>.json` точечно: добавляй секции/копи/CTA по подсказкам. Repeat apply.
+
+**Бюджет:** до 3 итераций аудиенс-исправлений (как brand/business). Если за 3 итерации не сошлось — сообщи пользователю, не пытайся бесконечно.
+
+**Эскейп-хатч:** `agent apply landing --no-audience-gate` отключает гейт целиком (для отладки, не для регулярного использования). `--audience-threshold 60` — мягче порог.
+
+**Пересчитать score без апплая:** `agent score landing --slug <slug> --brief <path>`.
+
 ### 5. Repair loop (still no LLM call)
 
-If apply returns errors, the CLI lists them per-section. Use `--json` to get machine-readable output:
+If apply returns errors (brand / business / audience), the CLI lists them per-section. Use `--json` to get machine-readable output:
 
 ```bash
 pnpm -w run harness agent apply landing --slug <slug> --brief content/briefs/<slug>.json --json

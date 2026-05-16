@@ -29,6 +29,11 @@ export interface FileLandingInput {
   tokenEstimate?: number;
   durationMs?: number;
   generator?: string;
+  /**
+   * Готовый markdown audience-score отчёта (включая заголовок).
+   * Если передан — будет встроен в gen-блок `audience-score` в wiki/landings/<slug>.md.
+   */
+  audienceScoreMarkdown?: string;
 }
 
 export async function fileLandingToWiki(repoRoot: string, input: FileLandingInput, now: Date = new Date()): Promise<string> {
@@ -73,6 +78,9 @@ export async function fileLandingToWiki(repoRoot: string, input: FileLandingInpu
 
   body = replaceGenBlock(body, 'sections-summary', renderSectionsSummary(input.spec));
   body = replaceGenBlock(body, 'spec-meta', renderSpecMeta(input));
+  if (input.audienceScoreMarkdown) {
+    body = replaceGenBlock(body, 'audience-score', input.audienceScoreMarkdown);
+  }
 
   const content = serializeFrontmatter(frontmatter, body);
   await mkdir(dirname(path), { recursive: true });
@@ -152,6 +160,12 @@ _(метаданные сгенерируются после первого fili
 <!-- gen:sections-summary -->
 _(автогенерируется при filing back)_
 <!-- /gen:sections-summary -->
+
+## Audience score
+
+<!-- gen:audience-score -->
+_(автогенерируется audience-score gate'ом при agent apply)_
+<!-- /gen:audience-score -->
 
 ## Lessons (LLM-extract)
 

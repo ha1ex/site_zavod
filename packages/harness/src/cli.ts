@@ -2,7 +2,7 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
-import { dirname, resolve } from 'node:path';
+import { dirname, relative, resolve } from 'node:path';
 import { HARNESS_VERSION } from './index';
 import { BriefSchema, IllustrationSpecSchema, LandingSpecSchema } from './schemas/index';
 import {
@@ -402,7 +402,7 @@ agent
 agent
   .command('apply')
   .description(
-    'Принять spec от хост-агента: валидация (brand+business) + рендер TSX + filing back. Без LLM.',
+    'Принять spec от хост-агента: валидация (brand+business+audience) + рендер TSX + filing back. Без LLM.',
   )
   .argument('<kind>', 'тип артефакта: landing')
   .option('-s, --slug <slug>', 'slug черновика')
@@ -410,6 +410,8 @@ agent
   .option('--strict', 'падать на ошибках валидатора (не писать TSX)', false)
   .option('--no-render', 'не рендерить TSX (только валидация)')
   .option('--json', 'machine-readable JSON-вывод результата (для repair-loop агента)', false)
+  .option('--audience-threshold <n>', 'минимальный Audience Score (default 70)', (v) => parseFloat(v))
+  .option('--no-audience-gate', 'полностью отключить audience-score gate')
   .action(
     async (
       kind: string,
@@ -419,6 +421,8 @@ agent
         strict: boolean;
         render: boolean;
         json: boolean;
+        audienceThreshold?: number;
+        audienceGate: boolean;
       },
     ) => {
       const root = await findRepoRoot(ROOT);
@@ -438,6 +442,8 @@ agent
         briefPath: opts.brief,
         strict: opts.strict,
         noRender: opts.render === false,
+        audienceThreshold: opts.audienceThreshold,
+        noAudienceGate: opts.audienceGate === false,
       });
 
       if (opts.json) {
@@ -454,6 +460,15 @@ agent
         console.log(chalk.green(`         spec  → ${result.specPathRel}`));
         if (result.tsxPathRel) console.log(chalk.green(`         tsx   → ${result.tsxPathRel}`));
         if (result.wikiPathRel) console.log(chalk.green(`         wiki  → ${result.wikiPathRel}`));
+        if (result.audienceScore) {
+          console.log(
+            chalk.green(
+              `         audience-score: ${result.audienceScore.score}/${result.audienceScore.threshold} (segments: ${result.audienceScore.resolvedSegments.join(', ') || 'n/a'})`,
+            ),
+          );
+          if (result.audienceReportMdRel)
+            console.log(chalk.green(`         audience report → ${result.audienceReportMdRel}`));
+        }
         for (const w of result.warnings) console.log(chalk.yellow(`  ! ${w}`));
         console.log(chalk.dim(`\n         preview: ${result.previewUrl}`));
         process.exit(0);
@@ -466,6 +481,16 @@ agent
         console.log(`  ${chalk.red('✗')} ${e.kind}: ${e.message}${pathPart}${codePart}`);
       }
       for (const w of result.warnings) console.log(chalk.yellow(`  ! ${w}`));
+      if (result.audienceScore) {
+        console.log(
+          chalk.yellow(
+            `\n  audience-score: ${result.audienceScore.score}/${result.audienceScore.threshold} ` +
+              `(segments: ${result.audienceScore.resolvedSegments.join(', ') || 'n/a'})`,
+          ),
+        );
+        if (result.audienceReportMdRel)
+          console.log(chalk.yellow(`  full report → ${result.audienceReportMdRel}`));
+      }
       console.log(
         chalk.cyan(
           `\nПравь ${result.specPathRel} и запусти команду снова. Используй --json для structured output.`,
@@ -491,6 +516,70 @@ program
     }
     console.log(chalk.green(`[harness] ✓ spec valid (${parsed.data.sections.length} sections)`));
   });
+
+agent
+  .command('score')
+  .description('Пересчитать audience-score для уже сгенерированного spec, без апплая. Без LLM.')
+  .argument('<kind>', 'тип артефакта: landing')
+  .option('-s, --slug <slug>', 'slug черновика')
+  .option('-b, --brief <path>', 'путь к brief.json (обязателен для скоринга)')
+  .option('--audience-threshold <n>', 'минимальный Audience Score (default 70)', (v) => parseFloat(v))
+  .option('--json', 'machine-readable JSON-вывод', false)
+  .action(
+    async (
+      kind: string,
+      opts: { slug?: string; brief?: string; audienceThreshold?: number; json: boolean },
+    ) => {
+      const root = await findRepoRoot(ROOT);
+      if (kind !== 'landing') {
+        console.error(chalk.red(`[harness] score: kind=${kind} не поддерживается (поддерживается: landing)`));
+        process.exit(1);
+      }
+      if (!opts.slug) {
+        console.error(chalk.red('[harness] score landing: --slug обязателен'));
+        process.exit(1);
+      }
+      if (!opts.brief) {
+        console.error(chalk.red('[harness] score landing: --brief обязателен'));
+        process.exit(1);
+      }
+      const { loadAudienceScoring } = await import('./schemas/audience-scoring');
+      const { validateLandingAudience, formatAudienceReportMarkdown } = await import('./validators/landing-audience');
+      const specRaw = await readFile(resolve(root, 'content', 'landings', `${opts.slug}.json`), 'utf-8');
+      const spec = LandingSpecSchema.parse(JSON.parse(specRaw));
+      const briefRaw = await readFile(resolve(root, opts.brief), 'utf-8');
+      const brief = BriefSchema.parse(JSON.parse(briefRaw));
+      const scoring = await loadAudienceScoring(root);
+      const result = validateLandingAudience(spec, scoring, { brief, threshold: opts.audienceThreshold });
+
+      const reportAt = new Date().toISOString();
+      const md = formatAudienceReportMarkdown(opts.slug, result, reportAt);
+      const jsonAbs = resolve(root, '.context', 'audience-score', `${opts.slug}.json`);
+      const mdAbs = resolve(root, '.context', 'audience-score', `${opts.slug}.md`);
+      await mkdir(dirname(jsonAbs), { recursive: true });
+      await writeFile(jsonAbs, JSON.stringify({ generatedAt: reportAt, ...result }, null, 2) + '\n', 'utf-8');
+      await writeFile(mdAbs, md + '\n', 'utf-8');
+
+      if (opts.json) {
+        console.log(JSON.stringify({ generatedAt: reportAt, ...result }, null, 2));
+        process.exit(result.ok ? 0 : 1);
+      }
+
+      const status = result.ok ? chalk.green('✓ pass') : chalk.red('✗ fail');
+      console.log(`[harness] audience-score landing/${opts.slug} — ${result.score}/${result.threshold} — ${status}`);
+      console.log(chalk.dim(`         segments: ${result.resolvedSegments.join(', ') || 'n/a'}`));
+      console.log(chalk.dim(`         ctaTypes: ${result.ctaTypes.join(', ') || 'n/a'}`));
+      for (const b of result.breakdown) {
+        console.log(chalk.dim(`         ${b.id} ${b.label}: raw=${b.raw} weighted=${b.weighted}`));
+      }
+      for (const e of result.errors) {
+        console.log(`  ${chalk.red('✗')} ${e.kind}${e.ruleId ? `/${e.ruleId}` : ''}: ${e.message}`);
+        if (e.suggestion) console.log(chalk.dim(`     → ${e.suggestion}`));
+      }
+      console.log(chalk.dim(`\n         full report → ${relative(root, mdAbs)}`));
+      process.exit(result.ok ? 0 : 1);
+    },
+  );
 
 program
   .command('registry')
