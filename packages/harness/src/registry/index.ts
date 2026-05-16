@@ -25,7 +25,7 @@ export const REGISTRY: ComponentEntry[] = [
     sectionId: 'hero',
     category: 'hero',
     description:
-      'Главный hero-блок: eyebrow (опц.), заголовок, подзаголовок, primary CTA + опционально outline secondary CTA, и визуал справа (xl+).',
+      'Главный hero-блок: eyebrow (опц.), заголовок, подзаголовок, primary CTA + опционально outline secondary CTA, и визуал справа (xl+). Визуал — либо `visual` (статичная картинка), либо `mockUi` (HTML/Tailwind UI-мок: board / chat / kpi / article / checklist / console). Если задан mockUi — он приоритетен над visual.',
     props: {
       eyebrow: 'string (<=80) | undefined',
       title: 'string (4..80)',
@@ -34,21 +34,32 @@ export const REGISTRY: ComponentEntry[] = [
       secondaryCta: '{ label; href } | null | undefined',
       visual:
         "{ type: 'product_screenshot'|'illustration'|'logo_cloud'|'photo'; assetId: string } | null | undefined",
+      mockUi:
+        "MockUi | null | undefined — discriminated union по template: 'board'|'chat'|'checklist'|'article'|'kpi'|'console'. Правила контента — см. section-mock-skill.md.",
     },
-    constraints: ['title <= 80', 'subtitle 10..200', 'must_have_primary_cta', 'one_hero_per_landing'],
+    constraints: [
+      'title <= 80',
+      'subtitle 10..200',
+      'must_have_primary_cta',
+      'one_hero_per_landing',
+      'mockUi_or_visual_not_both_required',
+    ],
   },
   {
     name: 'FeatureGrid',
     specComponent: 'FeatureGrid',
     sectionId: 'features',
     category: 'features',
-    description: 'Grid карточек "иконка + заголовок + описание". 2-8 items, 2/3/4 колонки.',
+    description:
+      'Grid карточек "иконка + заголовок + описание". 2-8 items, 2/3/4 колонки. Опционально перед грид-карточек можно показать UI-мок (mockUi: board / chat / kpi / article / checklist / console) — например, доска заявок для секции про поток обращений.',
     props: {
       eyebrow: 'string (<=80) | undefined',
       title: 'string (4..80)',
       description: 'string (<=200) | undefined',
       items: 'Array<{ icon: string; title: 2..60; description: 10..200 }> (2..8)',
       columns: '2 | 3 | 4 (default 3)',
+      mockUi:
+        "MockUi | null | undefined — опциональный UI-мок над гридом. Правила контента — см. section-mock-skill.md.",
     },
     constraints: ['min_2_items', 'max_8_items', 'titles_unique_per_section'],
   },
@@ -86,12 +97,15 @@ export const REGISTRY: ComponentEntry[] = [
     specComponent: 'FinalCta',
     sectionId: 'final_cta',
     category: 'cta',
-    description: 'Финальный CTA-блок: заголовок + описание + primary CTA + опционально secondary.',
+    description:
+      'Финальный CTA-блок: заголовок + описание + primary CTA + опционально secondary. Опционально снизу можно показать дополнительный UI-мок (mockUi) — например, kpi-плитки с социальным доказательством.',
     props: {
       title: 'string (4..80)',
       description: 'string (<=200) | undefined',
       primaryCta: '{ label; href }',
       secondaryCta: '{ label; href } | null | undefined',
+      mockUi:
+        "MockUi | null | undefined — опциональный UI-мок под кнопками. Правила — см. section-mock-skill.md.",
     },
     constraints: ['must_have_primary_cta', 'final_cta_matches_page_goal'],
   },

@@ -74,6 +74,40 @@ export default function <PascalCaseId>(props: SVGProps<SVGSVGElement>) {
 - Decorations: plant / blob / sparkle / logo — each ≤ 2% of canvas area, scattered without overlapping devices.
 - Use `viewBox` from the spec verbatim. Do not add a hard width/height (let consumer size it via className).
 
+## Visual quality (mandatory — выведено из `wiki/landings/kaiten-techsupport-reference.md`)
+
+The same standards that apply to HTML/Tailwind section mocks (см. `section-mock-skill.md`) also apply here when the SVG depicts a UI screen inside a device frame.
+
+- **Realistic, domain-specific copy inside the screen.** Never `"Item 1"`, `"Card"`, `"Title"`. Use copy that the target audience would actually see (e.g. for техподдержка: `«Не приходит код подтверждения»`, `87% закрыто в SLA`, `Telegram · новый клиент`). Take it from the brief.
+- **Window-chrome on every device screen.** Three colored dots (red `#ef4444`/yellow `#fde047`/green `#86efac`) + an active-tab indicator at the top of the laptop's screen viewport. This is what makes the SVG read as "a real product screenshot" rather than "an abstract rectangle".
+- **One active + others muted.** If you draw multiple cards on a board, one card must be visually "lifted" (offset by 4-8 px upward + slightly stronger shadow) and the others muted (alpha 0.6). Mirrors the HTML-mock rule.
+- **Accent bar with one semantic color axis.** Each card gets a 4px-tall, 32px-wide rounded bar at the top, colored by status (e.g. `accent` for primary/in-progress, `#10B981` for done, `#F97316` for in-process, `#EF4444` for bug). Don't mix two axes (priority + type) in one composition.
+- **Icons stay geometric and minimal.** No detailed pictograms. Use lucide-style 1.75-stroke outline glyphs at most. Each inside a violet-soft rounded-square "capsule".
+- **One emoji at most per scene.** Allowed roles: a hint marker (`☝️` near the active card), a doc-type marker (`📌`/`🧑‍💻`), or a tiny inline checkmark inside a checklist row. Never in a heading, button, or badge.
+- **Brand-violet glow, not gray shadow.** The glow gradient at `glow.centerX,centerY` already provides this — make sure its color matches the brand accent, not a neutral gray.
+- **Tabular figures everywhere.** Already enforced by the AST rule; reinforced here because dashboard mocks should look like real numeric data.
+- **Mock content density.** Inside the device screen, the body text is small (≈ 11–14 px relative to a viewBox where the whole canvas is ~1400 units tall). Don't fill the screen with one giant headline — fill it with a small dashboard / board / chat.
+
+### KPI/board patterns inside a device screen
+
+| Pattern | How to draw in SVG |
+|---|---|
+| KPI tile | A rounded `<rect>` (16-px radius), a large `<text>` for the number (font-size ≈ 48, fontWeight 600, `className="tabular-nums"`), a small `<text>` label below (font-size ≈ 14, alpha 0.6), an arrow glyph (▲/▼) at the right of the number with `fill={dark ? '#22c55e' : '#16a34a'}` for positive or red for negative. |
+| Board card | Rounded `<rect>` 12-px radius, 4×32 accent bar at top, two `<text>` lines (title + meta), one or two micro-pill badges (`<rect>` 999-radius + small `<text>`). |
+| Chat bubble | Rounded `<rect>` with one corner sharp (`rx={16}` on three corners, `rx={4}` on bottom-left for "in" / bottom-right for "out"). Different fill: neutral-100 for "in", accent-soft for "out". `<text>` inside with leading ≈ 1.4. |
+| Checklist row | `<rect>` 5×5 with rounded corners + a `<path>` ✓ for done (filled accent), or empty `<rect>` for todo. Done text gets `<line>` strikethrough. |
+
+### Self-check (in addition to AST checklist)
+
+Before returning, also confirm:
+
+- [ ] The screen inside the device contains realistic, audience-specific text — not "Item 1".
+- [ ] One card / row is visually emphasized; the others are slightly muted.
+- [ ] At most one emoji glyph in the entire SVG.
+- [ ] Accent bars use a single semantic color axis.
+- [ ] Numeric `<text>` elements have `className="tabular-nums"` (already required by AST).
+- [ ] Glow color matches `spec.palette.glowDark/glowLight` (brand-coherent).
+
 ## Hard rules — DO NOT
 
 - Do not add `<defs><style>` blocks or any CSS inside the SVG.

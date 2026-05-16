@@ -1,4 +1,5 @@
 import { cn } from '../primitives/cn';
+import { SectionMock, type SectionMockUi } from './SectionMock';
 
 export interface FeatureItemProps {
   icon: string;
@@ -12,6 +13,7 @@ export interface FeatureGridProps {
   description?: string;
   items: FeatureItemProps[];
   columns?: 2 | 3 | 4;
+  mockUi?: SectionMockUi | null;
 }
 
 const colsClass: Record<NonNullable<FeatureGridProps['columns']>, string> = {
@@ -26,6 +28,7 @@ export function FeatureGrid({
   description,
   items,
   columns = 3,
+  mockUi,
 }: FeatureGridProps) {
   return (
     <section
@@ -45,6 +48,12 @@ export function FeatureGrid({
           <p className="mt-4 text-lg text-(--color-text-secondary)">{description}</p>
         )}
       </div>
+
+      {mockUi && (
+        <div className="mb-10">
+          <SectionMock mock={mockUi} />
+        </div>
+      )}
 
       <div className={cn('grid grid-cols-1 gap-8', colsClass[columns])}>
         {items.map((item, i) => (

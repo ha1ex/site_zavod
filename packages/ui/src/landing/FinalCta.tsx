@@ -1,14 +1,22 @@
 import { ButtonLink } from '../primitives/ButtonLink';
 import { cn } from '../primitives/cn';
+import { SectionMock, type SectionMockUi } from './SectionMock';
 
 export interface FinalCtaProps {
   title: string;
   description?: string;
   primaryCta: { label: string; href: string };
   secondaryCta?: { label: string; href: string } | null;
+  mockUi?: SectionMockUi | null;
 }
 
-export function FinalCta({ title, description, primaryCta, secondaryCta }: FinalCtaProps) {
+export function FinalCta({
+  title,
+  description,
+  primaryCta,
+  secondaryCta,
+  mockUi,
+}: FinalCtaProps) {
   return (
     <section
       className={cn(
@@ -18,10 +26,15 @@ export function FinalCta({ title, description, primaryCta, secondaryCta }: Final
     >
       <div
         className={cn(
-          'rounded-(--radius-3xl) px-8 py-12 md:px-16 md:py-16 lg:px-20 lg:py-20',
+          'relative overflow-hidden rounded-(--radius-3xl)',
+          'px-8 py-12 md:px-16 md:py-16 lg:px-20 lg:py-20',
           'bg-(--color-action-primary) text-(--color-text-inverse)',
         )}
       >
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-(--color-text-inverse) opacity-10 blur-3xl"
+        />
         <h2 className="max-w-2xl text-3xl font-semibold leading-tight md:text-4xl lg:text-5xl">
           {title}
         </h2>
@@ -47,6 +60,11 @@ export function FinalCta({ title, description, primaryCta, secondaryCta }: Final
             </ButtonLink>
           )}
         </div>
+        {mockUi && (
+          <div className="relative z-10 mt-10">
+            <SectionMock mock={mockUi} />
+          </div>
+        )}
       </div>
     </section>
   );

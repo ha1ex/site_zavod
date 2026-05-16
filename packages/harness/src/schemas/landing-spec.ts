@@ -20,6 +20,161 @@ export const AssetRefSchema = z.object({
 });
 export type AssetRef = z.infer<typeof AssetRefSchema>;
 
+/* ─── MockUiSpec ──────────────────────────────────────────────────── */
+/**
+ * MockUiSpec — HTML/Tailwind UI-мок, который рендерится внутри секции
+ * (рядом с текстом или вместо `visual`). 7 шаблонов выведены из эталонного
+ * лендинга `wiki/landings/kaiten-techsupport-reference.md`. Правила —
+ * `packages/harness/src/prompts/section-mock-skill.md` (загружается в
+ * системный промпт LLM-генератора). Все content-строки — domain-specific
+ * (имена клиентов, темы обращений, реальные KPI), Lorem запрещён.
+ *
+ * Backwards-compatible: `mockUi` на секциях опционален; компоненты, которые
+ * его не поддерживают, игнорируют prop без ошибки.
+ */
+
+const MockAccentTone = z.enum(['primary', 'green', 'orange', 'red', 'blue']);
+const MockBadgeTone = z.enum(['red', 'amber', 'emerald', 'neutral', 'blue']);
+
+const BoardMockSchema = z.object({
+  template: z.literal('board'),
+  content: z.object({
+    tabs: z.array(z.string().min(1).max(40)).min(2).max(6),
+    activeTab: z.string().min(1).max(40).optional(),
+    columns: z
+      .array(
+        z.object({
+          title: z.string().min(1).max(40),
+          count: z.number().int().nonnegative().optional(),
+          cards: z
+            .array(
+              z.object({
+                title: z.string().min(2).max(80),
+                meta: z.string().max(80).optional(),
+                accent: MockAccentTone,
+                badges: z
+                  .array(
+                    z.object({
+                      label: z.string().min(1).max(20),
+                      tone: MockBadgeTone,
+                    }),
+                  )
+                  .max(3)
+                  .optional(),
+                active: z.boolean().optional(),
+                dim: z.boolean().optional(),
+              }),
+            )
+            .min(1)
+            .max(4),
+        }),
+      )
+      .min(3)
+      .max(5),
+    activeEmoji: z.enum(['☝️', '✋']).nullable().optional(),
+  }),
+});
+
+const ChatMockSchema = z.object({
+  template: z.literal('chat'),
+  content: z.object({
+    ticketId: z.string().min(1).max(20),
+    ticketTitle: z.string().min(2).max(80),
+    ticketSubtitle: z.string().max(120).optional(),
+    messages: z
+      .array(
+        z.object({
+          role: z.enum(['in', 'out']),
+          author: z.string().max(40).optional(),
+          text: z.string().min(2).max(300),
+        }),
+      )
+      .min(2)
+      .max(4),
+    checklist: z
+      .array(z.object({ label: z.string().min(2).max(80), done: z.boolean() }))
+      .min(2)
+      .max(5)
+      .optional(),
+  }),
+});
+
+const ChecklistMockSchema = z.object({
+  template: z.literal('checklist'),
+  content: z.object({
+    title: z.string().max(80).optional(),
+    items: z
+      .array(z.object({ label: z.string().min(2).max(120), done: z.boolean() }))
+      .min(3)
+      .max(6),
+  }),
+});
+
+const ArticleMockSchema = z.object({
+  template: z.literal('article'),
+  content: z.object({
+    sidebarItems: z
+      .array(z.object({ label: z.string().min(2).max(40), active: z.boolean() }))
+      .min(3)
+      .max(7),
+    emoji: z.enum(['📌', '🧑‍💻', '📋', '📒', '🔒']).nullable().optional(),
+    badge: z.object({
+      label: z.string().min(1).max(30),
+      tone: z.enum(['violet', 'blue', 'emerald', 'amber']),
+    }),
+    title: z.string().min(2).max(80),
+    subtitle: z.string().max(120).optional(),
+    bodyBars: z.union([z.literal(3), z.literal(4)]).default(3),
+  }),
+});
+
+const KpiMockSchema = z.object({
+  template: z.literal('kpi'),
+  content: z.object({
+    tiles: z
+      .array(
+        z.object({
+          value: z.string().min(1).max(12),
+          trend: z
+            .object({
+              direction: z.enum(['up', 'down']),
+              tone: z.enum(['positive', 'negative']),
+            })
+            .optional(),
+          label: z.string().min(2).max(60),
+        }),
+      )
+      .min(3)
+      .max(4),
+  }),
+});
+
+const ConsoleMockSchema = z.object({
+  template: z.literal('console'),
+  content: z.object({
+    title: z.string().max(60).optional(),
+    lines: z
+      .array(
+        z.object({
+          kind: z.enum(['comment', 'cmd', 'output', 'success', 'error']),
+          text: z.string().min(1).max(200),
+        }),
+      )
+      .min(4)
+      .max(10),
+  }),
+});
+
+export const MockUiSchema = z.discriminatedUnion('template', [
+  BoardMockSchema,
+  ChatMockSchema,
+  ChecklistMockSchema,
+  ArticleMockSchema,
+  KpiMockSchema,
+  ConsoleMockSchema,
+]);
+export type MockUi = z.infer<typeof MockUiSchema>;
+
 /* ─── HeroSection ─────────────────────────────────────────────────── */
 const HeroSectionSchema = z.object({
   id: z.literal('hero'),
@@ -31,6 +186,7 @@ const HeroSectionSchema = z.object({
     primaryCta: CtaSchema,
     secondaryCta: CtaSchema.nullable().optional(),
     visual: AssetRefSchema.nullable().optional(),
+    mockUi: MockUiSchema.nullable().optional(),
   }),
 });
 
@@ -53,6 +209,7 @@ const FeatureGridSchema = z.object({
       .min(2)
       .max(8),
     columns: z.union([z.literal(2), z.literal(3), z.literal(4)]).default(3),
+    mockUi: MockUiSchema.nullable().optional(),
   }),
 });
 
@@ -110,6 +267,7 @@ const FinalCtaSchema = z.object({
     description: z.string().max(200).optional(),
     primaryCta: CtaSchema,
     secondaryCta: CtaSchema.nullable().optional(),
+    mockUi: MockUiSchema.nullable().optional(),
   }),
 });
 

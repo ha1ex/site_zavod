@@ -42,6 +42,11 @@ async function loadIllustrationSkill(): Promise<string> {
   return readFile(path, 'utf-8').catch(() => '(svg illustration skill not loaded)');
 }
 
+async function loadSectionMockSkill(): Promise<string> {
+  const path = resolve(__dirname, 'section-mock-skill.md');
+  return readFile(path, 'utf-8').catch(() => '');
+}
+
 /**
  * Внутренняя функция — собирает контент и список sources.
  *
@@ -121,6 +126,22 @@ export async function buildLandingSystemPromptWithMeta(
   options: BuildSystemPromptOptions = {},
 ): Promise<BuildSystemPromptResult> {
   const ds = await composeDesignSystemBlock(options);
+  const sectionMockSkill = await loadSectionMockSkill();
+
+  const sources = [...ds.sources];
+  if (sectionMockSkill.trim()) {
+    sources.push('packages/harness/src/prompts/section-mock-skill.md');
+  }
+
+  const mockUiSection = sectionMockSkill.trim()
+    ? `
+
+## Section Mock skill (правила mock-UI внутри секций)
+
+Любая секция, у которой в схеме есть опциональный \`mockUi\` (HeroSection, FeatureGrid, FinalCta), может содержать HTML/Tailwind UI-мок. Шаблоны (\`board\`, \`chat\`, \`checklist\`, \`article\`, \`kpi\`, \`console\`), hard/soft-rules, чек-лист самопроверки и anti-patterns — ниже. Это **mock authoring stage**: если в секции уместен mock из эталона (см. \`wiki/landings/kaiten-techsupport-reference.md\`), заполни \`mockUi\` доменной конкретикой из брифа.
+
+${sectionMockSkill}`
+    : '';
 
   const system = `You are a senior product copywriter and UI architect operating inside a controlled harness for generating SaaS landing pages.
 
@@ -136,6 +157,7 @@ Your job is NOT to invent layouts or copy from scratch — you ASSEMBLE a landin
 - Hero section must be the first section.
 - Match the brand voice from \`wiki/design-system/voice.md\` (see below). Banned hype words are listed there — never use them.
 - Follow the conversion-landing skill (if present below) for page-type structure, awareness-aware H1 formulas, Feature → Benefit Transformation, CTA hierarchy, social proof rules, and anti-patterns. The skill is your contract — sections, copy and order should match it for the chosen page type.
+- For sections that support \`mockUi\` (Hero, FeatureGrid, FinalCta) — follow the Section Mock skill rules (see below). Use domain-specific copy from the brief, never Lorem-style placeholders. Pattern coverage: один крупный Hero-mock + 3-5 средних mock'ов в body-секциях.
 
 ## Component registry (allowed components only)
 
@@ -145,7 +167,7 @@ ${describeRegistry()}
 
 ## Kaiten V01 design system + archetype rules + conversion-landing skill
 
-${ds.body}
+${ds.body}${mockUiSection}
 
 ## Output
 
@@ -153,7 +175,7 @@ Return ONE JSON object that strictly matches the LandingSpec schema provided by 
 
   return {
     system,
-    sources: ds.sources,
+    sources,
     archetype: ds.archetype,
     tokenEstimate: ds.tokenEstimate,
   };

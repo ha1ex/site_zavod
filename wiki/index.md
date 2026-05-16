@@ -21,7 +21,9 @@
 
 - [design-system/kaiten-v01/](../design-system/kaiten-v01/) — SSoT дизайн-системы (HTML/PDF/PNG). _Появится после merge ветки `ha1ex/design-system-source`._
 - [packages/harness/src/skills/](../packages/harness/src/skills/) — встроенные методички системного промпта (`conversion-landing.md`, `content-marketing.md`). _Появится после merge ветки `ha1ex/landing-skill`._
-- [.claude/skills/buffalo-generate/SKILL.md](../.claude/skills/buffalo-generate/SKILL.md) — workflow генерации лендинга. _Появится после merge ветки со stage-7._
+- [packages/harness/src/prompts/svg-illustration-skill.md](../packages/harness/src/prompts/svg-illustration-skill.md) — skill для генерации одиночных SVG-сцен (Hero illustration) как TSX-файлов с AST-валидатором.
+- [packages/harness/src/prompts/section-mock-skill.md](../packages/harness/src/prompts/section-mock-skill.md) — skill для HTML/Tailwind UI-моков внутри секций (board / chat / kpi / article / checklist / console).
+- [.claude/skills/buffalo-generate/SKILL.md](../.claude/skills/buffalo-generate/SKILL.md) — workflow генерации лендинга (включает шаг 3a Mock authoring).
 - [.claude/skills/buffalo-review/SKILL.md](../.claude/skills/buffalo-review/SKILL.md) — workflow review лендинга. _Появится после merge ветки со stage-7._
 - [.claude/skills/design-system-kaiten-v01/SKILL.md](../.claude/skills/design-system-kaiten-v01/SKILL.md) — Claude Code skill для DS.
 
