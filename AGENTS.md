@@ -8,12 +8,18 @@ athens — LLM-harness для генерации SaaS-лендингов. Pipeli
 
 | Если задача про… | Читать |
 |---|---|
-| Генерация лендинга от и до | `.claude/skills/buffalo-generate/SKILL.md` _(после merge stage-7)_ |
-| Ревью существующего лендинга | `.claude/skills/buffalo-review/SKILL.md` _(после merge stage-7)_ |
-| Дизайн-система Kaiten (цвета, типографика, сетка) | `design-system/kaiten-v01/README.md` _(после merge ha1ex/design-system-source)_ |
-| Conversion-копи / правила секций лендинга | `packages/harness/src/skills/conversion-landing.md` _(после merge ha1ex/landing-skill)_ |
+| **Маркетинг — пошагово, без CLI-магии** | [`SKILL.md`](SKILL.md) + [`wiki/marketing/getting-started.md`](wiki/marketing/getting-started.md) |
+| **Доработать готовый лендинг** | [`wiki/marketing/edit-recipes.md`](wiki/marketing/edit-recipes.md) |
+| **Что-то пошло не так** | [`wiki/marketing/troubleshooting.md`](wiki/marketing/troubleshooting.md) |
+| **Поля brief.json расшифровка** | [`wiki/marketing/brief-fields.md`](wiki/marketing/brief-fields.md) |
+| **Визуальный каталог всех 22 секций + 39 моков** | `pnpm --filter @buffalo/ui storybook` → `http://localhost:6006` |
+| Генерация лендинга от и до (engineer-flow) | [`.claude/skills/buffalo-generate/SKILL.md`](.claude/skills/buffalo-generate/SKILL.md) |
+| Ревью существующего лендинга | [`.claude/skills/buffalo-review/SKILL.md`](.claude/skills/buffalo-review/SKILL.md) |
+| Дизайн-система Kaiten (цвета, типографика, сетка) | [`.claude/skills/design-system-kaiten-v01/SKILL.md`](.claude/skills/design-system-kaiten-v01/SKILL.md) |
+| Conversion-копи / правила секций лендинга | [`packages/harness/src/skills/conversion-landing.md`](packages/harness/src/skills/conversion-landing.md) |
 | Конвенции wiki (где что лежит, что immutable) | [`wiki/AGENTS.md`](wiki/AGENTS.md) |
 | Маркетинговый обзор: что такое buffalo, как работает | [`README.md`](README.md) |
+| План инструмента для маркетинга (M1→M4) | [`.claude/plans/system-instruction-you-are-working-fancy-twilight.md`](/.claude/plans/system-instruction-you-are-working-fancy-twilight.md) |
 | План миграции к Karpathy-Wiki паттерну | [`.context/plans/karpathy-llm-wiki-athens-harness.md`](.context/plans/karpathy-llm-wiki-athens-harness.md) |
 
 ## Структура репо
@@ -66,7 +72,9 @@ out/                            Handoff ZIP packages (gitignored)
 
 ## Связанные файлы
 
+- [`SKILL.md`](SKILL.md) — кросс-инструментальный playbook `kaiten-build-landing` для всех ассистентов (Claude Code, Codex CLI, Cursor, Gemini CLI).
 - [`CLAUDE.md`](CLAUDE.md) _(если есть)_ — Claude Code-specific инструкции.
 - [`README.md`](README.md) — маркетинговый обзор harness'а.
-- [`packages/harness/src/skills/README.md`](packages/harness/src/skills/README.md) — конвенции встроенных скиллов _(после merge)_.
+- [`wiki/marketing/`](wiki/marketing/) — playbook'и для маркетинговой команды (getting-started, brief-fields, edit-recipes, troubleshooting).
+- [`packages/harness/src/skills/`](packages/harness/src/skills/) — встроенные методички в system prompts (conversion-landing, section-mock-skill, svg-illustration-skill).
 - [`wiki/AGENTS.md`](wiki/AGENTS.md) — конвенции wiki.
