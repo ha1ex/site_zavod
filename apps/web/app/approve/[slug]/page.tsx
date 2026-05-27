@@ -48,6 +48,12 @@ export default async function ApprovePage({ params }: PageProps) {
           </div>
           <div className="flex gap-3">
             <Link
+              href={`/edit/${slug}`}
+              className="text-sm font-medium text-(--color-text-accent) hover:underline"
+            >
+              Открыть в редакторе
+            </Link>
+            <Link
               href={`/landings/${slug}`}
               className="text-sm underline text-(--color-text-accent)"
               target="_blank"
@@ -55,8 +61,8 @@ export default async function ApprovePage({ params }: PageProps) {
             >
               Open preview ↗
             </Link>
-            <Link href="/landings" className="text-sm text-(--color-text-secondary) hover:underline">
-              ← Все черновики
+            <Link href="/" className="text-sm text-(--color-text-secondary) hover:underline">
+              ← Дашборд
             </Link>
           </div>
         </div>

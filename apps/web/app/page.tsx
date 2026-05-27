@@ -90,10 +90,16 @@ export default async function DashboardPage() {
                 <code className="text-sm font-medium">{slug}</code>
                 <div className="flex gap-3 text-sm">
                   <Link
+                    href={`/edit/${slug}`}
+                    className="font-medium text-(--color-text-accent) hover:underline"
+                  >
+                    edit
+                  </Link>
+                  <Link
                     href={`/landings/${slug}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-(--color-text-accent) hover:underline"
+                    className="text-(--color-text-secondary) hover:underline"
                   >
                     preview
                   </Link>
