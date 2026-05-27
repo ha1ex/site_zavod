@@ -3,10 +3,11 @@ import { generateObject } from 'ai';
 import { z } from 'zod';
 import { BriefSchema } from '@buffalo/harness/schemas';
 import { getModel, hasLLMCredentials, describeActiveProvider } from '@buffalo/harness/providers';
+import { extractBriefViaCli, type CliProvider } from './cli-extract';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-export const maxDuration = 60;
+export const maxDuration = 800;
 
 const SYSTEM_PROMPT = `Ты — ассистент маркетингового харнесса Buffalo. Из произвольного текста (брифа, концепции, описания продукта) извлеки структурированный Brief в формате BriefSchema.
 
@@ -28,6 +29,7 @@ const SYSTEM_PROMPT = `Ты — ассистент маркетингового 
 const InputSchema = z.object({
   text: z.string().min(20).max(50000),
   filename: z.string().optional(),
+  preferredCli: z.enum(['claude', 'codex', 'agy']).optional(),
 });
 
 function heuristicBrief(text: string): z.infer<typeof BriefSchema> {
@@ -53,11 +55,29 @@ function heuristicBrief(text: string): z.infer<typeof BriefSchema> {
   };
 }
 
+function safeNormalizeBrief(input: unknown): z.infer<typeof BriefSchema> | null {
+  const parsed = BriefSchema.safeParse(input);
+  if (parsed.success) return parsed.data;
+  // Try to coerce — добавить defaults для undefined required полей
+  if (input && typeof input === 'object') {
+    const coerced = {
+      tone: 'clear, professional, non-hype',
+      proofPoints: [],
+      pageArchetype: 'saas' as const,
+      ...(input as Record<string, unknown>),
+    };
+    const retry = BriefSchema.safeParse(coerced);
+    if (retry.success) return retry.data;
+  }
+  return null;
+}
+
 export async function POST(req: Request): Promise<Response> {
   const contentType = req.headers.get('content-type') ?? '';
 
   let text: string;
   let filename: string | undefined;
+  let preferredCli: CliProvider | undefined;
 
   try {
     if (contentType.includes('multipart/form-data')) {
@@ -67,6 +87,10 @@ export async function POST(req: Request): Promise<Response> {
         return NextResponse.json({ error: 'no file in form' }, { status: 400 });
       }
       filename = file.name;
+      const prefRaw = form.get('preferredCli');
+      if (typeof prefRaw === 'string' && ['claude', 'codex', 'agy'].includes(prefRaw)) {
+        preferredCli = prefRaw as CliProvider;
+      }
       const buffer = Buffer.from(await file.arrayBuffer());
       const lower = file.name.toLowerCase();
 
@@ -99,6 +123,7 @@ export async function POST(req: Request): Promise<Response> {
       }
       text = parsed.data.text;
       filename = parsed.data.filename;
+      preferredCli = parsed.data.preferredCli;
     }
   } catch (err) {
     return NextResponse.json(
@@ -114,46 +139,59 @@ export async function POST(req: Request): Promise<Response> {
     );
   }
 
-  if (!hasLLMCredentials()) {
-    return NextResponse.json({
-      brief: heuristicBrief(text),
-      source: 'heuristic',
-      filename,
-      warning:
-        'Нет API-ключа (ANTHROPIC_API_KEY / OPENAI_API_KEY / AI_GATEWAY_API_KEY). Используется эвристика — поля заполнены минимально, отредактируйте вручную.',
-    });
+  // 1) Попробовать локальные CLI (без API ключа, через OAuth-сессии)
+  try {
+    const cliResult = await extractBriefViaCli(text, preferredCli);
+    if (cliResult) {
+      const normalized = safeNormalizeBrief(cliResult.brief);
+      if (normalized) {
+        return NextResponse.json({
+          brief: normalized,
+          source: cliResult.provider,
+          filename,
+          durationMs: cliResult.durationMs,
+          costUsd: cliResult.costUsd,
+        });
+      }
+    }
+  } catch (err) {
+    // CLI неудача — продолжим к AI SDK
+    console.error('[extract-brief] CLI extract failed:', (err as Error).message);
   }
 
-  try {
-    const result = await generateObject({
-      model: getModel(),
-      schema: BriefSchema,
-      messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
-        {
-          role: 'user',
-          content: `Извлеки Brief из следующего текста${
-            filename ? ` (исходный файл: ${filename})` : ''
-          }:\n\n${text}`,
-        },
-      ],
-    });
-    return NextResponse.json({
-      brief: result.object,
-      source: 'llm',
-      provider: describeActiveProvider(),
-      filename,
-    });
-  } catch (err) {
-    return NextResponse.json(
-      {
-        error: 'LLM extract failed, fallback to heuristic',
-        detail: (err as Error).message,
-        brief: heuristicBrief(text),
-        source: 'heuristic-fallback',
+  // 2) Fallback на AI SDK с API ключом (если есть)
+  if (hasLLMCredentials()) {
+    try {
+      const result = await generateObject({
+        model: getModel(),
+        schema: BriefSchema,
+        messages: [
+          { role: 'system', content: SYSTEM_PROMPT },
+          {
+            role: 'user',
+            content: `Извлеки Brief из следующего текста${
+              filename ? ` (исходный файл: ${filename})` : ''
+            }:\n\n${text}`,
+          },
+        ],
+      });
+      return NextResponse.json({
+        brief: result.object,
+        source: 'llm',
+        provider: describeActiveProvider(),
         filename,
-      },
-      { status: 200 },
-    );
+      });
+    } catch (err) {
+      console.error('[extract-brief] LLM extract failed:', (err as Error).message);
+    }
   }
+
+  // 3) Последний fallback — эвристика
+  return NextResponse.json({
+    brief: heuristicBrief(text),
+    source: 'heuristic',
+    filename,
+    warning:
+      'Не удалось извлечь brief через CLI (claude/codex/agy) или API. Используется эвристика — поля заполнены минимально, отредактируйте вручную. Установите Claude Code, Codex или Gemini CLI, либо задайте ANTHROPIC_API_KEY/OPENAI_API_KEY.',
+  });
 }

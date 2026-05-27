@@ -1,7 +1,15 @@
 'use client';
 
-import { useState, useTransition, useRef } from 'react';
+import { useState, useTransition, useRef, useEffect } from 'react';
 import Link from 'next/link';
+
+type CliProvider = 'claude' | 'codex' | 'agy';
+
+interface ProvidersInfo {
+  cli: Record<CliProvider, boolean>;
+  failing?: Record<CliProvider, boolean>;
+  apiKey: boolean;
+}
 
 interface ExtractedBrief {
   product?: string;
@@ -116,8 +124,25 @@ export function BriefForm() {
   const [pastedText, setPastedText] = useState<string>('');
   const [importStatus, setImportStatus] = useState<ImportStatus>('idle');
   const [importMessage, setImportMessage] = useState<string | null>(null);
-  const [importSource, setImportSource] = useState<ExtractResponse['source'] | null>(null);
+  const [importSource, setImportSource] = useState<string | null>(null);
+  const [providers, setProviders] = useState<ProvidersInfo | null>(null);
+  const [preferredCli, setPreferredCli] = useState<CliProvider | ''>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/providers')
+      .then((r) => r.json() as Promise<ProvidersInfo>)
+      .then((data) => {
+        if (!cancelled) setProviders(data);
+      })
+      .catch(() => {
+        // ignore — UI просто не покажет badge
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   function applyExtracted(brief: ExtractedBrief, fallbackSlug?: string) {
     setForm((prev) => {
@@ -154,6 +179,7 @@ export function BriefForm() {
     setImportSource(null);
     const formData = new FormData();
     formData.append('file', file);
+    if (preferredCli) formData.append('preferredCli', preferredCli);
     try {
       const res = await fetch('/api/extract-brief', { method: 'POST', body: formData });
       const body = (await res.json()) as ExtractResponse;
@@ -188,7 +214,10 @@ export function BriefForm() {
       const res = await fetch('/api/extract-brief', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ text: pastedText }),
+        body: JSON.stringify({
+          text: pastedText,
+          ...(preferredCli ? { preferredCli } : {}),
+        }),
       });
       const body = (await res.json()) as ExtractResponse;
       if (!res.ok || !body.brief) {
@@ -342,6 +371,51 @@ export function BriefForm() {
             </span>
           )}
         </header>
+
+        {providers && (
+          <div className="mb-4 flex flex-wrap items-center gap-2 rounded-(--radius-lg) border border-(--color-border-default) bg-(--color-surface-section) px-3 py-2 text-xs">
+            <span className="font-medium text-(--color-text-secondary)">Подключено:</span>
+            <ProviderBadge
+              label="Claude Code"
+              active={providers.cli.claude}
+              failing={providers.failing?.claude}
+            />
+            <ProviderBadge
+              label="Codex"
+              active={providers.cli.codex}
+              failing={providers.failing?.codex}
+            />
+            <ProviderBadge
+              label="Gemini (agy)"
+              active={providers.cli.agy}
+              failing={providers.failing?.agy}
+            />
+            <ProviderBadge label="API key" active={providers.apiKey} />
+            {!providers.cli.claude &&
+              !providers.cli.codex &&
+              !providers.cli.agy &&
+              !providers.apiKey && (
+                <span className="text-(--color-text-secondary)">
+                  · ни одного — будет эвристика, поля минимально
+                </span>
+              )}
+            {(providers.cli.claude || providers.cli.codex || providers.cli.agy) && (
+              <label className="ml-auto flex items-center gap-2">
+                <span className="text-(--color-text-secondary)">приоритет:</span>
+                <select
+                  value={preferredCli}
+                  onChange={(e) => setPreferredCli(e.target.value as CliProvider | '')}
+                  className="rounded-(--radius-lg) border border-(--color-border-default) bg-(--color-surface-page) px-2 py-1 text-xs"
+                >
+                  <option value="">авто (claude → codex → agy)</option>
+                  {providers.cli.claude && <option value="claude">claude</option>}
+                  {providers.cli.codex && <option value="codex">codex</option>}
+                  {providers.cli.agy && <option value="agy">agy (gemini)</option>}
+                </select>
+              </label>
+            )}
+          </div>
+        )}
 
         <div className="mb-4 flex gap-2 text-sm">
           {(['file', 'text'] as const).map((tab) => (
@@ -675,6 +749,36 @@ function Field({
       {children}
       {hint && <span className="text-xs text-(--color-text-secondary)">{hint}</span>}
     </label>
+  );
+}
+
+function ProviderBadge({
+  label,
+  active,
+  failing,
+}: {
+  label: string;
+  active: boolean;
+  failing?: boolean;
+}) {
+  const className = !active
+    ? 'bg-slate-100 text-slate-500 line-through opacity-60'
+    : failing
+      ? 'bg-amber-100 text-amber-800'
+      : 'bg-emerald-100 text-emerald-800';
+  const title = !active
+    ? `${label}: не найден в PATH`
+    : failing
+      ? `${label}: установлен, но в этой сессии не отвечал (последний extract упал). Через 3 минуты попробует снова.`
+      : `${label}: установлен и готов`;
+  const icon = !active ? '✗' : failing ? '!' : '✓';
+  return (
+    <span
+      className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${className}`}
+      title={title}
+    >
+      {icon} {label}
+    </span>
   );
 }
 

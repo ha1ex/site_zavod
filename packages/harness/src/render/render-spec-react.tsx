@@ -88,7 +88,13 @@ export function RenderLanding({ spec }: { spec: LandingSpec }) {
   return (
     <>
       {spec.sections.map((section, i) => (
-        <RenderSection key={`${section.id}-${i}`} section={section} />
+        <div
+          key={`${section.id}-${i}`}
+          data-comp={section.component}
+          data-comp-key={`${i}:${section.id}`}
+        >
+          <RenderSection section={section} />
+        </div>
       ))}
     </>
   );

@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { LandingSpecSchema } from '@buffalo/harness/schemas';
 import { RenderLanding } from '@buffalo/harness/render/render-spec-react';
+import { InspectorOverlay } from '../../../components/InspectorOverlay';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -37,5 +38,9 @@ export default async function LandingPreviewPage({ params }: PageProps) {
   const { slug } = await params;
   const spec = await loadSpec(slug);
   if (!spec) notFound();
-  return <RenderLanding spec={spec} />;
+  return (
+    <InspectorOverlay slug={slug}>
+      <RenderLanding spec={spec} />
+    </InspectorOverlay>
+  );
 }
