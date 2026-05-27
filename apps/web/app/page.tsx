@@ -1,42 +1,120 @@
 import Link from 'next/link';
+import { readdir } from 'node:fs/promises';
+import { resolve } from 'node:path';
 
-export default function DashboardPage() {
+export const dynamic = 'force-dynamic';
+
+async function listLandings(): Promise<string[]> {
+  const dir = resolve(process.cwd(), '..', '..', 'content', 'landings');
+  try {
+    const files = await readdir(dir);
+    return files
+      .filter((f) => f.endsWith('.json'))
+      .map((f) => f.replace(/\.json$/, ''))
+      .sort();
+  } catch {
+    return [];
+  }
+}
+
+export default async function DashboardPage() {
+  const landings = await listLandings();
+
   return (
-    <main className="mx-auto max-w-3xl px-6 py-16">
-      <h1 className="text-3xl font-semibold tracking-tight">Buffalo harness</h1>
-      <p className="mt-3 text-muted">
-        LLM-контур для генерации SaaS-лендингов. Этап 0: bootstrap репозитория.
-      </p>
+    <main className="mx-auto max-w-4xl px-6 py-12">
+      <header className="mb-8">
+        <p className="text-xs uppercase tracking-wide text-(--color-text-secondary)">Buffalo</p>
+        <h1 className="text-3xl font-semibold tracking-tight">LLM harness для лендингов</h1>
+        <p className="mt-2 text-base text-(--color-text-secondary)">
+          Маркетинг создаёт brief → harness собирает Kaiten-стайл лендинг → команда фронта мержит TSX.
+        </p>
+      </header>
 
-      <section className="mt-10 space-y-4">
-        <h2 className="text-xl font-medium">Куда дальше</h2>
-        <ul className="space-y-2 text-sm">
-          <li>
-            ◦ Список черновиков лендингов — будет на <code>/landings</code> (этап 1)
-          </li>
-          <li>
-            ◦ Превью одного лендинга — <code>/landings/[slug]</code>
-          </li>
-          <li>
-            ◦ Approve UI — <code>/approve/[slug]</code> (этап 5)
-          </li>
-          <li>
-            ◦ Storybook (registry компонентов) — <code>pnpm storybook</code> на :6006
-          </li>
-          <li>
-            ◦ CLI harness — <code>pnpm harness -- --help</code>
-          </li>
-        </ul>
+      <section className="mb-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <Link
+          href="/new"
+          className="group rounded-(--radius-2xl) border border-(--color-action-primary)/30 bg-(--color-action-primary-soft) p-6 transition hover:border-(--color-action-primary)"
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h2 className="text-lg font-semibold text-(--color-text-accent)">
+                Создать новый лендинг
+              </h2>
+              <p className="mt-1 text-sm text-(--color-text-secondary)">
+                Веб-форма brief'а — заполнили, нажали Generate, получили preview.
+              </p>
+            </div>
+            <span aria-hidden className="text-2xl text-(--color-text-accent)">
+              →
+            </span>
+          </div>
+        </Link>
+
+        <a
+          href="http://localhost:6006"
+          target="_blank"
+          rel="noreferrer"
+          className="group rounded-(--radius-2xl) border border-(--color-border-default) bg-(--color-surface-page) p-6 transition hover:border-(--color-action-primary)/50"
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h2 className="text-lg font-semibold">Каталог блоков</h2>
+              <p className="mt-1 text-sm text-(--color-text-secondary)">
+                Storybook · 22 секции и 39 моков. Запусти{' '}
+                <code>pnpm --filter @buffalo/ui storybook</code>.
+              </p>
+            </div>
+            <span aria-hidden className="text-2xl">
+              ↗
+            </span>
+          </div>
+        </a>
       </section>
 
-      <section className="mt-10 space-y-2 text-sm">
-        <h2 className="text-xl font-medium">Статус MVP</h2>
-        <p>Этап 0 — Bootstrap (текущий)</p>
-        <p>Положите дизайн-токены и brand-voice в <code>.context/design-system/</code></p>
+      <section>
+        <div className="mb-3 flex items-end justify-between">
+          <h2 className="text-xl font-medium">Существующие лендинги</h2>
+          <span className="text-xs text-(--color-text-secondary)">{landings.length} шт.</span>
+        </div>
+        {landings.length === 0 ? (
+          <p className="text-sm text-(--color-text-secondary)">
+            Пока нет. Начните с <Link href="/new" className="underline">/new</Link>.
+          </p>
+        ) : (
+          <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            {landings.map((slug) => (
+              <li
+                key={slug}
+                className="flex items-center justify-between rounded-(--radius-lg) border border-(--color-border-default) bg-(--color-surface-page) px-4 py-3"
+              >
+                <code className="text-sm font-medium">{slug}</code>
+                <div className="flex gap-3 text-sm">
+                  <Link
+                    href={`/landings/${slug}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-(--color-text-accent) hover:underline"
+                  >
+                    preview
+                  </Link>
+                  <Link
+                    href={`/approve/${slug}`}
+                    className="text-(--color-text-secondary) hover:underline"
+                  >
+                    approve
+                  </Link>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
 
-      <footer className="mt-16 border-t border-muted/20 pt-6 text-xs text-muted">
-        Полный план — <Link href="/" className="underline">смотрите plan-файл в Claude</Link>
+      <footer className="mt-12 border-t border-(--color-border-default) pt-6 text-xs text-(--color-text-secondary)">
+        <p>
+          Документация для маркетинга — <code>wiki/marketing/getting-started.md</code> · Полная
+          техническая — <code>README.md</code>.
+        </p>
       </footer>
     </main>
   );
