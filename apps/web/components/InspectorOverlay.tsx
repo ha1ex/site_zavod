@@ -235,6 +235,8 @@ export function InspectorOverlay({ slug, children }: Props) {
   const [hover, setHover] = useState<HoverState | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [fallbackText, setFallbackText] = useState<string | null>(null);
+  const [fallbackPath, setFallbackPath] = useState<string>('');
+  const [fallbackAutoCopied, setFallbackAutoCopied] = useState<boolean>(false);
   const [taggedCount, setTaggedCount] = useState<number>(0);
   const rafRef = useRef<number | null>(null);
 
@@ -291,28 +293,28 @@ export function InspectorOverlay({ slug, children }: Props) {
       const text = tagged.innerText?.trim() || null;
       const payload = buildCopyPayload(slug, built.path, text, built.sectionIndex);
       // eslint-disable-next-line no-console
-      console.info('[Inspector] click → копирую', { path: built.path, bytes: payload.length });
+      console.info('[Inspector] click → открываю panel', {
+        path: built.path,
+        bytes: payload.length,
+      });
 
-      // 1) Синхронный execCommand — в том же tick'е что и user-gesture (click).
-      //    Это самый надёжный путь для Chrome / Conductor / Safari.
-      const syncResult = copySync(payload);
-      if (syncResult.ok) {
-        setToast(`✓ Скопировано: ${built.path}`);
-        setTimeout(() => setToast(null), 3000);
-        return;
-      }
+      // Сначала пробуем тихий синхронный copy (часто работает в обычном Chrome).
+      const sync = copySync(payload);
+      const asyncWritePromise = sync.ok
+        ? Promise.resolve({ ok: true, via: sync.via })
+        : copyAsyncFallback(payload);
 
-      // 2) Async fallback на navigator.clipboard (требует HTTPS/localhost).
-      void copyAsyncFallback(payload).then((res) => {
+      // ВСЕГДА открываем panel с textarea — это гарантирует что пользователь
+      // может скопировать руками (Cmd+A → Cmd+C), даже если sync/async copy
+      // тихо ресолвится без актуальной записи (Conductor / Safari sandbox).
+      setFallbackText(payload);
+      setFallbackPath(built.path);
+      setFallbackAutoCopied(sync.ok);
+
+      // Если async fallback ответит позже — обновим indicator
+      void asyncWritePromise.then((res) => {
         if (res.ok) {
-          setToast(`✓ Скопировано (async): ${built.path}`);
-          setTimeout(() => setToast(null), 3000);
-        } else {
-          // eslint-disable-next-line no-console
-          console.warn(
-            '[Inspector] clipboard заблокирован (sync+async), открываю модал для ручного копирования',
-          );
-          setFallbackText(payload);
+          setFallbackAutoCopied(true);
         }
       });
     }
@@ -482,67 +484,198 @@ export function InspectorOverlay({ slug, children }: Props) {
       )}
 
       {fallbackText && (
-        <div
-          data-inspector="fallback-modal"
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(15,23,42,0.7)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: 24,
-            zIndex: 10000,
+        <CopyPanel
+          text={fallbackText}
+          path={fallbackPath}
+          autoCopied={fallbackAutoCopied}
+          onClose={() => {
+            setFallbackText(null);
+            setFallbackPath('');
+            setFallbackAutoCopied(false);
           }}
-        >
-          <div
-            style={{
-              background: 'white',
-              borderRadius: 12,
-              padding: 20,
-              maxWidth: 720,
-              width: '100%',
-              boxShadow: '0 20px 60px rgba(0,0,0,0.4)',
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
-              <strong style={{ fontSize: 15 }}>Скопируй текст вручную</strong>
-              <button
-                type="button"
-                onClick={() => setFallbackText(null)}
-                style={{
-                  border: 'none',
-                  background: 'transparent',
-                  fontSize: 18,
-                  cursor: 'pointer',
-                  color: '#64748b',
-                }}
-              >
-                ✕
-              </button>
-            </div>
-            <p style={{ fontSize: 12, color: '#64748b', marginBottom: 10 }}>
-              Браузер заблокировал автоматическое копирование. Выдели Cmd+A → скопируй Cmd+C →
-              вставь в чат claude/codex.
-            </p>
-            <textarea
-              readOnly
-              value={fallbackText}
-              autoFocus
-              onFocus={(e) => e.currentTarget.select()}
-              style={{
-                width: '100%',
-                minHeight: 240,
-                fontSize: 12,
-                fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
-                padding: 12,
-                border: '1px solid #cbd5e1',
-                borderRadius: 6,
-              }}
-            />
-          </div>
-        </div>
+        />
       )}
     </>
+  );
+}
+
+function CopyPanel({
+  text,
+  path,
+  autoCopied,
+  onClose,
+}: {
+  text: string;
+  path: string;
+  autoCopied: boolean;
+  onClose: () => void;
+}) {
+  const taRef = useRef<HTMLTextAreaElement | null>(null);
+  const [manualCopied, setManualCopied] = useState(false);
+
+  useEffect(() => {
+    // Auto-select + focus при открытии — Cmd+C сразу работает.
+    const ta = taRef.current;
+    if (!ta) return;
+    ta.focus();
+    ta.select();
+    ta.setSelectionRange(0, text.length);
+  }, [text]);
+
+  function tryCopyAgain() {
+    const ta = taRef.current;
+    if (!ta) return;
+    ta.focus();
+    ta.select();
+    ta.setSelectionRange(0, text.length);
+    try {
+      const ok = document.execCommand('copy');
+      if (ok) setManualCopied(true);
+    } catch {
+      // ignore
+    }
+  }
+
+  return (
+    <div
+      data-inspector="copy-panel"
+      style={{
+        position: 'fixed',
+        right: 16,
+        bottom: 80,
+        width: 460,
+        maxWidth: 'calc(100vw - 32px)',
+        background: 'white',
+        borderRadius: 12,
+        padding: 16,
+        boxShadow: '0 20px 60px rgba(0,0,0,0.35)',
+        zIndex: 10000,
+        border: '1px solid #cbd5e1',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginBottom: 8,
+          gap: 8,
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+          <span
+            style={{
+              fontSize: 11,
+              fontWeight: 600,
+              padding: '3px 8px',
+              borderRadius: 999,
+              background: autoCopied || manualCopied ? '#10b981' : '#f59e0b',
+              color: 'white',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {autoCopied || manualCopied ? '✓ В буфере' : '⌨ Cmd+C'}
+          </span>
+          <code
+            style={{
+              fontSize: 12,
+              fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
+              color: '#0f172a',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+            title={path}
+          >
+            {path}
+          </code>
+        </div>
+        <button
+          type="button"
+          onClick={onClose}
+          style={{
+            border: 'none',
+            background: 'transparent',
+            fontSize: 18,
+            cursor: 'pointer',
+            color: '#64748b',
+            lineHeight: 1,
+            padding: 4,
+          }}
+          aria-label="Закрыть"
+        >
+          ✕
+        </button>
+      </div>
+
+      <p style={{ fontSize: 11, color: '#64748b', margin: '0 0 8px' }}>
+        {autoCopied || manualCopied
+          ? 'Текст уже в буфере — нажми Cmd+V (Ctrl+V) в чате claude/codex.'
+          : 'Текст выделен. Нажми Cmd+C (Ctrl+C) — буфер обмена обновится.'}
+      </p>
+
+      <textarea
+        ref={taRef}
+        readOnly
+        value={text}
+        onFocus={(e) => e.currentTarget.select()}
+        onClick={(e) => e.currentTarget.select()}
+        style={{
+          width: '100%',
+          minHeight: 180,
+          maxHeight: 280,
+          fontSize: 11,
+          lineHeight: 1.45,
+          fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
+          padding: 10,
+          border: '1px solid #cbd5e1',
+          borderRadius: 6,
+          resize: 'vertical',
+          background: '#f8fafc',
+          color: '#0f172a',
+        }}
+      />
+
+      <div
+        style={{
+          display: 'flex',
+          gap: 8,
+          marginTop: 10,
+        }}
+      >
+        <button
+          type="button"
+          onClick={tryCopyAgain}
+          style={{
+            flex: 1,
+            border: 'none',
+            background: '#0f172a',
+            color: 'white',
+            fontSize: 12,
+            fontWeight: 500,
+            padding: '8px 12px',
+            borderRadius: 6,
+            cursor: 'pointer',
+          }}
+        >
+          Копировать ещё раз
+        </button>
+        <button
+          type="button"
+          onClick={onClose}
+          style={{
+            border: '1px solid #cbd5e1',
+            background: 'white',
+            color: '#0f172a',
+            fontSize: 12,
+            padding: '8px 12px',
+            borderRadius: 6,
+            cursor: 'pointer',
+          }}
+        >
+          Закрыть
+        </button>
+      </div>
+    </div>
   );
 }
