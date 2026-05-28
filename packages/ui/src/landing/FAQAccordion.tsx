@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Inspect } from '../primitives/Inspect';
 import { cn } from '../primitives/cn';
 
 export interface FAQItemProps {
@@ -32,13 +33,20 @@ export function FAQAccordion({ eyebrow, title, description, items }: FAQAccordio
     >
       <div className="mb-12 max-w-2xl">
         {eyebrow && (
-          <p className="mb-3 text-sm font-medium uppercase tracking-wide text-(--color-text-accent)">
+          <p
+            data-comp="faq.eyebrow"
+            className="mb-3 text-sm font-medium uppercase tracking-wide text-(--color-text-accent)"
+          >
             {eyebrow}
           </p>
         )}
-        <h2 className="text-3xl font-semibold leading-tight md:text-4xl">{title}</h2>
+        <h2 data-comp="faq.title" className="text-3xl font-semibold leading-tight md:text-4xl">
+          {title}
+        </h2>
         {description && (
-          <p className="mt-4 text-lg text-(--color-text-secondary)">{description}</p>
+          <p data-comp="faq.description" className="mt-4 text-lg text-(--color-text-secondary)">
+            {description}
+          </p>
         )}
       </div>
 
@@ -46,8 +54,10 @@ export function FAQAccordion({ eyebrow, title, description, items }: FAQAccordio
         {items.map((item, i) => {
           const isOpen = openIndex === i;
           return (
-            <div
+            <Inspect
+              as="div"
               key={i}
+              name={`faq.items[${i}]`}
               className={cn(
                 'overflow-hidden rounded-(--radius-xl) border transition-colors duration-(--duration-base) ease-(--ease-ui)',
                 isOpen
@@ -64,17 +74,20 @@ export function FAQAccordion({ eyebrow, title, description, items }: FAQAccordio
                   isOpen ? 'text-(--color-text-accent)' : 'text-(--color-text-primary)',
                 )}
               >
-                <span>{item.question}</span>
+                <span data-comp={`faq.items[${i}].question`}>{item.question}</span>
                 <span aria-hidden className="ml-3 text-lg leading-none">
                   {isOpen ? '−' : '+'}
                 </span>
               </button>
               {isOpen && (
-                <div className="px-5 pb-5 text-base text-(--color-text-secondary)">
+                <div
+                  data-comp={`faq.items[${i}].answer`}
+                  className="px-5 pb-5 text-base text-(--color-text-secondary)"
+                >
                   {item.answer}
                 </div>
               )}
-            </div>
+            </Inspect>
           );
         })}
       </div>

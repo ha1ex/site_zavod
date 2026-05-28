@@ -1,12 +1,21 @@
 import Link from 'next/link';
 import { SECTION_EXAMPLES } from './sectionExamples';
 import { MockCatalog } from './MockCatalog';
+import { InspectorOverlay } from '../../components/InspectorOverlay';
 
 export const metadata = {
   title: 'Каталог блоков · Buffalo',
 };
 
 export default function CatalogPage() {
+  return (
+    <InspectorOverlay slug="__catalog__">
+      <CatalogContent />
+    </InspectorOverlay>
+  );
+}
+
+function CatalogContent() {
   return (
     <main className="min-h-screen bg-(--color-surface-section)">
       <header className="sticky top-0 z-10 border-b border-(--color-border-default) bg-(--color-surface-page)/95 px-6 py-4 backdrop-blur">

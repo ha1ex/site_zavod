@@ -1,5 +1,6 @@
 import { ButtonLink } from '../primitives/ButtonLink';
 import { Icon } from '../primitives/Icon';
+import { Inspect } from '../primitives/Inspect';
 import { cn } from '../primitives/cn';
 import { MockVisual, type MockVariant } from './mocks';
 
@@ -63,13 +64,24 @@ export function MediaCopy({
       >
         <div>
           {eyebrow && (
-            <p className="mb-3 text-sm font-medium uppercase tracking-wide text-(--color-text-accent)">
+            <p
+              data-comp="media_copy.eyebrow"
+              className="mb-3 text-sm font-medium uppercase tracking-wide text-(--color-text-accent)"
+            >
               {eyebrow}
             </p>
           )}
-          <h2 className="text-3xl font-semibold leading-tight md:text-4xl">{title}</h2>
+          <h2
+            data-comp="media_copy.title"
+            className="text-3xl font-semibold leading-tight md:text-4xl"
+          >
+            {title}
+          </h2>
           {description && (
-            <p className="mt-4 text-lg leading-relaxed text-(--color-text-secondary)">
+            <p
+              data-comp="media_copy.description"
+              className="mt-4 text-lg leading-relaxed text-(--color-text-secondary)"
+            >
               {description}
             </p>
           )}
@@ -77,7 +89,12 @@ export function MediaCopy({
           {checklist && checklist.length > 0 && (
             <ul className="mt-6 space-y-3">
               {checklist.map((item, i) => (
-                <li key={i} className="flex items-start gap-3">
+                <Inspect
+                  as="li"
+                  key={i}
+                  name={`media_copy.checklist[${i}]`}
+                  className="flex items-start gap-3"
+                >
                   <span
                     className={cn(
                       'mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full',
@@ -86,10 +103,13 @@ export function MediaCopy({
                   >
                     <Icon name={item.icon ?? 'Check'} className="h-3.5 w-3.5" strokeWidth={2.5} />
                   </span>
-                  <span className="text-base leading-relaxed text-(--color-text-primary)">
+                  <span
+                    data-comp={`media_copy.checklist[${i}].text`}
+                    className="text-base leading-relaxed text-(--color-text-primary)"
+                  >
                     {item.text}
                   </span>
-                </li>
+                </Inspect>
               ))}
             </ul>
           )}
@@ -97,20 +117,26 @@ export function MediaCopy({
           {(primaryCta || secondaryCta) && (
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               {primaryCta && (
-                <ButtonLink size="lg" href={primaryCta.href}>
-                  {primaryCta.label}
-                </ButtonLink>
+                <Inspect name="media_copy.primaryCta">
+                  <ButtonLink size="lg" href={primaryCta.href}>
+                    {primaryCta.label}
+                  </ButtonLink>
+                </Inspect>
               )}
               {secondaryCta && (
-                <ButtonLink variant="outline" size="lg" href={secondaryCta.href}>
-                  {secondaryCta.label}
-                </ButtonLink>
+                <Inspect name="media_copy.secondaryCta">
+                  <ButtonLink variant="outline" size="lg" href={secondaryCta.href}>
+                    {secondaryCta.label}
+                  </ButtonLink>
+                </Inspect>
               )}
             </div>
           )}
         </div>
 
-        <MediaCopyVisual variant={mediaVariant} placeholder={mediaPlaceholder} />
+        <Inspect as="div" name="media_copy.media">
+          <MediaCopyVisual variant={mediaVariant} placeholder={mediaPlaceholder} />
+        </Inspect>
       </div>
     </section>
   );

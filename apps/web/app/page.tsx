@@ -38,10 +38,11 @@ export default async function DashboardPage() {
           <div className="flex items-start justify-between gap-3">
             <div>
               <h2 className="text-lg font-semibold text-(--color-text-accent)">
-                Создать новый лендинг
+                Как создать лендинг
               </h2>
               <p className="mt-1 text-sm text-(--color-text-secondary)">
-                Веб-форма brief'а — заполнили, нажали Generate, получили preview.
+                Открой claude / codex в терминале → кинь ТЗ → попроси сгенерить.
+                Инструкция и готовые шаблоны промптов.
               </p>
             </div>
             <span aria-hidden className="text-2xl text-(--color-text-accent)">
@@ -88,18 +89,18 @@ export default async function DashboardPage() {
                 <code className="text-sm font-medium">{slug}</code>
                 <div className="flex gap-3 text-sm">
                   <Link
-                    href={`/edit/${slug}`}
-                    className="font-medium text-(--color-text-accent) hover:underline"
-                  >
-                    edit
-                  </Link>
-                  <Link
                     href={`/landings/${slug}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-(--color-text-secondary) hover:underline"
+                    className="font-medium text-(--color-text-accent) hover:underline"
                   >
                     preview
+                  </Link>
+                  <Link
+                    href={`/edit/${slug}`}
+                    className="text-(--color-text-secondary) hover:underline"
+                  >
+                    edit
                   </Link>
                   <Link
                     href={`/approve/${slug}`}
@@ -107,6 +108,14 @@ export default async function DashboardPage() {
                   >
                     approve
                   </Link>
+                  <a
+                    href={`/api/handoff/${slug}`}
+                    download={`landing-${slug}.zip`}
+                    className="text-emerald-700 hover:underline"
+                    title="Скачать ZIP-архив для разработчика"
+                  >
+                    handoff ↓
+                  </a>
                 </div>
               </li>
             ))}

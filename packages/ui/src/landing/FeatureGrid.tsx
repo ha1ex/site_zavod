@@ -1,3 +1,4 @@
+import { Inspect } from '../primitives/Inspect';
 import { cn } from '../primitives/cn';
 import { Icon } from '../primitives/Icon';
 
@@ -37,20 +38,35 @@ export function FeatureGrid({
     >
       <div className="mb-12 max-w-2xl">
         {eyebrow && (
-          <p className="mb-3 text-sm font-medium uppercase tracking-wide text-(--color-text-accent)">
+          <p
+            data-comp="features.eyebrow"
+            className="mb-3 text-sm font-medium uppercase tracking-wide text-(--color-text-accent)"
+          >
             {eyebrow}
           </p>
         )}
-        <h2 className="text-3xl font-semibold leading-tight md:text-4xl">{title}</h2>
+        <h2
+          data-comp="features.title"
+          className="text-3xl font-semibold leading-tight md:text-4xl"
+        >
+          {title}
+        </h2>
         {description && (
-          <p className="mt-4 text-lg text-(--color-text-secondary)">{description}</p>
+          <p
+            data-comp="features.description"
+            className="mt-4 text-lg text-(--color-text-secondary)"
+          >
+            {description}
+          </p>
         )}
       </div>
 
       <div className={cn('grid grid-cols-1 gap-6', colsClass[columns])}>
         {items.map((item, i) => (
-          <div
+          <Inspect
+            as="div"
             key={i}
+            name={`features.items[${i}]`}
             className={cn(
               'group rounded-(--radius-2xl) border border-(--color-border-default)',
               'bg-(--color-surface-card) p-6 transition',
@@ -65,11 +81,19 @@ export function FeatureGrid({
             >
               <Icon name={item.icon} className="h-5 w-5" />
             </div>
-            <h3 className="text-lg font-semibold leading-snug">{item.title}</h3>
-            <p className="mt-2 text-base leading-relaxed text-(--color-text-secondary)">
+            <h3
+              data-comp={`features.items[${i}].title`}
+              className="text-lg font-semibold leading-snug"
+            >
+              {item.title}
+            </h3>
+            <p
+              data-comp={`features.items[${i}].description`}
+              className="mt-2 text-base leading-relaxed text-(--color-text-secondary)"
+            >
               {item.description}
             </p>
-          </div>
+          </Inspect>
         ))}
       </div>
     </section>

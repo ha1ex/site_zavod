@@ -1,4 +1,5 @@
 import { ButtonLink } from '../primitives/ButtonLink';
+import { Inspect } from '../primitives/Inspect';
 import { cn } from '../primitives/cn';
 import { MockVisual, type MockVariant } from './mocks';
 
@@ -93,26 +94,40 @@ export function HeroSection({
         {isBelow ? (
           <div className="flex flex-col items-center gap-12">
             <div className="max-w-3xl text-center">
-              {eyebrow && <EyebrowPill>{eyebrow}</EyebrowPill>}
-              <h1 className="text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl xl:text-6xl">
+              {eyebrow && (
+                <Inspect name="hero.eyebrow">
+                  <EyebrowPill>{eyebrow}</EyebrowPill>
+                </Inspect>
+              )}
+              <h1
+                data-comp="hero.title"
+                className="text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl xl:text-6xl"
+              >
                 {renderedTitle}
               </h1>
-              <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-(--color-text-secondary) sm:text-xl">
+              <p
+                data-comp="hero.subtitle"
+                className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-(--color-text-secondary) sm:text-xl"
+              >
                 {subtitle}
               </p>
               <div className="mt-8 flex w-full flex-col items-center justify-center gap-3 sm:flex-row">
-                <ButtonLink size="lg" href={primaryCta.href}>
-                  {primaryCta.label}
-                </ButtonLink>
-                {secondaryCta && (
-                  <ButtonLink variant="outline" size="lg" href={secondaryCta.href}>
-                    {secondaryCta.label}
+                <Inspect name="hero.primaryCta">
+                  <ButtonLink size="lg" href={primaryCta.href}>
+                    {primaryCta.label}
                   </ButtonLink>
+                </Inspect>
+                {secondaryCta && (
+                  <Inspect name="hero.secondaryCta">
+                    <ButtonLink variant="outline" size="lg" href={secondaryCta.href}>
+                      {secondaryCta.label}
+                    </ButtonLink>
+                  </Inspect>
                 )}
               </div>
             </div>
             {visual && (
-              <div className="w-full">
+              <div data-comp="hero.visual" className="w-full">
                 <HeroVisual src={visual.src} alt={visual.alt} variant={visual.variant} large />
               </div>
             )}
@@ -120,26 +135,40 @@ export function HeroSection({
         ) : (
           <div className="flex flex-col gap-12 xl:flex-row xl:items-center xl:gap-16">
             <div className="xl:max-w-2xl">
-              {eyebrow && <EyebrowPill>{eyebrow}</EyebrowPill>}
-              <h1 className="text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl xl:text-6xl">
+              {eyebrow && (
+                <Inspect name="hero.eyebrow">
+                  <EyebrowPill>{eyebrow}</EyebrowPill>
+                </Inspect>
+              )}
+              <h1
+                data-comp="hero.title"
+                className="text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl xl:text-6xl"
+              >
                 {renderedTitle}
               </h1>
-              <p className="mt-6 max-w-xl text-lg leading-relaxed text-(--color-text-secondary) sm:text-xl">
+              <p
+                data-comp="hero.subtitle"
+                className="mt-6 max-w-xl text-lg leading-relaxed text-(--color-text-secondary) sm:text-xl"
+              >
                 {subtitle}
               </p>
               <div className="mt-8 flex w-full flex-col gap-3 sm:flex-row sm:items-center">
-                <ButtonLink size="lg" href={primaryCta.href}>
-                  {primaryCta.label}
-                </ButtonLink>
-                {secondaryCta && (
-                  <ButtonLink variant="outline" size="lg" href={secondaryCta.href}>
-                    {secondaryCta.label}
+                <Inspect name="hero.primaryCta">
+                  <ButtonLink size="lg" href={primaryCta.href}>
+                    {primaryCta.label}
                   </ButtonLink>
+                </Inspect>
+                {secondaryCta && (
+                  <Inspect name="hero.secondaryCta">
+                    <ButtonLink variant="outline" size="lg" href={secondaryCta.href}>
+                      {secondaryCta.label}
+                    </ButtonLink>
+                  </Inspect>
                 )}
               </div>
             </div>
             {visual && (
-              <div className="xl:flex-1">
+              <div data-comp="hero.visual" className="xl:flex-1">
                 <HeroVisual src={visual.src} alt={visual.alt} variant={visual.variant} />
               </div>
             )}

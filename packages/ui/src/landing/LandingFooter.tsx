@@ -1,3 +1,4 @@
+import { Inspect } from '../primitives/Inspect';
 import { cn } from '../primitives/cn';
 
 export interface FooterColumnProps {
@@ -27,34 +28,46 @@ export function LandingFooter({
     >
       <div className="grid grid-cols-2 gap-10 md:grid-cols-5">
         <div className="col-span-2">
-          <p className="text-xl font-semibold">{brandName}</p>
+          <p data-comp="footer.brandName" className="text-xl font-semibold">
+            {brandName}
+          </p>
           {brandTagline && (
-            <p className="mt-2 max-w-sm text-sm text-(--color-text-secondary)">
+            <p
+              data-comp="footer.brandTagline"
+              className="mt-2 max-w-sm text-sm text-(--color-text-secondary)"
+            >
               {brandTagline}
             </p>
           )}
         </div>
         {columns.map((col, i) => (
-          <div key={i}>
-            <p className="text-sm font-medium uppercase tracking-wide text-(--color-text-secondary)">
+          <Inspect as="div" key={i} name={`footer.columns[${i}]`}>
+            <p
+              data-comp={`footer.columns[${i}].title`}
+              className="text-sm font-medium uppercase tracking-wide text-(--color-text-secondary)"
+            >
               {col.title}
             </p>
             <ul className="mt-4 space-y-2">
               {col.links.map((link, j) => (
-                <li key={j}>
+                <Inspect as="li" key={j} name={`footer.columns[${i}].links[${j}]`}>
                   <a
+                    data-comp={`footer.columns[${i}].links[${j}].label`}
                     href={link.href}
                     className="text-sm text-(--color-text-primary) hover:text-(--color-text-accent)"
                   >
                     {link.label}
                   </a>
-                </li>
+                </Inspect>
               ))}
             </ul>
-          </div>
+          </Inspect>
         ))}
       </div>
-      <div className="mt-12 border-t border-(--color-border-default) pt-6 text-xs text-(--color-text-secondary)">
+      <div
+        data-comp="footer.copyright"
+        className="mt-12 border-t border-(--color-border-default) pt-6 text-xs text-(--color-text-secondary)"
+      >
         {copyright ?? `© ${new Date().getFullYear()} ${brandName}. All rights reserved.`}
       </div>
     </footer>

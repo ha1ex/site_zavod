@@ -1,4 +1,5 @@
 import { ButtonLink } from '../primitives/ButtonLink';
+import { Inspect } from '../primitives/Inspect';
 import { cn } from '../primitives/cn';
 
 export interface PricingPlanProps {
@@ -29,20 +30,29 @@ export function PricingPlans({ eyebrow, title, description, plans }: PricingPlan
     >
       <div className="mb-12 max-w-2xl">
         {eyebrow && (
-          <p className="mb-3 text-sm font-medium uppercase tracking-wide text-(--color-text-accent)">
+          <p
+            data-comp="pricing.eyebrow"
+            className="mb-3 text-sm font-medium uppercase tracking-wide text-(--color-text-accent)"
+          >
             {eyebrow}
           </p>
         )}
-        <h2 className="text-3xl font-semibold leading-tight md:text-4xl">{title}</h2>
+        <h2 data-comp="pricing.title" className="text-3xl font-semibold leading-tight md:text-4xl">
+          {title}
+        </h2>
         {description && (
-          <p className="mt-4 text-lg text-(--color-text-secondary)">{description}</p>
+          <p data-comp="pricing.description" className="mt-4 text-lg text-(--color-text-secondary)">
+            {description}
+          </p>
         )}
       </div>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {plans.map((plan, i) => (
-          <div
+          <Inspect
+            as="div"
             key={i}
+            name={`pricing.plans[${i}]`}
             className={cn(
               'flex flex-col rounded-(--radius-3xl) p-8',
               plan.highlighted
@@ -50,9 +60,12 @@ export function PricingPlans({ eyebrow, title, description, plans }: PricingPlan
                 : 'border border-(--color-border-default) bg-(--color-surface-card)',
             )}
           >
-            <h3 className="text-xl font-semibold">{plan.name}</h3>
+            <h3 data-comp={`pricing.plans[${i}].name`} className="text-xl font-semibold">
+              {plan.name}
+            </h3>
             {plan.description && (
               <p
+                data-comp={`pricing.plans[${i}].description`}
                 className={cn(
                   'mt-2 text-sm',
                   plan.highlighted
@@ -64,9 +77,15 @@ export function PricingPlans({ eyebrow, title, description, plans }: PricingPlan
               </p>
             )}
             <div className="mt-6 flex items-baseline gap-1">
-              <span className="text-4xl font-semibold">{plan.price}</span>
+              <span
+                data-comp={`pricing.plans[${i}].price`}
+                className="text-4xl font-semibold"
+              >
+                {plan.price}
+              </span>
               {plan.pricePeriod && (
                 <span
+                  data-comp={`pricing.plans[${i}].pricePeriod`}
                   className={cn(
                     'text-sm',
                     plan.highlighted
@@ -81,7 +100,12 @@ export function PricingPlans({ eyebrow, title, description, plans }: PricingPlan
 
             <ul className="mt-6 flex-1 space-y-3">
               {plan.features.map((f, j) => (
-                <li key={j} className="flex items-start gap-2 text-sm">
+                <Inspect
+                  as="li"
+                  key={j}
+                  name={`pricing.plans[${i}].features[${j}]`}
+                  className="flex items-start gap-2 text-sm"
+                >
                   <span
                     aria-hidden
                     className={cn(
@@ -91,26 +115,28 @@ export function PricingPlans({ eyebrow, title, description, plans }: PricingPlan
                     ✓
                   </span>
                   <span>{f}</span>
-                </li>
+                </Inspect>
               ))}
             </ul>
 
             <div className="mt-8">
-              <ButtonLink
-                href={plan.cta.href}
-                variant={plan.highlighted ? 'outline' : 'fill'}
-                size="lg"
-                fullWidth
-                className={
-                  plan.highlighted
-                    ? 'bg-(--color-text-inverse) text-(--color-action-primary) hover:bg-(--color-text-inverse)/90 border-transparent'
-                    : ''
-                }
-              >
-                {plan.cta.label}
-              </ButtonLink>
+              <Inspect name={`pricing.plans[${i}].cta`}>
+                <ButtonLink
+                  href={plan.cta.href}
+                  variant={plan.highlighted ? 'outline' : 'fill'}
+                  size="lg"
+                  fullWidth
+                  className={
+                    plan.highlighted
+                      ? 'bg-(--color-text-inverse) text-(--color-action-primary) hover:bg-(--color-text-inverse)/90 border-transparent'
+                      : ''
+                  }
+                >
+                  {plan.cta.label}
+                </ButtonLink>
+              </Inspect>
             </div>
-          </div>
+          </Inspect>
         ))}
       </div>
     </section>

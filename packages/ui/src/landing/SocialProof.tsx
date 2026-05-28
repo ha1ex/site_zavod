@@ -1,3 +1,4 @@
+import { Inspect } from '../primitives/Inspect';
 import { cn } from '../primitives/cn';
 
 export interface CaseProps {
@@ -29,23 +30,38 @@ export function SocialProof({ eyebrow, title, description, cases }: SocialProofP
       {(eyebrow || title || description) && (
         <div className="mb-10 max-w-2xl">
           {eyebrow && (
-            <p className="mb-3 text-sm font-medium uppercase tracking-wide text-(--color-text-accent)">
+            <p
+              data-comp="social_proof.eyebrow"
+              className="mb-3 text-sm font-medium uppercase tracking-wide text-(--color-text-accent)"
+            >
               {eyebrow}
             </p>
           )}
           {title && (
-            <h2 className="text-3xl font-semibold leading-tight md:text-4xl">{title}</h2>
+            <h2
+              data-comp="social_proof.title"
+              className="text-3xl font-semibold leading-tight md:text-4xl"
+            >
+              {title}
+            </h2>
           )}
           {description && (
-            <p className="mt-4 text-lg text-(--color-text-secondary)">{description}</p>
+            <p
+              data-comp="social_proof.description"
+              className="mt-4 text-lg text-(--color-text-secondary)"
+            >
+              {description}
+            </p>
           )}
         </div>
       )}
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {cases.map((c, i) => (
-          <div
+          <Inspect
+            as="div"
             key={i}
+            name={`social_proof.cases[${i}]`}
             className={cn(
               'flex flex-col rounded-(--radius-2xl) border border-(--color-border-default)',
               'bg-(--color-surface-card) p-6',
@@ -61,16 +77,30 @@ export function SocialProof({ eyebrow, title, description, cases }: SocialProofP
               >
                 {c.brandInitial ?? c.brand.charAt(0).toUpperCase()}
               </div>
-              <p className="text-base font-semibold">{c.brand}</p>
+              <p
+                data-comp={`social_proof.cases[${i}].brand`}
+                className="text-base font-semibold"
+              >
+                {c.brand}
+              </p>
             </div>
-            <p className="flex-1 text-base leading-relaxed text-(--color-text-primary)">
+            <p
+              data-comp={`social_proof.cases[${i}].quote`}
+              className="flex-1 text-base leading-relaxed text-(--color-text-primary)"
+            >
               «{c.quote}»
             </p>
             {c.metric && (
-              <p className="mt-4 text-sm font-medium text-(--color-text-accent)">{c.metric}</p>
+              <p
+                data-comp={`social_proof.cases[${i}].metric`}
+                className="mt-4 text-sm font-medium text-(--color-text-accent)"
+              >
+                {c.metric}
+              </p>
             )}
             {c.href && (
               <a
+                data-comp={`social_proof.cases[${i}].href`}
                 href={c.href}
                 className={cn(
                   'mt-4 inline-flex items-center gap-1 text-sm font-medium',
@@ -80,7 +110,7 @@ export function SocialProof({ eyebrow, title, description, cases }: SocialProofP
                 Читать кейс →
               </a>
             )}
-          </div>
+          </Inspect>
         ))}
       </div>
     </section>
