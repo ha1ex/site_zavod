@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import type { ReactNode } from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { readApproval } from '@kaiten/harness/approvals';
+import { isSafeSlug, readApproval } from '@kaiten/harness/approvals';
 import { ApprovalForm } from '../../approve/[slug]/ApprovalForm';
 
 interface PageProps {
@@ -124,6 +124,7 @@ function MarkdownView({ source }: { source: string }) {
 
 export default async function IntakePage({ params }: PageProps) {
   const { slug } = await params;
+  if (!isSafeSlug(slug)) notFound();
   const tz = await loadTz(slug);
   if (tz === null) notFound();
   const approval = await readApproval(repoRoot(), slug, 'intake');

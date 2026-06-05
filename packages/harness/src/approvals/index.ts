@@ -16,11 +16,22 @@ import {
  * вызовы без surface работают как раньше (landing / <slug>.json).
  */
 
+/**
+ * Безопасный slug: буква/цифра, далее [a-z0-9_-], до 64 символов. Защита от path
+ * traversal (`../`, `/`, абсолютные пути) везде, где slug идёт в имя файла.
+ */
+const SAFE_SLUG_RE = /^[a-z0-9][a-z0-9_-]{0,63}$/i;
+
+export function isSafeSlug(slug: string): boolean {
+  return typeof slug === 'string' && SAFE_SLUG_RE.test(slug);
+}
+
 export function approvalDir(repoRoot: string): string {
   return resolve(repoRoot, 'content', 'approvals');
 }
 
 export function approvalPath(repoRoot: string, slug: string, surface: ApprovalSurface = 'landing'): string {
+  if (!isSafeSlug(slug)) throw new Error(`unsafe slug: ${JSON.stringify(slug)}`);
   const suffix = surface === 'intake' ? '.intake.json' : '.json';
   return resolve(approvalDir(repoRoot), `${slug}${suffix}`);
 }

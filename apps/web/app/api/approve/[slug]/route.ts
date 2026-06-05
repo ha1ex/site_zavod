@@ -2,7 +2,7 @@ import { resolve } from 'node:path';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { ApprovalStatusSchema } from '@kaiten/harness/schemas';
-import { readApproval, writeApproval } from '@kaiten/harness/approvals';
+import { isSafeSlug, readApproval, writeApproval } from '@kaiten/harness/approvals';
 
 const PatchBodySchema = z.object({
   status: ApprovalStatusSchema,
@@ -20,12 +20,14 @@ interface Ctx {
 
 export async function GET(_req: Request, { params }: Ctx) {
   const { slug } = await params;
+  if (!isSafeSlug(slug)) return NextResponse.json({ error: 'invalid slug' }, { status: 400 });
   const approval = await readApproval(repoRoot(), slug);
   return NextResponse.json(approval);
 }
 
 export async function POST(req: Request, { params }: Ctx) {
   const { slug } = await params;
+  if (!isSafeSlug(slug)) return NextResponse.json({ error: 'invalid slug' }, { status: 400 });
   let body: unknown;
   try {
     body = await req.json();

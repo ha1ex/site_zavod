@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { readFile } from 'node:fs/promises';
 import { LandingSpecSchema } from '@kaiten/harness/schemas';
-import { readApproval } from '@kaiten/harness/approvals';
+import { isSafeSlug, readApproval } from '@kaiten/harness/approvals';
 import { ApprovalForm } from './ApprovalForm';
 
 interface PageProps {
@@ -34,6 +34,7 @@ export async function generateMetadata({ params }: PageProps) {
 
 export default async function ApprovePage({ params }: PageProps) {
   const { slug } = await params;
+  if (!isSafeSlug(slug)) notFound();
   const spec = await loadSpec(slug);
   if (!spec) notFound();
   const approval = await readApproval(repoRoot(), slug);
