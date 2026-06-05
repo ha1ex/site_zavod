@@ -36,7 +36,10 @@ import { buildHandoff } from './handoff/index';
 import { buildLandingSystemPromptWithMeta } from './prompts/system';
 import {
   ingestLanding,
+  ingestIntake,
+  prepareIntake,
   prepareLanding,
+  renderIntakePrepareAsMarkdown,
   renderPrepareAsMarkdown,
 } from './agent/index';
 import {
@@ -504,6 +507,95 @@ agent
       process.exit(1);
     },
   );
+
+agent
+  .command('intake')
+  .description(
+    'Фабрика ТЗ: из сырых данных (--request и/или --inputs) собрать prompt+schema для хост-агента (ТЗ + Brief). Без LLM.',
+  )
+  .argument('<kind>', 'тип артефакта: landing')
+  .option('-s, --slug <slug>', 'slug черновика', 'draft')
+  .option('-r, --request <path>', 'путь к файлу запроса (free-text / markdown)')
+  .option('-i, --inputs <dir>', 'папка с материалами (например inputs/<slug>/)')
+  .option('-o, --out <path>', 'путь к prompt-файлу (default: .context/intake/<slug>/intake.prompt.md)')
+  .option('--format <fmt>', 'json | md', 'md')
+  .action(
+    async (
+      kind: string,
+      opts: { slug: string; request?: string; inputs?: string; out?: string; format: string },
+    ) => {
+      const root = await findRepoRoot(ROOT);
+      if (kind !== 'landing') {
+        console.error(chalk.red(`[harness] intake: kind=${kind} не поддерживается (поддерживается: landing)`));
+        process.exit(1);
+      }
+      if (!opts.request && !opts.inputs) {
+        console.error(chalk.red('[harness] intake: нужен хотя бы --request <файл> или --inputs <папка>'));
+        process.exit(1);
+      }
+      const artifact = await prepareIntake({
+        root,
+        slug: opts.slug,
+        requestPath: opts.request,
+        inputsDir: opts.inputs,
+      });
+      const format = (opts.format ?? 'md').toLowerCase();
+      const payload =
+        format === 'json' ? JSON.stringify(artifact, null, 2) : renderIntakePrepareAsMarkdown(artifact);
+      const outRel = opts.out ?? `.context/intake/${opts.slug}/intake.prompt.md`;
+      const outPath = resolve(root, outRel);
+      await mkdir(dirname(outPath), { recursive: true });
+      await writeFile(outPath, payload, 'utf-8');
+      console.error(chalk.green(`[harness] ✓ intake prepare → ${outRel}`));
+      console.error(chalk.dim(`         напиши JSON { tz, brief } в ${artifact.outputPathRel}`));
+      console.error(chalk.dim(`         затем: ${artifact.nextCommand}`));
+    },
+  );
+
+agent
+  .command('intake-apply')
+  .description(
+    'Принять { tz, brief } от хост-агента: валидация + brief-quality (hard gate) → публикация brief + рендер ТЗ.md. Без LLM.',
+  )
+  .argument('<kind>', 'тип артефакта: landing')
+  .option('-s, --slug <slug>', 'slug черновика')
+  .option('--json', 'machine-readable JSON-вывод (для repair-loop агента)', false)
+  .action(async (kind: string, opts: { slug?: string; json: boolean }) => {
+    const root = await findRepoRoot(ROOT);
+    if (kind !== 'landing') {
+      console.error(chalk.red(`[harness] intake-apply: kind=${kind} не поддерживается (поддерживается: landing)`));
+      process.exit(1);
+    }
+    if (!opts.slug) {
+      console.error(chalk.red('[harness] intake-apply: --slug обязателен'));
+      process.exit(1);
+    }
+    const result = await ingestIntake({ root, slug: opts.slug });
+    if (opts.json) {
+      console.log(JSON.stringify(result, null, 2));
+      process.exit(result.ok ? 0 : 1);
+    }
+    if (result.ok) {
+      console.log(chalk.green('[harness] ✓ ТЗ + brief валидны (brief-quality пройден)'));
+      console.log(chalk.green(`         brief → ${result.briefPathRel}`));
+      console.log(chalk.green(`         ТЗ    → ${result.tzPathRel}`));
+      for (const w of result.warnings) console.log(chalk.yellow(`  ! ${w}`));
+      for (const n of result.needsConfirmation) console.log(chalk.cyan(`  ? needs confirmation: ${n}`));
+      console.log(chalk.dim(`\n         next: ${result.nextCommand}`));
+      process.exit(0);
+    }
+    console.log(chalk.red(`[harness] ✗ intake ${result.slug} — ${result.errors.length} error(s):`));
+    for (const e of result.errors) {
+      const pathPart = e.path ? chalk.dim(` [${e.path}]`) : '';
+      const codePart = e.code ? chalk.dim(` (${e.code})`) : '';
+      console.log(`  ${chalk.red('✗')} ${e.kind}: ${e.message}${pathPart}${codePart}`);
+    }
+    for (const w of result.warnings) console.log(chalk.yellow(`  ! ${w}`));
+    if (result.repairPathRel) {
+      console.log(chalk.cyan(`\n  repair: ${result.repairPathRel} — поправь intake.json и запусти команду снова`));
+    }
+    process.exit(1);
+  });
 
 program
   .command('validate')

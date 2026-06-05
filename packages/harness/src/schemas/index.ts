@@ -9,3 +9,4 @@ export * from './coverage-report';
 export * from './section-plan';
 export * from './mock-allocation';
 export * from './diversity-report';
+export * from './intake-tz';

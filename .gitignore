@@ -40,3 +40,6 @@ npm-debug.log*
 pnpm-debug.log*
 yarn-debug.log*
 .playwright-mcp/
+
+# intake raw inputs (рабочие материалы фабрики ТЗ)
+inputs/

@@ -61,7 +61,7 @@ const BRAND_CANON_FILES = [
  * (selective / full / legacy). Имеет наивысший приоритет: при конфликте с design-system,
  * layout или брифом выигрывает канон. Возвращает body (без frontmatter) + sources для traceability.
  */
-async function loadBrandCanon(repoRoot: string): Promise<{ body: string; sources: string[] }> {
+export async function loadBrandCanon(repoRoot: string): Promise<{ body: string; sources: string[] }> {
   const blocks: string[] = [];
   const sources: string[] = [];
   for (const rel of BRAND_CANON_FILES) {
