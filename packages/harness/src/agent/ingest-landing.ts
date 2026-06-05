@@ -23,6 +23,8 @@ import {
   type IllustrationDomainMatchError,
   type CrossLandingDiversityIssue,
   type CrossLandingDiversityResult,
+  validateLandingLanguage,
+  type LandingLanguageError,
 } from '../validators/index';
 import { renderLandingToTSX } from '../render/index';
 import { buildLandingSystemPromptWithMeta } from '../prompts/system';
@@ -37,7 +39,7 @@ import {
 export type IngestStage = 'read' | 'parse' | 'validate' | 'render' | 'file-back' | 'done';
 
 export interface IngestLandingError {
-  kind: 'parse' | 'brand' | 'business' | 'audience' | 'visual' | 'layout' | 'domain' | 'diversity';
+  kind: 'parse' | 'brand' | 'business' | 'audience' | 'visual' | 'layout' | 'domain' | 'diversity' | 'language';
   message: string;
   path?: string;
   code?: string;
@@ -63,6 +65,8 @@ export interface IngestLandingOptions {
   strictDiversity?: boolean;
   /** Полностью отключить cross-landing diversity audit (для отладки). */
   noDiversityAudit?: boolean;
+  /** Блокировать ingest на error-severity англицизмах (§10). По умолчанию soft: всё уходит в warnings. */
+  languageStrict?: boolean;
 }
 
 export interface IngestLandingResult {
@@ -187,6 +191,22 @@ export async function ingestLanding(opts: IngestLandingOptions): Promise<IngestL
   const brand = validateLandingBrand(spec);
   if (!brand.ok) {
     for (const e of brand.errors) errors.push(landingBrandToIngestError(e));
+  }
+
+  // Language gate (§10 англицизмы) — soft по умолчанию (warnings), strict через languageStrict.
+  try {
+    const language = await validateLandingLanguage(spec, { root: opts.root });
+    for (const e of language.errors) {
+      if (opts.languageStrict && e.severity === 'error') {
+        errors.push(languageToIngestError(e));
+      } else {
+        warnings.push(
+          `language:${e.severity} ${e.field} — ${e.message}${e.suggestion ? ` → ${e.suggestion}` : ''}`,
+        );
+      }
+    }
+  } catch (err) {
+    warnings.push(`language validator пропущен: ${(err as Error).message}`);
   }
 
   if (brief) {
@@ -475,6 +495,15 @@ function landingBrandToIngestError(e: LandingBrandError): IngestLandingError {
   return {
     kind: 'brand',
     message: `${e.message} (evidence: "${e.evidence}")`,
+    path: e.field,
+    code: e.rule,
+  };
+}
+
+function languageToIngestError(e: LandingLanguageError): IngestLandingError {
+  return {
+    kind: 'language',
+    message: e.suggestion ? `${e.message} → ${e.suggestion}` : e.message,
     path: e.field,
     code: e.rule,
   };

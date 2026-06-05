@@ -25,7 +25,10 @@
   "scripts": {
     "cli": "tsx src/cli.ts",
     "typecheck": "tsc --noEmit",
-    "test:audience": "tsx src/validators/landing-audience.test.ts"
+    "test": "tsx src/validators/landing-audience.test.ts && tsx src/validators/landing-language.test.ts && tsx src/validators/brief-quality.test.ts",
+    "test:audience": "tsx src/validators/landing-audience.test.ts",
+    "test:language": "tsx src/validators/landing-language.test.ts",
+    "test:brief-quality": "tsx src/validators/brief-quality.test.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.77",

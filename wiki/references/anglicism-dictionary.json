@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "description": "Словарь замен англицизмов для маркетинговой поверхности Kaiten (редполитика §10). Читается валидатором packages/harness/src/validators/landing-language.ts. Источник истины — человекочитаемое зеркало wiki/references/anglicism-dictionary.md.",
+  "replacements": [
+    { "term": "landing page", "replacement": "страница решения", "severity": "error" },
+    { "term": "landing", "replacement": "страница, промостраница", "severity": "error" },
+    { "term": "лендинг", "replacement": "страница, промостраница", "severity": "warning" },
+    { "term": "hero-блок", "replacement": "первый экран", "severity": "error" },
+    { "term": "hero", "replacement": "первый экран", "severity": "error" },
+    { "term": "CTA", "replacement": "кнопка действия, призыв к действию", "severity": "error" },
+    { "term": "call to action", "replacement": "кнопка действия", "severity": "error" },
+    { "term": "FAQ", "replacement": "вопросы и ответы", "severity": "error" },
+    { "term": "use case", "replacement": "сценарий использования, рабочий сценарий", "severity": "error" },
+    { "term": "workflow", "replacement": "рабочий процесс", "severity": "error" },
+    { "term": "deadline", "replacement": "срок", "severity": "error" },
+    { "term": "дедлайн", "replacement": "срок", "severity": "error" },
+    { "term": "onboarding", "replacement": "адаптация", "severity": "error" },
+    { "term": "онбординг", "replacement": "адаптация", "severity": "warning" },
+    { "term": "feedback", "replacement": "обратная связь", "severity": "error" },
+    { "term": "roadmap", "replacement": "дорожная карта", "severity": "error" },
+    { "term": "feature", "replacement": "возможность, функция, инструмент", "severity": "error" },
+    { "term": "фича", "replacement": "возможность, функция", "severity": "error" },
+    { "term": "таск", "replacement": "задача, карточка", "severity": "error" },
+    { "term": "таска", "replacement": "задача, карточка", "severity": "error" },
+    { "term": "template", "replacement": "шаблон", "severity": "error" },
+    { "term": "custom fields", "replacement": "настраиваемые поля", "severity": "error" },
+    { "term": "self-hosted", "replacement": "локальная версия, установка на серверы компании", "severity": "error" },
+    { "term": "on-premise", "replacement": "локальная версия, установка на серверы компании", "severity": "error" },
+    { "term": "функционал", "replacement": "функциональность", "severity": "error" },
+    { "term": "dashboard", "replacement": "панель отчётов, сводка", "severity": "warning" },
+    { "term": "дашборд", "replacement": "панель отчётов, сводка", "severity": "warning" },
+    { "term": "backlog", "replacement": "очередь задач, список задач", "severity": "warning" },
+    { "term": "бэклог", "replacement": "очередь задач (бэклог допустим для ИТ)", "severity": "warning" },
+    { "term": "sprint", "replacement": "спринт (для ИТ/скрам ок), иначе рабочий цикл", "severity": "warning" },
+    { "term": "service desk", "replacement": "служба поддержки, сервис-деск", "severity": "warning" },
+    { "term": "support", "replacement": "поддержка, служба поддержки", "severity": "warning" },
+    { "term": "cloud", "replacement": "облачная версия", "severity": "warning" },
+    { "term": "enterprise", "replacement": "крупная компания, корпоративный клиент", "severity": "warning" },
+    { "term": "trial", "replacement": "тестовый период, триал-период", "severity": "warning" },
+    { "term": "stakeholder", "replacement": "заинтересованная сторона, заказчик", "severity": "warning" },
+    { "term": "колл", "replacement": "звонок, встреча, совещание", "severity": "warning" }
+  ],
+  "serviceNames": [
+    "Kaiten", "Кайтен", "Jira", "Trello", "Notion", "YouTrack", "Asana", "ClickUp",
+    "Wrike", "GanttPro", "MS Project", "ITSM 365", "Jira Service Desk",
+    "Telegram", "GitLab", "GitHub", "Zapier", "Slack", "Google Docs", "Макс"
+  ],
+  "cyrillicRequired": [
+    { "latin": "Kanban", "cyrillic": "канбан", "qualifiers": ["метод", "method", "-доск", "board", "guide"] },
+    { "latin": "Scrum", "cyrillic": "скрам", "qualifiers": ["фреймворк", "framework"] }
+  ],
+  "abbreviations": [
+    { "abbr": "HR", "expansion": "отдел персонала" },
+    { "abbr": "SLA", "expansion": "уровень обслуживания" },
+    { "abbr": "KPI", "expansion": "ключевые показатели" },
+    { "abbr": "B2B", "expansion": "бизнес для бизнеса" },
+    { "abbr": "Agile", "expansion": "гибкие подходы" },
+    { "abbr": "ERP", "expansion": "система управления ресурсами" }
+  ]
+}

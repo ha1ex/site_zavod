@@ -5,6 +5,7 @@ import { describeRegistry } from '../registry/index';
 import { findRepoRoot, loadDesignSystem as loadDesignSystemPages } from '../wiki/load-design-system';
 import { selectContext } from '../wiki/select-context';
 import { loadLayoutPlaybook } from '../wiki/load-layouts';
+import { parseFrontmatter } from '../wiki/frontmatter';
 import type { Brief } from '../schemas/brief';
 import type { IllustrationSpec } from '../schemas/illustration-spec';
 
@@ -46,6 +47,30 @@ async function loadIllustrationSkill(): Promise<string> {
 async function loadSectionMockSkill(): Promise<string> {
   const path = resolve(__dirname, 'section-mock-skill.md');
   return readFile(path, 'utf-8').catch(() => '');
+}
+
+// Брендовый канон Kaiten — источник истины по тону, продуктовым фактам и языку (§9/§10/§11).
+const BRAND_CANON_FILES = [
+  'wiki/brand/redpolitika.md',
+  'wiki/references/kaiten-product-facts.md',
+  'wiki/references/anglicism-dictionary.md',
+];
+
+/**
+ * Грузит брендовый канон Kaiten в КАЖДЫЙ system-prompt — вне зависимости от DS-режима
+ * (selective / full / legacy). Имеет наивысший приоритет: при конфликте с design-system,
+ * layout или брифом выигрывает канон. Возвращает body (без frontmatter) + sources для traceability.
+ */
+async function loadBrandCanon(repoRoot: string): Promise<{ body: string; sources: string[] }> {
+  const blocks: string[] = [];
+  const sources: string[] = [];
+  for (const rel of BRAND_CANON_FILES) {
+    const content = await readFile(resolve(repoRoot, rel), 'utf-8').catch(() => null);
+    if (!content) continue;
+    blocks.push(parseFrontmatter(content).body.trim());
+    sources.push(rel);
+  }
+  return { body: blocks.join('\n\n---\n\n'), sources };
 }
 
 /**
@@ -130,8 +155,9 @@ export async function buildLandingSystemPromptWithMeta(
   const sectionMockSkill = await loadSectionMockSkill();
   const repoRoot = await findRepoRoot(__dirname);
   const layoutPlaybook = await loadLayoutPlaybook(repoRoot, options.brief?.pageLayout);
+  const brandCanon = await loadBrandCanon(repoRoot);
 
-  const sources = [...ds.sources];
+  const sources = [...brandCanon.sources, ...ds.sources];
   if (sectionMockSkill.trim()) {
     sources.push('packages/harness/src/prompts/section-mock-skill.md');
   }
@@ -159,6 +185,16 @@ ${sectionMockSkill}`
 ${layoutPlaybook.body}`
     : '';
 
+  const brandCanonSection = brandCanon.body.trim()
+    ? `## Брендовый канон Kaiten — ИСТОЧНИК ИСТИНЫ (приоритет над всем ниже)
+
+При конфликте этих правил с design-system, layout-плейбуком или брифом — выигрывают эти. Это редполитика Kaiten (тон, имя продукта Kaiten/Кайтен, запрет пустых лозунгов), продуктовые факты (позиционирование, тарифы, канбан-метод/скрам-фреймворк) и словарь англицизмов (§10). На маркетинговой поверхности — русский язык без англицизмов с понятным русским аналогом; канбан/скрам кириллицей; имена сервисов не переводим.
+
+${brandCanon.body}
+
+`
+    : '';
+
   const system = `You are a senior product copywriter and UI architect operating inside a controlled harness for generating SaaS landing pages.
 
 Your job is NOT to invent layouts or copy from scratch — you ASSEMBLE a landing page from a fixed set of allowed components, using the user's brief and the layout playbook, and you OUTPUT a strictly structured JSON LandingSpec that downstream tools will render deterministically.
@@ -171,12 +207,12 @@ Your job is NOT to invent layouts or copy from scratch — you ASSEMBLE a landin
 - Honor all length and structural constraints (title <= 80 chars, subtitle 10..200, etc.).
 - One primary CTA per page that matches the brief's goal.
 - Hero section must be the first section.
-- Match the brand voice from \`wiki/design-system/voice.md\` (see below). Banned hype words are listed there — never use them.
+- Match the brand voice and language rules from the **Брендовый канон Kaiten** below — источник истины: \`wiki/brand/redpolitika.md\` + \`wiki/references/anglicism-dictionary.md\`. На маркетинговой поверхности — без англицизмов (landing→страница, CTA→кнопка действия, deadline→срок). Пустые лозунги и hype-слова блокируются валидаторами \`landing-brand\` и \`landing-language\`.
 - Follow the conversion-landing skill (if present below) for page-type structure, awareness-aware H1 formulas, Feature → Benefit Transformation, CTA hierarchy, social proof rules, and anti-patterns.
 - **Pick a layout from \`wiki/layouts/\` BEFORE writing sections.** Brief может уже содержать \`pageLayout\` — используй его. Если не указан, прочитай \`wiki/layouts/index.md\` и выбери осознанно. Запиши выбор в \`spec.meta.layout\`.
 - **Mock authoring per section is MANDATORY.** Для каждой визуальной секции явно выбери mock-variant из реестра компонентов — НЕЛЬЗЯ оставлять \`mediaVariant: 'default'\` или \`visual.variant: 'generic'\` ради скорости. Это приводит к лендингам, где все блоки выглядят одинаково. Если нужен новый mock — попроси разработчика добавить компонент.
 
-## Component registry (allowed components only)
+${brandCanonSection}## Component registry (allowed components only)
 
 \`\`\`json
 ${describeRegistry()}

@@ -170,3 +170,45 @@
 - **applies_to:** wiki/references/domain-mock-matrix.md, packages/harness/src/registry/domain-visual.ts, wiki/landings/<domain>-reference.md
 - **reason:** Документация для людей, registry для машин. Если они расходятся — либо validator пропустит cross-domain reuse (registry устарел), либо новый mock не будет признан (matrix устарел). Единый порядок обновления + matrix-as-source — единственный способ это синхронизировать без CI.
 - **first_observed:** 2026-05-16 domain-visual-registry-M1
+
+## no-anglicisms-on-marketing-surface
+- **rule:** На маркетинговой поверхности (title, subtitle, описания, карточки, кнопки, alt-тексты, SEO title/description, вопросы и ответы) англицизмы с понятным русским аналогом запрещены. Замена по словарю `wiki/references/anglicism-dictionary.json` (§10): landing→страница, hero→первый экран, CTA→кнопка действия, FAQ→вопросы и ответы, deadline→срок, onboarding→адаптация, workflow→рабочий процесс, use case→сценарий, feature→возможность. Исключения: названия сервисов (Kaiten, Jira, Trello, Notion, YouTrack, Asana, ClickUp); канбан/скрам кириллицей; аббревиатуры — только с русской расшифровкой при первом употреблении.
+- **constraint:** `language.anglicism`
+- **applies_to:** все секции с текстом, spec.seo, brief.mainPain/mainPromise/cta, P6 Copy Generation, P7 SEO
+- **reason:** voice.md исторически разрешал landing/CTA без перевода — это противоречит редполитике Kaiten. Клиент видит русский текст, английские слова без расшифровки ломают tone of voice и доверие. Закрыто на двух уровнях: docs (этот lesson + dictionary + redpolitika) и code (validateLandingLanguage).
+- **first_observed:** 2026-06-05 kaiten-content-factory-integration
+
+## kanban-scrum-written-in-cyrillic
+- **rule:** Kanban и Scrum в опубликованном тексте пишутся кириллицей (канбан, скрам), кроме случаев когда это часть названия интеграции/документации/цитаты или рядом стоит «метод»/«фреймворк». Собирательный термин Agile не используем как факт — даём конкретику (канбан-метод, скрам-фреймворк).
+- **constraint:** `language.kanban-cyrillic`
+- **applies_to:** все секции с текстом, spec.seo
+- **reason:** Редполитика: исключаем разную трактовку Agile; канбан/скрам — устоявшиеся русские термины. Латинские Kanban/Scrum выглядят как непереведённый англицизм.
+- **first_observed:** 2026-06-05 kaiten-content-factory-integration
+
+## product-name-kaiten-no-quotes-declension
+- **rule:** Имя продукта: Kaiten или Кайтен, без кавычек. Кириллическое склоняется (в Кайтене, с Кайтеном, из Кайтена). Не «Кайтен» в кавычках, не «В Кайтен» без склонения. Юрлицо — ООО «КАЙТЕН СОФТВЕР» (с кавычками) только в юридическом контексте.
+- **constraint:** `language.product-name`
+- **applies_to:** все секции с текстом, spec.seo, brief
+- **reason:** Редполитика §11. Кавычки вокруг имени и несклоняемое «Кайтен» читаются как ошибка бренда.
+- **first_observed:** 2026-06-05 kaiten-content-factory-integration
+
+## no-marketing-slogans-feature-to-benefit
+- **rule:** Запрещены пустые лозунги (выведите на новый уровень, революционное решение, идеальная система, забудьте о хаосе, увеличьте в 10 раз, полный контроль над всем). Каждая фича раскрывается по формуле фича→рабочий сценарий→польза для роли, а не списком возможностей. Боли формулируются через управляемое улучшение, не через негатив/обвинение команды.
+- **constraint:** `brand.slogan`
+- **applies_to:** все секции с текстом, brief.mainPain/mainPromise/cta, P6 Copy Generation
+- **reason:** Редполитика §9 + tone of voice «умный, но не занудный». Расширяет существующий landing-brand денилист русскими лозунгами из Content Factory. Без сценария фича-лист не доказывает ценность.
+- **first_observed:** 2026-06-05 kaiten-content-factory-integration
+
+## brief-must-resolve-domain-and-be-substantive
+- **rule:** Бриф проходит на сборку только если: домен резолвится через resolveDomainFromBrief (не unknown); mainPain/mainPromise содержательны и не дублируют product; нет лозунгов и неразрешённых англицизмов в mainPain/mainPromise/cta; неподтверждённые продуктовые факты (тарифы, импорт из конкретной системы, фичи) вынесены в needsConfirmation. Проверка детерминированная, до запуска LLM-фаз.
+- **constraint:** `brief.quality-gate`
+- **applies_to:** packages/harness/src/pipeline/route-pipeline.ts, packages/harness/src/pipeline/phases/p0-brief-normalize.ts
+- **reason:** Тонкий/слоганный/без-домена бриф гарантирует плохой лендинг и тратит токены LLM на P1-P8. Ловим на самом дешёвом этапе (fail-fast), как domain-mock и phased-pipeline lessons.
+- **first_observed:** 2026-06-05 kaiten-content-factory-integration
+
+## brand-canon-cascade-redpolitika-wins
+- **rule:** При конфликте правил языка/тона источник истины — wiki/brand/redpolitika.md, затем wiki/references/kaiten-product-facts.md (факты, тарифы, Agile), затем anglicism-dictionary.json. wiki/design-system/voice.md и design-system-kaiten.md — подчинённые (визуал/легаси). Строка voice.md о «landing/CTA без перевода» отменена редполитикой.
+- **constraint:** `brand.cascade`
+- **applies_to:** packages/harness/src/prompts/system.ts, wiki/design-system/voice.md, wiki/brand/redpolitika.md
+- **reason:** Два источника правды по языку = расхождение промпта и валидатора. Явный каскад фиксирует, кто выигрывает. Канон грузится в каждый system-prompt через loadBrandCanon.
+- **first_observed:** 2026-06-05 kaiten-content-factory-integration

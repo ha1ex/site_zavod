@@ -2,6 +2,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { BriefSchema, type Brief } from '../../schemas/brief';
 import { resolveDomainFromBrief, type Domain } from '../../registry/domain-visual';
+import { validateBriefQuality } from '../../validators/brief-quality';
 import type { PhaseContext, PhaseResult } from './types';
 
 /**
@@ -21,6 +22,8 @@ export interface NormalizedBrief extends Brief {
   resolvedDomain: Domain;
   resolvedSegments: string[];
   normalizedAt: string;
+  /** Неподтверждённые продуктовые факты для ревью (§5/§18). Заполняется brief-quality. */
+  needsConfirmation?: string[];
 }
 
 export async function runP0BriefNormalize(
@@ -40,11 +43,26 @@ export async function runP0BriefNormalize(
   const resolvedDomain = resolveDomainFromBrief(brief);
   const resolvedSegments = brief.resolvedSegments ?? [];
 
+  // Brief-quality (advisory в P0): не блокируем фазу, но подсвечиваем проблемы и needs_confirmation.
+  // Жёсткий гейт качества брифа — на intake-этапе (фабрика ТЗ), до запуска пайплайна.
+  let needsConfirmation: string[] = [];
+  try {
+    const quality = await validateBriefQuality(brief, { root: ctx.root });
+    needsConfirmation = quality.needsConfirmation;
+    for (const e of quality.errors) {
+      messages.push(`brief-quality:${e.severity} [${e.rule}] ${e.field} — ${e.message}`);
+    }
+    for (const n of quality.needsConfirmation) messages.push(`needs_confirmation: ${n}`);
+  } catch (err) {
+    messages.push(`brief-quality пропущен: ${(err as Error).message}`);
+  }
+
   const normalized: NormalizedBrief = {
     ...brief,
     resolvedSegments,
     resolvedDomain,
     normalizedAt: new Date().toISOString(),
+    needsConfirmation,
   };
 
   const outPath = resolve(

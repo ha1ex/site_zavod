@@ -62,7 +62,21 @@ const EMPTY_FILLER = [
   'world class',
 ];
 
-function scanText(field: string, value: string): LandingBrandError[] {
+// Пустые маркетинговые лозунги из редполитики Kaiten §9.1 (русские фразы-подстроки).
+const MARKETING_SLOGANS = [
+  'на новый уровень',
+  'забудьте о хаосе',
+  'забудьте про хаос',
+  'революционное решение',
+  'идеальная система',
+  'лучший инструмент',
+  'лучший сервис',
+  'полный контроль над',
+  'больше не будет ошибаться',
+  'и всё заработает',
+];
+
+export function scanText(field: string, value: string): LandingBrandError[] {
   const errors: LandingBrandError[] = [];
   const lower = value.toLowerCase();
 
@@ -96,6 +110,17 @@ function scanText(field: string, value: string): LandingBrandError[] {
         rule: 'empty-marketing',
         field,
         message: `Пустой маркетинговый штамп "${filler}" в ${field}.`,
+        evidence: value,
+      });
+    }
+  }
+
+  for (const slogan of MARKETING_SLOGANS) {
+    if (lower.includes(slogan)) {
+      errors.push({
+        rule: 'empty-marketing',
+        field,
+        message: `Пустой маркетинговый лозунг "${slogan}" в ${field}. Замени на конкретный сценарий/пользу (редполитика §9).`,
         evidence: value,
       });
     }
