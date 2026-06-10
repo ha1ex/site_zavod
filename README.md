@@ -286,8 +286,16 @@ Healthcare, Education, Legal и др. → `routePipeline` вернёт
 **Один раз:**
 
 ```bash
-pnpm install
+pnpm install                          # заодно включает git-гейты (.githooks/) через prepare
 ```
+
+**Шаг 0 каждой сессии (любой агент):**
+
+```bash
+pnpm -w run harness agent context     # детект host-агента + горячий контекст + hard gates
+```
+
+Claude Code делает это автоматически SessionStart-хуком; Codex/Gemini/другие — вручную (контракт: [`AGENTS.md`](AGENTS.md)).
 
 **1. Создать бриф** — скопируй `content/briefs/kaiten-factory.json` и поправь поля:
 
@@ -368,13 +376,54 @@ pnpm -w run harness handoff <slug> --require-approved
 
 ---
 
+## Запуск под любым агентом (Codex CLI / Gemini / Cursor / …)
+
+Пайплайн не привязан к Claude Code: ядро — обычный Node CLI, контракт описан в
+[`AGENTS.md`](AGENTS.md) (Codex и большинство агентов читают его автоматически),
+а жёсткие гейты работают на провайдер-нейтральных слоях.
+
+**Codex CLI (GPT):**
+
+```bash
+cd <repo>
+codex      # интерактивно: Codex сам прочитает AGENTS.md → выполнит шаг 0
+# или non-interactive:
+codex exec -C <repo> -s workspace-write \
+  "Выполни шаг 0 из AGENTS.md, затем собери лендинг по content/briefs/<slug>.json (slug <slug>)"
+```
+
+**Любой другой агент / автодетект молчит:**
+
+```bash
+export HARNESS_AGENT=gemini           # codex | gemini | claude-code | <name>
+pnpm -w run harness agent context
+```
+
+**Гейты без Claude-хуков.** Неизменяемость брифов и прочие жёсткие правила
+enforced на трёх слоях: git pre-commit (`.githooks/`, включается сам при
+`pnpm install`) + проверки в harness CLI (`agent build/apply/run/intake-apply`)
++ Claude-хуки (третий слой, только под Claude Code). Поведение идентично под
+любой нейронкой; осознанный обход — `HARNESS_SKIP_GATES=1` / `--skip-gates`.
+
+Подробный гайд: [`wiki/marketing/run-with-codex.md`](wiki/marketing/run-with-codex.md).
+Опционально: MCP-сервер для Codex / Claude Desktop / Copilot —
+[`packages/mcp-server/README.md`](packages/mcp-server/README.md).
+
+---
+
 ## Все команды
 
 ```bash
 # Установка и preview
-pnpm install
+pnpm install                                  # + активация git-гейтов (prepare → setup-githooks.mjs)
 pnpm dev                                      # Next.js preview :3000
 pnpm storybook                                # Storybook :6006
+
+# === РИТУАЛ СЕССИИ (шаг 0, любой host-агент) ===
+pnpm -w run harness agent context                           # детект агента + контекст + hard gates
+pnpm -w run harness agent context --slug X                  # + сводка по slug (brief/spec/approval/pipeline)
+pnpm -w run harness agent context --agent codex --full      # override детекта; полный вывод под Claude
+pnpm -w run harness agent checklist                         # финальный чек-лист (паритет Stop-хука Claude)
 
 # === ФАБРИКА ТЗ (intake): сырьё → ТЗ + brief ===
 pnpm -w run harness agent intake landing --slug X --request inputs/X/request.md --inputs inputs/X
@@ -415,7 +464,8 @@ pnpm -w run harness approve X --baseline-ref <ref>                              
 # === WIKI / LINT / LOG ===
 pnpm -w run harness wiki sync                                                       # tokens.json → tokens.css
 pnpm -w run harness wiki index                                                      # регенерация wiki/index.md
-pnpm -w run harness lint                                                            # drift checks
+pnpm -w run harness lint                                                            # drift checks (вкл. agent-контракт)
+pnpm -w run harness lint --scope agents                                             # только agent-контракт (strict в CI)
 pnpm -w run harness ingest brief content/briefs/X.json                              # классификация
 pnpm -w run harness ingest feedback X "<note>"                                      # reviewer note → wiki
 pnpm -w run harness log -n 30 --filter generate                                     # последние записи

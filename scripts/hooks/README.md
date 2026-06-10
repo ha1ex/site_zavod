@@ -4,6 +4,26 @@
 правды: [`.claude/settings.json`](../../.claude/settings.json), официальный
 [hooks reference](https://code.claude.com/docs/en/hooks-guide).
 
+> **Хуки — только один из трёх слоёв.** Под Codex/Gemini/другими агентами хуков
+> нет, паритет обеспечивают provider-нейтральные слои (см. таблицу ниже).
+
+## Три слоя enforcement (briefs immutable)
+
+| Слой | Где | Под каким агентом работает |
+|---|---|---|
+| 1. git pre-commit | [`.githooks/pre-commit`](../../.githooks/pre-commit) (активация: `pnpm install` → `scripts/setup-githooks.mjs`) | любой (и человек) |
+| 2. harness CLI | `packages/harness/src/gates/brief-immutable.ts` — первая строка `agent build/apply/run/run-phase/intake-apply` | любой |
+| 3. Claude PreToolUse | `pre-brief-immutable.sh` — блок Edit/Write ДО записи (лучший UX) | только Claude Code |
+
+Обход всех слоёв один: `HARNESS_SKIP_GATES=1` (CLI: `--skip-gates`; git также `--no-verify`) — осознанно, по согласованию с пользователем.
+
+## Переиспользование скриптов командами CLI
+
+`harness agent context` / `agent checklist` (bootstrap для не-Claude агентов) шеллятся
+к `session-start-context.sh`, `user-prompt-slug-loader.sh`, `stop-release-checklist.sh`
+и парсят их JSON-протокол. **Сохраняйте формат `emit_additional_context` /
+`emit_system_message`** — это контракт не только Claude-хуков, но и CLI.
+
 ## Карта хуков
 
 | Событие | Скрипт | Что делает | Блокирует? |

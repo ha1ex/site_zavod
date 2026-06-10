@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# Гейт «briefs immutable» — git-слой (слой 1 из 3).
+# Слой 2: harness CLI (packages/harness/src/gates/brief-immutable.ts) — отказ pipeline-команд.
+# Слой 3: Claude-hook scripts/hooks/pre-brief-immutable.sh — блок Edit/Write до записи.
+#
+# Работает под ЛЮБЫМ host-агентом (Claude Code, Codex, Gemini, человек) — git один на всех.
+# Чистый bash без node: срабатывает даже до pnpm install, <50мс.
+#
+# Обход (осознанный): HARNESS_SKIP_GATES=1 git commit …  или  git commit --no-verify.
+# Активация: pnpm install → scripts/setup-githooks.mjs → git config core.hooksPath .githooks
+
+set -euo pipefail
+
+[[ "${HARNESS_SKIP_GATES:-}" == "1" ]] && exit 0
+
+# M (modified) / D (deleted) / R (renamed) для существующих брифов — блок.
+# A (новый файл, в т.ч. <slug>-v2.json) — проходит свободно.
+VIOLATIONS="$(git diff --cached --name-status --diff-filter=MDR -- 'content/briefs/*.json' 2>/dev/null || true)"
+[[ -z "$VIOLATIONS" ]] && exit 0
+
+{
+  echo "🛑 BLOCKED: content/briefs/ — IMMUTABLE (см. AGENTS.md, docs/pipeline.md)."
+  echo ""
+  echo "В коммите — правки существующих брифов:"
+  echo "$VIOLATIONS" | sed 's/^/  /'
+  echo ""
+  echo "Бриф нельзя перезаписывать — это исходник, на который ссылаются"
+  echo "LandingSpec, approvals и diversity-audit."
+  echo ""
+  echo "Что делать:"
+  echo "  • Новая итерация — создай content/briefs/<slug>-v2.json (новый файл проходит свободно)."
+  echo "  • Поменять копию/SEO — правь LandingSpec (content/landings/<slug>.json), а не brief."
+  echo "  • Убрать из коммита: git restore --staged content/briefs/ && git checkout -- content/briefs/"
+  echo "  • Осознанный обход (обсуди с пользователем): HARNESS_SKIP_GATES=1 git commit …  или  git commit --no-verify."
+} >&2
+
+exit 1

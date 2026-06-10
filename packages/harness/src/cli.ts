@@ -56,6 +56,16 @@ import {
   type LogOp,
   type WikiPageType,
 } from './wiki/index';
+import {
+  agentNotes,
+  buildChecklistText,
+  buildSessionContextText,
+  buildSlugContextText,
+  detectHostAgent,
+  extractGatesCard,
+  staticBootstrapText,
+} from './host/index';
+import { assertBriefsUnmodifiedOrExit } from './gates/index';
 
 const ROOT = resolve(process.cwd());
 
@@ -77,6 +87,16 @@ async function findRepoRoot(start: string): Promise<string> {
 }
 
 const program = new Command();
+
+/**
+ * Баннер детекта host-агента. Пишем в stderr, чтобы не ломать --json stdout.
+ * Сессия, пропустившая шаг 0 (agent context), самокорректируется при первом
+ * касании pipeline-команд.
+ */
+function printHostBanner(override?: string): void {
+  const d = detectHostAgent({ override });
+  console.error(chalk.dim(`[harness] host agent: ${d.profile.label} (via ${d.via})`));
+}
 
 program
   .name('harness')
@@ -355,6 +375,81 @@ const agent = program
   );
 
 agent
+  .command('context')
+  .description(
+    'Session bootstrap для любого host-агента (Claude Code / Codex / Gemini / …): детект агента, горячий контекст, hard gates, подсказки. Шаг 0 из AGENTS.md.',
+  )
+  .option('-s, --slug <slug>', 'подгрузить сводку по slug (brief + spec + approval + pipeline)')
+  .option('--agent <name>', 'переопределить детект host-агента (codex | gemini | claude-code | …)')
+  .option('--full', 'печатать полный горячий контекст даже под Claude Code (хуки уже инжектировали его)', false)
+  .action(async (opts: { slug?: string; agent?: string; full: boolean }) => {
+    const root = await findRepoRoot(ROOT);
+    const detection = detectHostAgent({ override: opts.agent });
+    const { profile } = detection;
+
+    console.log(`[harness] host agent: ${chalk.cyan(profile.label)} (via ${detection.via})`);
+    console.log(
+      chalk.dim(
+        `         hooks: ${profile.hasHooks ? 'да' : 'нет'} · skills: ${profile.hasSkills ? 'да' : 'нет'}` +
+          (profile.needsExplicitContext ? ' → этот вывод и есть твой bootstrap, следуй ему' : ''),
+      ),
+    );
+    console.log('');
+
+    // Горячий контекст: под Claude Code его уже инжектировал SessionStart-хук — не дублируем без --full.
+    if (profile.needsExplicitContext || opts.full) {
+      console.log(buildSessionContextText(root) ?? staticBootstrapText());
+      console.log('');
+    } else {
+      console.log(chalk.dim('(горячий контекст уже инжектирован SessionStart-хуком; повторить: --full)'));
+      console.log('');
+    }
+
+    if (opts.slug) {
+      const slugCtx = buildSlugContextText(root, opts.slug);
+      if (slugCtx) {
+        console.log(slugCtx);
+      } else {
+        console.log(chalk.yellow(`(slug "${opts.slug}": бриф не найден в content/briefs/ — проверь имя)`));
+      }
+      console.log('');
+    }
+
+    console.log('## Hard gates (enforced: git pre-commit + harness CLI + Claude hooks)');
+    console.log('');
+    console.log(extractGatesCard(root));
+    console.log('');
+
+    console.log(`## Заметки для тебя (${profile.label})`);
+    for (const note of agentNotes(profile)) console.log(`- ${note}`);
+    console.log('');
+    console.log(
+      chalk.dim(
+        'Дальше: pnpm -w run harness agent build landing --slug <slug> --brief content/briefs/<slug>.json',
+      ),
+    );
+  });
+
+agent
+  .command('checklist')
+  .description(
+    'Финальный чек-лист релиза (uncommitted / typecheck / визуальная верификация / wiki). Advisory — всегда exit 0. Паритет Stop-хука Claude для всех агентов.',
+  )
+  .action(async () => {
+    const root = await findRepoRoot(ROOT);
+    const text = buildChecklistText(root);
+    if (text) {
+      console.log(text);
+      console.log('');
+      console.log(chalk.dim('(advisory: команда не блокирует — разберись с пунктами до финального ответа)'));
+    } else {
+      console.log(
+        chalk.green('[harness] ✓ чек-лист чист: нет uncommitted в критичных директориях, нет pending typecheck.'),
+      );
+    }
+  });
+
+agent
   .command('apply')
   .description(
     'Принять spec от хост-агента: валидация (brand+business+audience) + рендер TSX + filing back. Без LLM.',
@@ -367,6 +462,7 @@ agent
   .option('--json', 'machine-readable JSON-вывод результата (для repair-loop агента)', false)
   .option('--audience-threshold <n>', 'минимальный Audience Score (default 70)', (v) => parseFloat(v))
   .option('--no-audience-gate', 'полностью отключить audience-score gate')
+  .option('--skip-gates', 'пропустить жёсткие гейты (briefs-immutable) — осознанный обход', false)
   .action(
     async (
       kind: string,
@@ -378,9 +474,12 @@ agent
         json: boolean;
         audienceThreshold?: number;
         audienceGate: boolean;
+        skipGates: boolean;
       },
     ) => {
       const root = await findRepoRoot(ROOT);
+      printHostBanner();
+      assertBriefsUnmodifiedOrExit(root, { skip: opts.skipGates });
       if (kind !== 'landing') {
         console.error(
           chalk.red(`[harness] ingest: kind=${kind} не поддерживается (поддерживается: landing)`),
@@ -507,8 +606,11 @@ agent
   .argument('<kind>', 'тип артефакта: landing')
   .option('-s, --slug <slug>', 'slug черновика')
   .option('--json', 'machine-readable JSON-вывод (для repair-loop агента)', false)
-  .action(async (kind: string, opts: { slug?: string; json: boolean }) => {
+  .option('--skip-gates', 'пропустить жёсткие гейты (briefs-immutable) — осознанный обход', false)
+  .action(async (kind: string, opts: { slug?: string; json: boolean; skipGates: boolean }) => {
     const root = await findRepoRoot(ROOT);
+    printHostBanner();
+    assertBriefsUnmodifiedOrExit(root, { skip: opts.skipGates });
     if (kind !== 'landing') {
       console.error(chalk.red(`[harness] intake-apply: kind=${kind} не поддерживается (поддерживается: landing)`));
       process.exit(1);
@@ -636,6 +738,7 @@ agent
   .option('-b, --brief <path>', 'путь к brief.json (обязателен)')
   .option('--route-only', 'только показать routing decision, не запускать pipeline', false)
   .option('--require-intake-approved', 'не запускать сборку, пока ТЗ (intake) не approved на /intake/<slug>', false)
+  .option('--skip-gates', 'пропустить жёсткие гейты (briefs-immutable) — осознанный обход', false)
   .action(
     async (
       kind: string,
@@ -644,9 +747,12 @@ agent
         brief?: string;
         routeOnly: boolean;
         requireIntakeApproved: boolean;
+        skipGates: boolean;
       },
     ) => {
       const root = await findRepoRoot(ROOT);
+      printHostBanner();
+      assertBriefsUnmodifiedOrExit(root, { skip: opts.skipGates });
       if (kind !== 'landing') {
         console.error(chalk.red(`[harness] agent build: kind=${kind} не поддерживается`));
         process.exit(1);
@@ -736,8 +842,11 @@ agent
   .argument('<kind>', 'тип артефакта: landing')
   .option('-s, --slug <slug>', 'slug черновика')
   .option('-b, --brief <path>', 'путь к brief.json (обязателен)')
-  .action(async (kind: string, opts: { slug?: string; brief?: string }) => {
+  .option('--skip-gates', 'пропустить жёсткие гейты (briefs-immutable) — осознанный обход', false)
+  .action(async (kind: string, opts: { slug?: string; brief?: string; skipGates: boolean }) => {
     const root = await findRepoRoot(ROOT);
+    printHostBanner();
+    assertBriefsUnmodifiedOrExit(root, { skip: opts.skipGates });
     if (kind !== 'landing') {
       console.error(chalk.red(`[harness] agent run: kind=${kind} не поддерживается`));
       process.exit(1);
@@ -764,13 +873,16 @@ agent
   .argument('<phase>', 'фаза: P0, P1, P2, P3, P4, P5, P6, P7, P8')
   .option('-s, --slug <slug>', 'slug черновика')
   .option('-b, --brief <path>', 'путь к brief.json (обязателен)')
+  .option('--skip-gates', 'пропустить жёсткие гейты (briefs-immutable) — осознанный обход', false)
   .action(
     async (
       kind: string,
       phase: string,
-      opts: { slug?: string; brief?: string },
+      opts: { slug?: string; brief?: string; skipGates: boolean },
     ) => {
       const root = await findRepoRoot(ROOT);
+      printHostBanner();
+      assertBriefsUnmodifiedOrExit(root, { skip: opts.skipGates });
       if (kind !== 'landing') {
         console.error(chalk.red(`[harness] agent run-phase: kind=${kind} не поддерживается`));
         process.exit(1);
@@ -938,12 +1050,12 @@ wiki
 
 program
   .command('lint')
-  .description('Проверки drift и валидность wiki/, tokens, registry')
-  .option('--scope <scope>', 'all | wiki | registry | prompts', 'all')
+  .description('Проверки drift и валидность wiki/, tokens, registry, agent-контракта')
+  .option('--scope <scope>', 'all | wiki | registry | prompts | agents', 'all')
   .option('--json', 'JSON вывод (для CI)', false)
   .action(async (opts: { scope: string; json: boolean }) => {
     const root = await findRepoRoot(ROOT);
-    const scope = (['all', 'wiki', 'registry', 'prompts'].includes(opts.scope) ? opts.scope : 'all') as LintScope;
+    const scope = (['all', 'wiki', 'registry', 'prompts', 'agents'].includes(opts.scope) ? opts.scope : 'all') as LintScope;
     const result = await runLint(root, scope, REGISTRY.map((c) => c.name));
     if (opts.json) {
       console.log(JSON.stringify(result, null, 2));

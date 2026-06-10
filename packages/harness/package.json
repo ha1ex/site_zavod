@@ -17,7 +17,9 @@
     "./handoff": "./src/handoff/index.ts",
     "./agent": "./src/agent/index.ts",
     "./puck": "./src/puck/index.ts",
-    "./providers": "./src/providers/index.ts"
+    "./providers": "./src/providers/index.ts",
+    "./host": "./src/host/index.ts",
+    "./gates": "./src/gates/index.ts"
   },
   "bin": {
     "harness": "./bin/harness.mjs"
@@ -25,7 +27,8 @@
   "scripts": {
     "cli": "tsx src/cli.ts",
     "typecheck": "tsc --noEmit",
-    "test": "tsx src/validators/landing-audience.test.ts && tsx src/validators/landing-language.test.ts && tsx src/validators/brief-quality.test.ts",
+    "test": "tsx src/validators/landing-audience.test.ts && tsx src/validators/landing-language.test.ts && tsx src/validators/brief-quality.test.ts && tsx src/gates/gates.test.ts",
+    "test:gates": "tsx src/gates/gates.test.ts",
     "test:audience": "tsx src/validators/landing-audience.test.ts",
     "test:language": "tsx src/validators/landing-language.test.ts",
     "test:brief-quality": "tsx src/validators/brief-quality.test.ts"

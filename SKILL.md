@@ -30,6 +30,15 @@ description: Сгенерировать Kaiten-стайл лендинг по br
 
 ## Шаги для не-разработчика
 
+### Шаг −1 — ритуал сессии (обязательно, один раз за сеанс)
+
+```bash
+pnpm install                          # один раз на машину (заодно включает git-гейты)
+pnpm -w run harness agent context     # детект твоего ассистента + горячий контекст + правила
+```
+
+Работает в любом ассистенте (Claude Code / Codex / Cursor / Gemini); Claude Code делает это сам через SessionStart-хук. Если ассистент не определился — `export HARNESS_AGENT=codex` (или `gemini`). Полный контракт — [`AGENTS.md`](AGENTS.md).
+
 ### Шаг 0 — выбрать домен
 
 Открой [`wiki/references/domain-mock-matrix.md`](wiki/references/domain-mock-matrix.md) и определи домен продукта по brief:
@@ -119,6 +128,7 @@ pnpm -w run harness handoff <slug> --require-approved
 ## Что НЕ делать
 
 - ❌ Не использовать `harness generate landing` (прямой вызов LLM по API-ключу) — только `agent build`.
+- ❌ Не править существующие `content/briefs/*.json` — заблокировано на трёх слоях (git pre-commit + harness CLI + Claude-hook). Новая итерация = новый файл `<slug>-v2.json`.
 - ❌ Не подменять mock из чужого домена (`pm-board` в CRM-лендинге — блокер ревью).
 - ❌ Не ставить `mediaVariant: 'default'` дважды на одном лендинге — `landing-visual-diversity` валидатор завалит.
 - ❌ Не править `generated/landings/<slug>/page.tsx` вручную — он автогенерируется из spec'а.

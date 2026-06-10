@@ -19,6 +19,17 @@ on:
       - 'packages/harness/src/skills/**'
       - 'packages/harness/src/wiki/**'
       - 'wiki/**'
+      # agent-контракт (lint --scope agents, strict)
+      - 'AGENTS.md'
+      - 'CLAUDE.md'
+      - 'GEMINI.md'
+      - 'SKILL.md'
+      - '.claude/**'
+      - '.githooks/**'
+      - 'scripts/hooks/**'
+      - 'scripts/setup-githooks.mjs'
+      - 'packages/harness/src/gates/**'
+      - 'packages/harness/src/host/**'
 
 permissions:
   pull-requests: write
@@ -36,8 +47,11 @@ jobs:
 
       - name: Check opt-out
         id: optout
+        env:
+          # Через env, не inline-интерполяцией в run: — защита от command injection из PR body.
+          PR_BODY: ${{ github.event.pull_request.body }}
         run: |
-          if echo "${{ github.event.pull_request.body }}" | grep -qiE 'wiki не нужно:|wiki not needed:'; then
+          if echo "$PR_BODY" | grep -qiE 'wiki не нужно:|wiki not needed:'; then
             echo "skip=true" >> $GITHUB_OUTPUT
             echo "Opt-out detected in PR body — skipping wiki freshness check."
           else
@@ -87,6 +101,12 @@ jobs:
         if: steps.optout.outputs.skip == 'false'
         run: pnpm -w run harness -- lint --json
         continue-on-error: true
+
+      # Anti-drift agent-контракта: AGENTS.md/CLAUDE.md/GEMINI.md, хуки, скиллы, гейты.
+      # СТРОГИЙ шаг (без continue-on-error): протухший контракт = слепой Codex/Gemini.
+      - name: agent contract lint (strict)
+        if: steps.optout.outputs.skip == 'false'
+        run: pnpm -w run harness -- lint --scope agents
 
       - name: Comment on PR (drift)
         if: steps.optout.outputs.skip == 'false' && steps.drift.outputs.drift == 'true'

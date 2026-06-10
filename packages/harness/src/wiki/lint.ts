@@ -6,6 +6,7 @@
  *   - wiki: только проверки внутри wiki/ (front-matter, cross-refs)
  *   - registry: schema-vs-registry соответствие
  *   - prompts: presence of design-system files
+ *   - agents: agent-контракт (AGENTS.md/CLAUDE.md/GEMINI.md, хуки, скиллы, гейты) — strict в CI
  */
 
 import { readdir, readFile } from 'node:fs/promises';
@@ -14,8 +15,9 @@ import { loadTokens } from './load-tokens';
 import { tokensToCss } from './tokens-to-css';
 import { buildGenBlocks } from './tokens-to-md';
 import { extractGenBlock, parseFrontmatter } from './frontmatter';
+import { lintAgentContract } from '../gates/contract-wiring';
 
-export type LintScope = 'all' | 'wiki' | 'registry' | 'prompts';
+export type LintScope = 'all' | 'wiki' | 'registry' | 'prompts' | 'agents';
 
 export type LintSeverity = 'error' | 'warning';
 
@@ -55,6 +57,10 @@ export async function runLint(
 
   if (scope === 'all' || scope === 'registry') {
     issues.push(...(await lintSchemaVsRegistry(repoRoot, registryNames)));
+  }
+
+  if (scope === 'all' || scope === 'agents') {
+    issues.push(...(await lintAgentContract(repoRoot)));
   }
 
   return { issues, filesChecked };

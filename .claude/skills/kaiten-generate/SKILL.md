@@ -20,7 +20,8 @@ Use this skill whenever the user wants to assemble a Kaiten-style SaaS landing f
 ## Preconditions
 
 - Repo is the Контент-завод Кайтен monorepo (`pnpm-workspace.yaml` at root).
-- `pnpm install` has been run once.
+- `pnpm install` has been run once (заодно активирует git-гейты через `prepare`).
+- Сессия начата с ритуала шага 0: `pnpm -w run harness agent context` (Claude Code: SessionStart-хук делает это сам; Codex/Gemini/другие — вручную, см. [`AGENTS.md`](../../../AGENTS.md)).
 - **No API keys required.** Agent-mode works in any host (Claude Code, Codex, ChatGPT with file access).
 
 ## End-to-end flow
@@ -355,7 +356,7 @@ Self-contained ZIP for the frontend team.
 ## Important
 
 - **Never use `harness generate landing`** unless the user explicitly asks for the direct API-key path. The agent-mode path is `agent build` → заполнение артефактов фаз → `agent apply`.
-- **Never invent components.** Only the 6 in the registry. Check with `pnpm -w run harness registry`.
+- **Never invent components.** Только компоненты из registry (22 секции). Check with `pnpm -w run harness registry`.
 - **Never hand-edit `generated/landings/<slug>/page.tsx`** — it's derived from the spec. Re-run apply.
 - If the spec already exists, you can start from apply directly (e.g. for re-validation after manual edits).
 - **Never skip mock authoring** на SaaS-лендингах. Лендинг без mock'ов в Hero и body-секциях выглядит «голым» — это блокер ревью (см. memory `visual-review-required`). Минимум: Hero с `visual.variant: '<specific>'` (НЕ `generic`) + 2-4 body-секции с уникальными mock'ами (НЕ `default`).

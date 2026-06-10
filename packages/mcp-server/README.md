@@ -72,10 +72,10 @@ Codex CLI поддерживает MCP через `~/.codex/config.toml`:
 [mcp_servers.kaiten]
 command = "pnpm"
 args = ["--filter", "@kaiten/mcp-server", "dev"]
-cwd = "/absolute/path/to/calgary"
+cwd = "/absolute/path/to/<repo>"   # корень монорепы (где pnpm-workspace.yaml)
 
 [mcp_servers.kaiten.env]
-KAITEN_REPO_ROOT = "/absolute/path/to/calgary"
+KAITEN_REPO_ROOT = "/absolute/path/to/<repo>"
 ```
 
 ## Примеры использования
