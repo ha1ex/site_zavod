@@ -100,16 +100,16 @@ export const STAGES: PipelineDoc[] = [
     kind: 'stage',
     slug: 'routing',
     num: '2',
-    title: 'Маршрутизация (auto-routing)',
-    short: 'Бриф автоматически направляется в быстрый или поэтапный конвейер',
+    title: 'Гейт домена (routing)',
+    short: 'Проверка перед сборкой: покрыт ли домен продукта mock-набором',
     purpose: [
-      'Перед генерацией бриф проходит детерминированную маршрутизацию — без LLM, по фиксированным правилам. Система решает, какой конвейер справится: быстрый one-shot (legacy) или поэтапный с проверками на каждом шаге (phased).',
-      'Это защита от двух ошибок сразу: не тратить полный поэтапный прогон на простой бриф и не отдавать сложный бриф быстрому конвейеру, который соберёт его с потерей качества.',
+      'Перед генерацией бриф проходит детерминированную проверку — без LLM, по фиксированным правилам. Система определяет домен продукта и сверяет его с реестром покрытых доменов: для лендинга нужны mock-компоненты именно этого домена.',
+      'Это защита от cross-domain подмен: если домен не покрыт, конвейер останавливается и выдаёт конкретный todo-список mock-ов, которые нужно создать. Подсовывать mock-и чужого домена запрещено.',
     ],
     inputs: ['Опубликованный бриф content/briefs/<slug>.json'],
     outputs: [
-      'Решение о маршруте: .context/pipeline/<slug>/route-decision.json',
-      'Запуск выбранного конвейера (legacy / phased) или стоп с задачей на mock-и',
+      'Решение гейта: .context/pipeline/<slug>/route-decision.json',
+      'Запуск конвейера сборки или стоп с задачей на mock-и',
     ],
     how: [
       {
@@ -118,25 +118,15 @@ export const STAGES: PipelineDoc[] = [
           'Продукт из брифа сопоставляется с реестром покрытых доменов (PM, Support, CRM, HR, Marketing, BPM, Finance, Ecommerce — 27 mock-компонентов). Неизвестный домен — стоп: сначала нужно создать mock-и этого домена.',
       },
       {
-        title: 'Подсчёт сигналов сложности',
-        detail:
-          'Взвешенные сигналы: аудитория не размечена (0.30), не выбран макет страницы (0.25), бриф слишком короткий (0.20), сложная цель — waitlist / контакт с продажами / download (0.15), три и более персон (0.10), нет доказательств (0.10).',
-      },
-      {
         title: 'Решение',
         detail:
-          'Сумма сигналов ≥ 0.5 → поэтапный конвейер (phased). Меньше 0.5 → быстрый (legacy). Неизвестный домен → manual-creation-required.',
+          'Домен покрыт → запускается конвейер сборки (P0–P8). Неизвестный или непокрытый домен → manual-creation-required: стоп и todo-список mock-ов к созданию.',
       },
     ],
     rules: [
       {
         text: 'Неизвестный домен блокирует генерацию: сначала mock-и своего домена, переиспользовать чужие запрещено',
         severity: 'hard',
-        source: 'packages/harness/src/pipeline/route-pipeline.ts',
-      },
-      {
-        text: 'Маршрут можно зафиксировать вручную флагами --force-legacy / --force-phased',
-        severity: 'soft',
         source: 'packages/harness/src/pipeline/route-pipeline.ts',
       },
       {
@@ -148,141 +138,37 @@ export const STAGES: PipelineDoc[] = [
     commands: [
       {
         cmd: 'pnpm -w run harness agent build landing --slug <slug> --brief content/briefs/<slug>.json',
-        note: 'Рекомендуемый запуск: маршрутизация + сборка автоматически',
+        note: 'Рекомендуемый запуск: гейт домена + сборка автоматически',
       },
       {
         cmd: 'pnpm -w run harness agent build landing --slug <slug> --brief content/briefs/<slug>.json --route-only',
-        note: 'Только показать решение маршрутизатора, без сборки',
+        note: 'Только показать решение гейта, без сборки',
       },
     ],
     artifacts: [
-      { path: '.context/pipeline/<slug>/route-decision.json', note: 'решение и сработавшие сигналы' },
+      { path: '.context/pipeline/<slug>/route-decision.json', note: 'решение гейта домена' },
     ],
     links: [
-      { path: 'packages/harness/src/pipeline/route-pipeline.ts', note: 'правила маршрутизации' },
-    ],
-  },
-
-  {
-    kind: 'stage',
-    slug: 'legacy',
-    num: '3a',
-    branch: 'legacy',
-    title: 'Быстрый конвейер (legacy)',
-    short: 'Один проход: ассистент пишет всю страницу сразу, затем пакет проверок',
-    purpose: [
-      'Маршрут для простых и хорошо описанных брифов. Ассистент получает один большой системный промпт — брендовый канон, реестр разрешённых компонентов, плейбук макета — и пишет спецификацию страницы целиком за один проход.',
-      'Скорость достигается тем, что проверки выполняются после генерации: готовая спецификация прогоняется через пакет валидаторов, и при ошибках ассистент чинит их в repair-цикле (до 3 попыток).',
-    ],
-    inputs: [
-      'Бриф content/briefs/<slug>.json',
-      'Системный промпт: канон + реестр компонентов + плейбук макета',
-    ],
-    outputs: [
-      'Спецификация страницы content/landings/<slug>.json',
-      'Код страницы generated/landings/<slug>/page.tsx',
-    ],
-    how: [
-      {
-        title: 'prepare',
-        detail: 'Команда agent prepare собирает системный промпт и схему ответа для ассистента.',
-      },
-      {
-        title: 'Генерация спецификации',
-        detail:
-          'Ассистент пишет content/landings/<slug>.json — все секции, тексты и mock-и сразу.',
-      },
-      {
-        title: 'apply: проверки + ремонт',
-        detail:
-          'Команда agent apply прогоняет пакет валидаторов; при ошибках ассистент получает конкретный список и чинит. Максимум 3 попытки.',
-      },
-      {
-        title: 'Рендер',
-        detail: 'Прошедшая проверки спецификация превращается в React-страницу (TSX).',
-      },
-    ],
-    rules: [
-      {
-        text: 'Структура спецификации соответствует схеме: типы и длины полей',
-        severity: 'hard',
-        source: 'packages/harness/src/schemas/landing-spec.ts',
-      },
-      {
-        text: 'Бренд-голос: без хайпа, абсолютизмов и штампов',
-        severity: 'hard',
-        source: 'packages/harness/src/validators/landing-brand.ts',
-      },
-      {
-        text: 'Бизнес-правила: hero первой секцией, hero один, CTA согласован с целью страницы',
-        severity: 'hard',
-        source: 'packages/harness/src/validators/landing-business.ts',
-      },
-      {
-        text: 'Язык: англицизмы из словаря §10 редполитики',
-        severity: 'soft',
-        source: 'packages/harness/src/validators/landing-language.ts',
-      },
-      {
-        text: 'Визуальное разнообразие: вариант default не повторяется',
-        severity: 'hard',
-        source: 'packages/harness/src/validators/landing-visual-diversity.ts',
-      },
-      {
-        text: 'Порядок секций соответствует плейбуку макета',
-        severity: 'hard',
-        source: 'packages/harness/src/validators/landing-layout-conformance.ts',
-      },
-      {
-        text: 'Mock-и и иллюстрации только из домена продукта',
-        severity: 'hard',
-        source: 'packages/harness/src/validators/illustration-domain-match.ts',
-      },
-      {
-        text: 'Соответствие аудитории ≥ 70%: покрытие историй и сегментов',
-        severity: 'hard',
-        source: 'packages/harness/src/validators/landing-audience.ts',
-      },
-      {
-        text: 'Непохожесть на другие лендинги завода (cross-landing diversity)',
-        severity: 'soft',
-        source: 'packages/harness/src/validators/cross-landing-diversity.ts',
-      },
-    ],
-    commands: [
-      {
-        cmd: 'pnpm -w run harness agent prepare landing --brief content/briefs/<slug>.json --slug <slug>',
-        note: 'Собрать задание для ассистента',
-      },
-      {
-        cmd: 'pnpm -w run harness agent apply landing --slug <slug> --brief content/briefs/<slug>.json',
-        note: 'Проверить спецификацию и отрендерить страницу',
-      },
-    ],
-    artifacts: [
-      { path: 'content/landings/<slug>.json', note: 'спецификация страницы' },
-      { path: 'generated/landings/<slug>/page.tsx', note: 'готовый код страницы' },
-    ],
-    links: [
-      { path: 'packages/harness/src/agent/ingest-landing.ts', note: 'цепочка проверок apply' },
+      { path: 'packages/harness/src/pipeline/route-pipeline.ts', note: 'правила гейта' },
     ],
   },
 
   {
     kind: 'stage',
     slug: 'phased',
-    num: '3b',
-    branch: 'phased',
-    title: 'Поэтапный конвейер (phased, P0–P8)',
-    short: 'Девять фаз с проверкой после каждой — для сложных брифов',
+    num: '3',
+    title: 'Конвейер сборки (P0–P8)',
+    short: 'Девять фаз с проверкой после каждой, затем финальный пакет проверок и рендер',
     purpose: [
-      'Маршрут для сложных брифов: размытая аудитория, несколько персон, нестандартная цель. Страница собирается за девять фаз — от нормализации брифа до иллюстраций, и после каждой фазы стоит свой гейт: дальше нельзя, пока фаза не пройдёт проверку.',
+      'Единственный конвейер сборки страницы. Лендинг собирается за девять фаз — от нормализации брифа до иллюстраций, и после каждой фазы стоит свой гейт: дальше нельзя, пока фаза не пройдёт проверку. Так ошибка аудитории, макета или структуры ловится на своей фазе, а не в готовой странице.',
       'Каждая фаза при ошибке чинится отдельно (repair-цикл до 3 попыток), а готовые фазы при повторном запуске пропускаются — конвейер можно перезапускать с любого места без потери сделанного.',
+      'После фаз спецификация проходит финальный пакет проверок (agent apply) и превращается в React-страницу (TSX).',
     ],
     inputs: ['Бриф content/briefs/<slug>.json'],
     outputs: [
       'Артефакты фаз: .context/pipeline/<slug>/p0…p8-*.json',
-      'Спецификация и код страницы — как в быстром конвейере',
+      'Спецификация страницы content/landings/<slug>.json',
+      'Код страницы generated/landings/<slug>/page.tsx',
     ],
     how: [
       {
@@ -298,6 +184,11 @@ export const STAGES: PipelineDoc[] = [
         title: 'Идемпотентность',
         detail:
           'Повторный запуск пропускает уже готовые фазы; run-phase перезапускает одну конкретную фазу.',
+      },
+      {
+        title: 'apply: финальные проверки + рендер',
+        detail:
+          'Команда agent apply прогоняет готовую спецификацию через пакет валидаторов (схема, бренд-голос, бизнес-правила, язык, разнообразие, домен mock-ов, аудитория); при ошибках ассистент чинит по списку. Прошедшая проверки спецификация рендерится в React-страницу (TSX).',
       },
     ],
     phases: [
@@ -508,7 +399,17 @@ export const STAGES: PipelineDoc[] = [
         source: 'wiki/pipeline/phase-gates.md',
       },
       {
-        text: 'Финальный аудит непохожести на другие лендинги',
+        text: 'Финальный пакет apply: схема спецификации, бренд-голос, бизнес-правила, визуальное разнообразие, порядок секций, домен mock-ов, соответствие аудитории ≥ 70%',
+        severity: 'hard',
+        source: 'packages/harness/src/agent/ingest-landing.ts',
+      },
+      {
+        text: 'Язык: англицизмы из словаря §10 редполитики',
+        severity: 'soft',
+        source: 'packages/harness/src/validators/landing-language.ts',
+      },
+      {
+        text: 'Непохожесть на другие лендинги завода (cross-landing diversity)',
         severity: 'soft',
         source: 'packages/harness/src/validators/cross-landing-diversity.ts',
       },
@@ -522,13 +423,20 @@ export const STAGES: PipelineDoc[] = [
         cmd: 'pnpm -w run harness agent run-phase landing P4 --slug <slug> --brief content/briefs/<slug>.json',
         note: 'Перезапустить одну конкретную фазу',
       },
+      {
+        cmd: 'pnpm -w run harness agent apply landing --slug <slug> --brief content/briefs/<slug>.json',
+        note: 'Финальные проверки спецификации + рендер страницы',
+      },
     ],
     artifacts: [
       { path: '.context/pipeline/<slug>/', note: 'артефакты фаз и repair-отчёты' },
+      { path: 'content/landings/<slug>.json', note: 'спецификация страницы' },
+      { path: 'generated/landings/<slug>/page.tsx', note: 'готовый код страницы' },
     ],
     links: [
       { path: 'packages/harness/src/pipeline/orchestrator.ts', note: 'оркестратор фаз' },
       { path: 'wiki/pipeline/phase-gates.md', note: 'таблица гейтов по фазам' },
+      { path: 'packages/harness/src/agent/ingest-landing.ts', note: 'цепочка проверок apply' },
     ],
   },
 

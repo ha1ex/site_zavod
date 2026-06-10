@@ -14,8 +14,8 @@ RESULT="$(jq_get "$INPUT" '.tool_result')"
 
 [[ "$TOOL" == "Bash" ]] || exit 0
 
-# Триггер: команда содержит harness agent build (или phased/legacy entry-points).
-if ! echo "$CMD" | grep -qE 'harness (agent build|build:legacy|build:phased)'; then
+# Триггер: команда содержит harness agent build (или ручные phased entry-points).
+if ! echo "$CMD" | grep -qE 'harness agent (build|run|run-phase)'; then
   exit 0
 fi
 
@@ -39,7 +39,7 @@ LOG_FILE="$RUN_DIR/$TS.log"
 } > "$LOG_FILE"
 
 # Парсим summary-сигналы из output для index.
-ROUTE="$(echo "$RESULT" | grep -oE 'route[:=][ ]*(legacy|phased|manual-creation-required)' | head -1 || true)"
+ROUTE="$(echo "$RESULT" | grep -oE 'route[:=][ ]*(phased|manual-creation-required)' | head -1 || true)"
 PASS="$(echo "$RESULT" | grep -ciE '(✓|pass(ed)?|ok)' || true)"
 FAIL="$(echo "$RESULT" | grep -ciE '(✗|fail(ed)?|error)' || true)"
 

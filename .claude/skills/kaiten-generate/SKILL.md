@@ -1,6 +1,6 @@
 ---
 name: kaiten-generate
-description: Run the Контент-завод Кайтен LLM harness end-to-end in agent-mode (no API keys — the host LLM is YOU). Turn a marketing brief into a Kaiten landing: prepare prompt → generate LandingSpec → ingest (validate + render TSX) → preview. Use when the user wants to generate, regenerate, or iterate on a landing for a brief; or when they reference Контент-завод Кайтен, a slug, a brief.json, or `pnpm -w run harness agent`.
+description: Run the Контент-завод Кайтен LLM harness end-to-end in agent-mode (no API keys — the host LLM is YOU). Turn a marketing brief into a Kaiten landing: agent build (гейт домена + phased P0–P8) → заполнение артефактов фаз → apply (validate + render TSX) → preview. Use when the user wants to generate, regenerate, or iterate on a landing for a brief; or when they reference Контент-завод Кайтен, a slug, a brief.json, or `pnpm -w run harness agent`.
 ---
 
 # Контент-завод Кайтен — Generate landing in agent-mode
@@ -25,11 +25,10 @@ Use this skill whenever the user wants to assemble a Kaiten-style SaaS landing f
 
 ## End-to-end flow
 
-### 🚀 РЕКОМЕНДУЕМЫЙ способ — `harness agent build` (auto-routing)
+### 🚀 РЕКОМЕНДУЕМЫЙ способ — `harness agent build`
 
-**Один entry point, сам определяет какой pipeline применить.** Используй это
-как default flow для нового brief'а — не нужно вручную выбирать между legacy
-и phased.
+**Один entry point: гейт домена + phased pipeline.** Используй это как
+default flow для нового brief'а.
 
 ```bash
 pnpm -w run harness agent build landing --slug <slug> --brief content/briefs/<slug>.json
@@ -37,35 +36,26 @@ pnpm -w run harness agent build landing --slug <slug> --brief content/briefs/<sl
 
 Что произойдёт:
 
-1. **`routePipeline(brief)`** — deterministic анализ:
+1. **`routePipeline(brief)`** — deterministic гейт домена:
    - Резолвит домен через `resolveDomainFromBrief` (lexical match по
-     domain-mock-matrix aliases).
-   - Считает phased score по сигналам сложности (audience-not-resolved,
-     no-page-layout, brief-too-short, complex-primary-goal, multiple-personas,
-     no-proof-points).
-2. **Routing decision** — три исхода:
+     domain-mock-matrix aliases) и сверяет его с реестром покрытых доменов.
+2. **Routing decision** — два исхода:
    - 🛑 **`manual-creation-required`** — домен НЕ покрыт mocks ИЛИ unknown.
      Pipeline ОТКАЗЫВАЕТСЯ, выдаёт todo-список mock'ов к созданию.
      Сначала создай новые mocks по [`section-mock-skill.md`](../../../packages/harness/src/prompts/section-mock-skill.md),
      обнови [`domain-mock-matrix.md`](../../../wiki/references/domain-mock-matrix.md)
      + `DOMAIN_REGISTRY`, заведи `wiki/landings/<domain>-reference.md`, потом
      повтори `agent build`.
-   - ⚡️ **`legacy`** — простой brief в покрытом домене (score < 0.5).
-     Запускает one-shot prepare → write spec → apply. Быстро.
-   - 🔀 **`phased`** — сложный brief (score ≥ 0.5).
-     Запускает phased orchestrator P0..P8 с per-phase repair-loop.
-     Медленнее, но даёт фазированный контроль качества.
+   - 🔀 **`phased`** — домен покрыт. Запускает phased orchestrator P0..P8
+     с per-phase repair-loop: фазированный контроль качества для любого брифа.
 3. **Decision сохраняется** в `.context/pipeline/<slug>/route-decision.json`
    для трассировки и аудита.
 
-Флаги override (используй редко, в основном для отладки):
-- `--route-only` — только показать решение, не запускать pipeline.
-- `--force-phased` — override → phased даже если score низкий.
-- `--force-legacy` — override → legacy даже если score высокий.
+Флаг для отладки:
+- `--route-only` — только показать решение гейта, не запускать pipeline.
 
 **Что не нужно делать вручную:**
-- ❌ Решать «legacy или phased» в голове.
-- ❌ Запускать `prepare` или `run` напрямую (это для тонкой настройки, не для
+- ❌ Запускать `run` / `run-phase` напрямую (это для отладки, не для
   default flow).
 - ❌ Пропускать domain audit — `agent build` сам делает его в первую очередь.
 
@@ -131,7 +121,7 @@ pnpm -w run harness agent build landing --slug <slug> --brief content/briefs/<sl
    - `comparison-vs-competitor` — vs-страница (миграция с Jira / Notion / Yandex.Трекер).
    - `story-led-unaware` — холодная аудитория, эмоциональный путь.
 2. Открой `wiki/layouts/<slug>.md` и прочитай: when-to-use, audience, awareness, **обязательную последовательность секций с per-slot mock-рекомендациями**, anti-patterns.
-3. Запиши выбор в `content/briefs/<slug>.json` поле `pageLayout: '<slug>'`. Это включит layout-плейбук в system prompt prepare-команды и активирует `landing-layout-conformance` валидатор.
+3. Запиши выбор в `content/briefs/<slug>.json` поле `pageLayout: '<slug>'`. Это включит layout-плейбук в контекст фаз P2/P6 и активирует `landing-layout-conformance` валидатор.
 
 **Если ни один layout не подходит:** не миксуй секции на лету. Опиши новый кейс пользователю → добавь шестой layout в `wiki/layouts/` по образцу существующих → потом собирай лендинг. Лучше потратить время на инфраструктуру, чем выпустить ещё один однотипный лендинг.
 
@@ -144,26 +134,22 @@ Open `content/briefs/<slug>.json`. If it does not exist:
 
 **Audience pre-resolve (optional but speeds up the gate):** если знаешь явно — какие сегменты из [`wiki/audiences/kaiten-scoring.md`](../../../wiki/audiences/kaiten-scoring.md) подходят к брифу — добавь `resolvedSegments: ["IT", ...]`. Если не уверен — оставь пустым, audience-score gate сам сделает lexical-match. Если match провалится — на шаге 4½ сделаешь audience research и впишешь.
 
-### 2. Prepare prompt (CLI emits it; no LLM call)
+### 2. Заполняй prompt'ы фаз (CLI emits them; no LLM call)
 
-```bash
-pnpm -w run harness agent prepare landing \
-  --brief content/briefs/<slug>.json \
-  --slug <slug> \
-  --out .context/agent/<slug>.prompt.md
-```
+После `agent build` orchestrator идёт по фазам P0..P8. Deterministic-фазы
+(P0, P3, P8-allocation) он делает сам; на каждой LLM-фазе останавливается со
+status `awaiting-host-agent` и пишет prompt в
+`.context/pipeline/<slug>/p<N>-*.prompt.md`. В prompt'е:
 
-The artifact contains:
+- **task** — задача фазы (аудитория → макет → структура → mock'и → копирайт → SEO/CTA → иллюстрации)
+- **context** — артефакты предыдущих фаз
+- **schema** — JSON Schema ожидаемого артефакта (the contract)
+- **outputPath** — куда записать артефакт
 
-- **system** — operator rules + component registry + design-system + conversion-landing skill
-- **user** — formatted brief
-- **schema** — JSON Schema for LandingSpec (the contract)
-- **outputPath** — where to write the spec (`content/landings/<slug>.json`)
-- **nextCommand** — the apply command
+Цикл: читай prompt → пиши артефакт → перезапускай `agent build` (идемпотентен,
+готовые фазы пропускает) → следующая фаза. Schema — source of truth.
 
-Read the artifact carefully. The schema is the source of truth — every field, every constraint.
-
-### 3. Generate the LandingSpec yourself
+### 3. Generate the LandingSpec yourself (фазы P6–P7)
 
 You are the LLM. From the brief + system prompt + layout playbook, write ONE JSON object matching `LandingSpec`. Constraints to remember:
 
@@ -178,7 +164,7 @@ You are the LLM. From the brief + system prompt + layout playbook, write ONE JSO
 - **Set `spec.meta.layout`** to the chosen layout slug (так apply сохранит его в досье и в дальнейших проверках).
 - Доступные components (актуальный список см. `pnpm -w run harness registry`): `HeroSection`, `FeatureGrid`, `PricingPlans`, `FAQAccordion`, `FinalCta`, `LandingFooter`, `SocialProof`, `ProcessSteps`, `CtaBanner`, `MediaCopy`, `StatStrip`, `PromoBanner`, `BenefitsStrip`, `MetricsSplit`.
 
-Write the JSON to `content/landings/<slug>.json` (the `outputPath` from prepare).
+Write the JSON to `content/landings/<slug>.json` (это требование фазы P6; копия артефакта — в `.context/pipeline/<slug>/`).
 
 ### 3a. Mock authoring stage — ОБЯЗАТЕЛЬНО для каждой визуальной секции
 
@@ -368,10 +354,10 @@ Self-contained ZIP for the frontend team.
 
 ## Important
 
-- **Never use `harness generate landing`** unless the user explicitly asks for the legacy API-key path. The agent-mode path is `agent prepare` → write spec → `agent apply`.
+- **Never use `harness generate landing`** unless the user explicitly asks for the direct API-key path. The agent-mode path is `agent build` → заполнение артефактов фаз → `agent apply`.
 - **Never invent components.** Only the 6 in the registry. Check with `pnpm -w run harness registry`.
 - **Never hand-edit `generated/landings/<slug>/page.tsx`** — it's derived from the spec. Re-run apply.
-- If the spec already exists, you can skip prepare and start from apply (e.g. for re-validation after manual edits).
+- If the spec already exists, you can start from apply directly (e.g. for re-validation after manual edits).
 - **Never skip mock authoring** на SaaS-лендингах. Лендинг без mock'ов в Hero и body-секциях выглядит «голым» — это блокер ревью (см. memory `visual-review-required`). Минимум: Hero с `visual.variant: '<specific>'` (НЕ `generic`) + 2-4 body-секции с уникальными mock'ами (НЕ `default`).
 - **Never skip layout selection.** Если в брифе нет `pageLayout` — выбери его перед написанием spec, опираясь на `wiki/layouts/index.md`. Запиши в `spec.meta.layout`.
 - **Never skip Domain audit (§0).** Reuse mock'ов из чужого домена («pm-board для CRM», «request-card для HR») — самый частый блокер ревью. См. [`domain-mock-matrix.md`](../../../wiki/references/domain-mock-matrix.md).

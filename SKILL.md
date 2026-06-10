@@ -12,7 +12,7 @@ description: Сгенерировать Kaiten-стайл лендинг по br
 Превращает маркетинговый бриф (`brief.json`) в готовый Kaiten-лендинг:
 1. Маркетолог пишет короткий бриф.
 2. Ассистент запускает одну команду — `harness agent build landing`.
-3. Harness сам выбирает pipeline (legacy / phased / manual-creation) и валидирует.
+3. Harness проверяет покрытие домена (гейт) и ведёт сборку по фазам P0–P8 с валидацией на каждой.
 4. На выходе — preview по `http://localhost:3000/landings/<slug>` + approval UI.
 
 **Без API-ключей.** Harness не вызывает внешний LLM — host-агент (ты) и есть LLM. CLI готовит prompt + JSON schema, ты пишешь spec, CLI валидирует и рендерит TSX.
@@ -72,15 +72,14 @@ description: Сгенерировать Kaiten-стайл лендинг по br
 
 ### Шаг 2 — запустить harness
 
-**Одна команда. Всё остальное делает auto-routing:**
+**Одна команда. Гейт домена + сборка автоматически:**
 
 ```bash
 pnpm -w run harness agent build landing --slug <slug> --brief content/briefs/<slug>.json
 ```
 
 Возможные исходы:
-- ⚡ **legacy** (простой brief, домен покрыт): сразу пишется prompt → ты заполняешь spec → harness валидирует.
-- 🔀 **phased** (сложный brief): orchestrator P0..P8 с per-phase repair-loop. Дольше, но качественнее.
+- 🔀 **phased** (домен покрыт): orchestrator P0..P8 с per-phase repair-loop. Ты заполняешь prompt'ы LLM-фаз, harness валидирует каждую.
 - 🛑 **manual-creation-required**: pipeline отказывается. Получаешь todo-список mock'ов к созданию (инженерная задача).
 
 ### Шаг 3 — preview
@@ -119,7 +118,7 @@ pnpm -w run harness handoff <slug> --require-approved
 
 ## Что НЕ делать
 
-- ❌ Не использовать `harness generate landing` (legacy с API-ключом) — только `agent build`.
+- ❌ Не использовать `harness generate landing` (прямой вызов LLM по API-ключу) — только `agent build`.
 - ❌ Не подменять mock из чужого домена (`pm-board` в CRM-лендинге — блокер ревью).
 - ❌ Не ставить `mediaVariant: 'default'` дважды на одном лендинге — `landing-visual-diversity` валидатор завалит.
 - ❌ Не править `generated/landings/<slug>/page.tsx` вручную — он автогенерируется из spec'а.

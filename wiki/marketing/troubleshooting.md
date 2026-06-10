@@ -175,7 +175,6 @@ pnpm -w run harness handoff <slug> --require-approved
 - Файлы:
   - `content/briefs/<slug>.json`
   - `content/landings/<slug>.json` (если есть)
-  - `.context/pipeline/<slug>/*` (если phased)
-  - `.context/agent/<slug>.prompt.md` (если legacy)
+  - `.context/pipeline/<slug>/*` (артефакты и prompt'ы фаз)
   - `.context/audience-score/<slug>.md` (если audience gate)
 - Что именно сделали и какое сообщение получили.

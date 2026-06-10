@@ -2,17 +2,12 @@ import Link from 'next/link';
 import type { PipelineDoc } from './_content';
 import { KNOWLEDGE, STAGES } from './_content';
 
-function FlowCard({ doc, badge }: { doc: PipelineDoc; badge?: string }) {
+function FlowCard({ doc }: { doc: PipelineDoc }) {
   return (
     <Link
       href={`/pipeline/${doc.slug}`}
       className="group block rounded-(--radius-2xl) border border-(--color-border-default) bg-(--color-surface-page) p-5 transition hover:border-(--color-action-primary)/50"
     >
-      {badge && (
-        <span className="mb-2.5 inline-block rounded-full bg-(--color-action-primary-soft) px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-(--color-text-accent)">
-          {badge}
-        </span>
-      )}
       <div className="flex items-start gap-3">
         <span
           aria-hidden
@@ -36,11 +31,6 @@ function Connector() {
 }
 
 export default function PipelineOverviewPage() {
-  const forkIndex = STAGES.findIndex((s) => s.branch);
-  const fork = STAGES.filter((s) => s.branch);
-  const before = STAGES.slice(0, forkIndex);
-  const after = STAGES.slice(forkIndex + fork.length);
-
   return (
     <div className="space-y-8">
       <section className="rounded-(--radius-2xl) border border-(--color-action-primary)/20 bg-(--color-action-primary-soft) p-6">
@@ -56,34 +46,16 @@ export default function PipelineOverviewPage() {
       <section>
         <h2 className="mb-4 text-xl font-medium">Этапы конвейера</h2>
         <div className="mx-auto max-w-2xl">
-          {before.map((doc) => (
+          {STAGES.map((doc, i) => (
             <div key={doc.slug}>
+              {i > 0 && <Connector />}
               <FlowCard doc={doc} />
-              <Connector />
             </div>
           ))}
-
-          {/* Развилка auto-routing: маршрут выбирается по сумме сигналов сложности */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {fork.map((doc) => (
-              <FlowCard
-                key={doc.slug}
-                doc={doc}
-                badge={doc.branch === 'legacy' ? 'score < 0.5 → быстрый' : 'score ≥ 0.5 → поэтапный'}
-              />
-            ))}
-          </div>
-          <p className="mt-2 text-center text-xs text-(--color-text-secondary)">
-            Третий исход маршрутизации: неизвестный домен → manual-creation-required — стоп и задача
-            на создание mock-ов.
+          <p className="mt-3 text-center text-xs text-(--color-text-secondary)">
+            Гейт домена (этап 2) может остановить конвейер: неизвестный или непокрытый домен →
+            стоп и задача на создание mock-ов.
           </p>
-
-          {after.map((doc) => (
-            <div key={doc.slug}>
-              <Connector />
-              <FlowCard doc={doc} />
-            </div>
-          ))}
         </div>
       </section>
 

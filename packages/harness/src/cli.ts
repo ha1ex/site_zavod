@@ -38,9 +38,7 @@ import {
   ingestLanding,
   ingestIntake,
   prepareIntake,
-  prepareLanding,
   renderIntakePrepareAsMarkdown,
-  renderPrepareAsMarkdown,
 } from './agent/index';
 import {
   appendLog,
@@ -353,58 +351,7 @@ async function upsertIllustrationBarrel(outDir: string, Name: string) {
 const agent = program
   .command('agent')
   .description(
-    'Agent-mode (без API-ключей): prepare выдаёт prompt+schema хосту-агенту, apply валидирует написанный им spec.',
-  );
-
-agent
-  .command('prepare')
-  .description(
-    'Подготовить prompt + JSON-schema для хост-агента (Claude Code / Codex / ChatGPT). LLM-вызов не делается.',
-  )
-  .argument('<kind>', 'тип артефакта: landing')
-  .option('-b, --brief <path>', 'для landing: путь к brief.json')
-  .option('-s, --slug <slug>', 'slug черновика', 'draft')
-  .option('-o, --out <path>', 'путь к output-файлу (default: stdout)')
-  .option('--format <fmt>', 'json | md', 'md')
-  .action(
-    async (
-      kind: string,
-      opts: { brief?: string; slug: string; out?: string; format: string },
-    ) => {
-      const root = await findRepoRoot(ROOT);
-      if (kind !== 'landing') {
-        console.error(
-          chalk.red(`[harness] prepare: kind=${kind} не поддерживается (поддерживается: landing)`),
-        );
-        process.exit(1);
-      }
-      if (!opts.brief) {
-        console.error(chalk.red('[harness] prepare landing: --brief обязателен'));
-        process.exit(1);
-      }
-      const artifact = await prepareLanding({
-        root,
-        briefPath: opts.brief,
-        slug: opts.slug,
-      });
-      const format = (opts.format ?? 'md').toLowerCase();
-      const payload =
-        format === 'json'
-          ? JSON.stringify(artifact, null, 2)
-          : renderPrepareAsMarkdown(artifact);
-      if (opts.out) {
-        const outPath = resolve(root, opts.out);
-        await mkdir(dirname(outPath), { recursive: true });
-        await writeFile(outPath, payload, 'utf-8');
-        const rel = outPath.startsWith(root) ? outPath.slice(root.length + 1) : outPath;
-        console.error(chalk.green(`[harness] ✓ prepare → ${rel}`));
-        console.error(chalk.dim(`         next: write spec to ${artifact.outputPathRel}`));
-        console.error(chalk.dim(`               then run: ${artifact.nextCommand}`));
-      } else {
-        process.stdout.write(payload);
-        if (!payload.endsWith('\n')) process.stdout.write('\n');
-      }
-    },
+    'Agent-mode (без API-ключей): build/run ведут phased pipeline (P0..P8), apply валидирует spec, написанный хост-агентом.',
   );
 
 agent
@@ -682,14 +629,12 @@ agent
 agent
   .command('build')
   .description(
-    'AUTO-ROUTING entry point: читает brief, определяет какой pipeline (legacy / phased / manual-creation) подходит, и автоматически запускает его. РЕКОМЕНДУЕМЫЙ способ запуска для нового brief.',
+    'ENTRY POINT для нового brief: читает brief, проверяет покрытие домена (гейт) и запускает phased pipeline (P0..P8). Непокрытый домен → стоп с todo-списком mock\'ов.',
   )
   .argument('<kind>', 'тип артефакта: landing')
   .option('-s, --slug <slug>', 'slug черновика')
   .option('-b, --brief <path>', 'путь к brief.json (обязателен)')
   .option('--route-only', 'только показать routing decision, не запускать pipeline', false)
-  .option('--force-phased', 'override routing → принудительно phased pipeline', false)
-  .option('--force-legacy', 'override routing → принудительно legacy pipeline', false)
   .option('--require-intake-approved', 'не запускать сборку, пока ТЗ (intake) не approved на /intake/<slug>', false)
   .action(
     async (
@@ -698,8 +643,6 @@ agent
         slug?: string;
         brief?: string;
         routeOnly: boolean;
-        forcePhased: boolean;
-        forceLegacy: boolean;
         requireIntakeApproved: boolean;
       },
     ) => {
@@ -741,16 +684,8 @@ agent
         process.exit(1);
       }
 
-      // Routing.
-      let decision = routePipeline(brief, opts.slug);
-
-      if (opts.forcePhased && decision.mode !== 'manual-creation-required') {
-        console.log(chalk.yellow('[harness] --force-phased: override routing → phased'));
-        decision = { ...decision, mode: 'phased' };
-      } else if (opts.forceLegacy && decision.mode !== 'manual-creation-required') {
-        console.log(chalk.yellow('[harness] --force-legacy: override routing → legacy'));
-        decision = { ...decision, mode: 'legacy' };
-      }
+      // Routing (гейт домена).
+      const decision = routePipeline(brief, opts.slug);
 
       console.log(formatRouteDecision(decision));
       console.log('');
@@ -780,33 +715,16 @@ agent
         process.exit(2);
       }
 
-      // PHASED.
-      if (decision.mode === 'phased') {
-        console.log(chalk.cyan('[harness] → запуск phased pipeline...'));
-        console.log('');
-        const report = await runPhasedPipeline({
-          root,
-          slug: opts.slug,
-          briefPath: opts.brief,
-        });
-        console.log(formatPhasedRunReport(report));
-        process.exit(report.ok ? 0 : 1);
-      }
-
-      // LEGACY.
-      console.log(chalk.cyan('[harness] → запуск legacy prepare (host-agent должен написать spec)...'));
+      // PHASED — единственный конвейер сборки.
+      console.log(chalk.cyan('[harness] → запуск phased pipeline...'));
       console.log('');
-      const artifact = await prepareLanding({
+      const report = await runPhasedPipeline({
         root,
-        briefPath: opts.brief,
         slug: opts.slug,
+        briefPath: opts.brief,
       });
-      const outAbs = resolve(root, '.context', 'agent', `${opts.slug}.prompt.md`);
-      await mkdir(dirname(outAbs), { recursive: true });
-      await writeFile(outAbs, renderPrepareAsMarkdown(artifact), 'utf-8');
-      console.log(chalk.green(`[harness] ✓ prepare → ${relative(root, outAbs)}`));
-      console.log(chalk.dim(`         next: write spec to ${artifact.outputPathRel}`));
-      console.log(chalk.dim(`               then run: ${artifact.nextCommand}`));
+      console.log(formatPhasedRunReport(report));
+      process.exit(report.ok ? 0 : 1);
     },
   );
 

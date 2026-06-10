@@ -47,5 +47,4 @@ export {
   formatRouteDecision,
   type PipelineMode,
   type RouteDecision,
-  type RouteSignal,
 } from './route-pipeline';

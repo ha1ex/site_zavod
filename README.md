@@ -55,6 +55,16 @@
 
 ---
 
+## Что нового (июнь 2026): один конвейер сборки
+
+- 🗑 **Быстрый конвейер (legacy one-shot `prepare → spec → apply`) удалён.**
+  Остался один конвейер сборки — phased (P0..P8). Routing теперь — чистый
+  гейт домена: домен покрыт → phased, не покрыт → стоп с todo-списком mock'ов.
+- Убраны флаги `--force-legacy` / `--force-phased` и команда `agent prepare`;
+  `agent apply` остался как финальный пакет проверок + рендер TSX.
+
+---
+
 ## Зачем это маркетингу
 
 **Проблема.** Каждый новый лендинг отнимает у фронтенд-команды дни. Часто получается
@@ -71,7 +81,7 @@
 
 ---
 
-## Как это работает (auto-routing pipeline)
+## Как это работает (pipeline)
 
 ### 🏭 Этап 0 — фабрика ТЗ (intake), если brief'а ещё нет
 
@@ -90,14 +100,14 @@ pnpm -w run harness agent intake-apply landing --slug <slug>   # brief-quality (
 
 ### 🚀 Единый entry point — `harness agent build`
 
-Новый brief? Не выбирай pipeline вручную — запусти `agent build` и оно само
-решит. **Это рекомендуемый flow.**
+Новый brief? Запусти `agent build`: гейт домена + конвейер сборки
+автоматически. **Это рекомендуемый flow.**
 
 ```bash
 pnpm -w run harness agent build landing --slug <slug> --brief content/briefs/<slug>.json
 ```
 
-### Routing decision (deterministic, без LLM)
+### Routing decision — гейт домена (deterministic, без LLM)
 
 ```
                        brief.json
@@ -106,46 +116,32 @@ pnpm -w run harness agent build landing --slug <slug> --brief content/briefs/<sl
               ┌─────────────────────────┐
               │ routePipeline(brief)    │
               │ • resolveDomainFromBrief│
-              │ • score phased signals  │
+              │ • mock coverage check   │
               └────────────┬────────────┘
                            │
-        ┌──────────────────┼─────────────────────┐
-        ▼                  ▼                     ▼
-   🛑 manual-          ⚡️ legacy              🔀 phased
-   creation-           (score<0.5)            (score≥0.5)
-   required
-        │                  │                     │
-        │                  ▼                     ▼
-   STOP +          prepare + write       orchestrator
-   список mock'ов   spec + apply         P0..P8 + per-phase
-   к созданию      (быстрый flow)        repair-loop
-                                          (медленнее, качественнее)
+              ┌────────────┴────────────┐
+              ▼                         ▼
+        🛑 manual-                  🔀 phased
+        creation-required           (домен покрыт)
+              │                         │
+              ▼                         ▼
+        STOP +                  orchestrator
+        список mock'ов          P0..P8 + per-phase
+        к созданию              repair-loop
 ```
 
-### Три исхода routing
+### Два исхода routing
 
 | Исход | Когда | Что происходит |
 |---|---|---|
 | 🛑 **manual-creation-required** | Домен НЕ покрыт mock-набором ИЛИ `unknown` | Pipeline **отказывается работать**. Выдаёт todo-список mock'ов. Сначала создай новые mocks, обнови matrix + registry + reference, потом повтори. |
-| ⚡️ **legacy** | Простой brief в покрытом домене (phasedScore < 0.5) | One-shot: `prepare` → write spec → `apply`. Быстро. Все validators отрабатывают на ingest. |
-| 🔀 **phased** | Сложный brief (phasedScore ≥ 0.5) | Orchestrator P0..P8 с per-phase repair-loop. Медленнее, но даёт фазированный контроль качества. |
+| 🔀 **phased** | Домен покрыт | Orchestrator P0..P8 с per-phase repair-loop. Фазированный контроль качества для любого брифа. |
 
-### Сигналы сложности для phased (weighted)
-
-| Сигнал | Weight | Условие |
-|---|---|---|
-| `audience-not-resolved` | 0.30 | `brief.resolvedSegments` пустой |
-| `no-page-layout` | 0.25 | `brief.pageLayout` не задан |
-| `brief-too-short` | 0.20 | product+pain+promise < 200 chars |
-| `complex-primary-goal` | 0.15 | waitlist / contact_sales / download |
-| `multiple-personas` | 0.10 | `audience.length` ≥ 3 |
-| `no-proof-points` | 0.10 | `proofPoints` пустой |
-
-Сумма ≥ **0.5** → phased. Логика в [`packages/harness/src/pipeline/route-pipeline.ts`](packages/harness/src/pipeline/route-pipeline.ts).
+Логика в [`packages/harness/src/pipeline/route-pipeline.ts`](packages/harness/src/pipeline/route-pipeline.ts).
 
 ### Phased pipeline (9 фаз с per-phase gates)
 
-Запускается автоматически при routing решении `phased`:
+Запускается автоматически, когда гейт домена пройден:
 
 ```
 P0 Brief Normalize       (deterministic) → p0-brief-normalized.json
@@ -167,11 +163,12 @@ counter attempts (max 3).
 
 Полная документация фаз — [`wiki/pipeline/phase-gates.md`](wiki/pipeline/phase-gates.md).
 
-### Legacy one-shot (быстрый flow)
+### Финальный ingest — `agent apply`
+
+После фаз P0..P8 спецификация проходит финальный пакет проверок и рендер:
 
 ```
-brief.json → prepare (system prompt + JSON Schema)
-          → host-agent пишет content/landings/<slug>.json
+content/landings/<slug>.json (написан в P6/P7)
           → apply (validators chain) → render TSX → preview
 ```
 
@@ -311,9 +308,9 @@ pnpm install
 ```
 
 Подсказка: чем полнее brief (явный `pageLayout`, `resolvedSegments`, ≥3 proof
-points) — тем больше шанс получить быстрый legacy flow.
+points) — тем меньше работы фазам P1/P2 и тем быстрее пройдёт сборка.
 
-**2. Auto-routing entry point — `agent build`:**
+**2. Entry point — `agent build`:**
 
 ```bash
 pnpm -w run harness agent build landing --slug <slug> --brief content/briefs/<slug>.json
@@ -321,9 +318,7 @@ pnpm -w run harness agent build landing --slug <slug> --brief content/briefs/<sl
 
 Что произойдёт:
 - 🛑 Если домен не покрыт → STOP с todo-списком mock'ов к созданию.
-- ⚡️ Если простой brief → запускается legacy: эмитирует prompt → ждёт что
-  host-agent напишет spec → автоматический apply.
-- 🔀 Если сложный brief → запускается phased orchestrator P0..P8.
+- 🔀 Если домен покрыт → запускается phased orchestrator P0..P8.
 
 В любом случае — routing decision сохраняется в
 `.context/pipeline/<slug>/route-decision.json` для трассировки.
@@ -387,20 +382,16 @@ pnpm -w run harness agent intake landing --slug X --request inputs/X/request.md 
 pnpm -w run harness agent intake-apply landing --slug X     # brief-quality gate → content/briefs/X.json + X.tz.md
 # ревью ТЗ: http://localhost:3000/intake/X
 
-# === AUTO-ROUTING (рекомендуемый default) ===
+# === СБОРКА (рекомендуемый default): гейт домена + phased ===
 pnpm -w run harness agent build landing --slug X --brief content/briefs/X.json
 pnpm -w run harness agent build landing --slug X --brief Y.json --route-only        # только decision
 pnpm -w run harness agent build landing --slug X --brief Y.json --require-intake-approved  # gate: ТЗ approved на /intake/X
-pnpm -w run harness agent build landing --slug X --brief Y.json --force-phased      # override → phased
-pnpm -w run harness agent build landing --slug X --brief Y.json --force-legacy      # override → legacy
 
 # === PHASED PIPELINE (вручную, для отладки) ===
 pnpm -w run harness agent run landing --slug X --brief content/briefs/X.json        # end-to-end P0..P8
 pnpm -w run harness agent run-phase landing P4 --slug X --brief Y.json              # single-phase rerun
 
-# === LEGACY FLOW (вручную) ===
-pnpm -w run harness agent prepare landing --brief content/briefs/X.json --slug X
-# … хост-агент пишет content/landings/X.json …
+# === APPLY: финальные проверки + рендер ===
 pnpm -w run harness agent apply landing --slug X --brief content/briefs/X.json
 pnpm -w run harness agent apply landing --slug X --brief Y.json --strict-diversity  # hard cross-landing
 
@@ -432,7 +423,7 @@ pnpm -w run harness log -n 30 --filter generate                                 
 # === REGISTRY ===
 pnpm -w run harness registry                                                        # component registry
 
-# === LEGACY с API-ключом (опционально) ===
+# === ПРЯМАЯ ГЕНЕРАЦИЯ с API-ключом (опционально, fallback) ===
 pnpm -w run harness generate landing --brief content/briefs/X.json --slug X
 pnpm -w run harness validate X
 
@@ -454,12 +445,12 @@ pnpm --filter @kaiten/web test:visual:update                                    
 apps/web/                       Next.js 16 preview + API (generate, validate, handoff, approve, intake-ревью ТЗ)
 packages/harness/               Ядро: schemas, registry, prompts, skills, pipeline, CLI, validators
   └── src/pipeline/             Pipeline:
-      ├── route-pipeline.ts     🆕 Auto-routing (legacy / phased / manual-creation)
+      ├── route-pipeline.ts     🆕 Гейт домена (phased / manual-creation)
       ├── orchestrator.ts       🆕 Phased pipeline runner P0..P8
       ├── phases/               🆕 9 phase runners (P0..P8) + host-agent-phase + repair-loop
       ├── allocate-illustrations.ts  🆕 P8 illustration allocation + anti-duplication
       ├── repair.ts             Generic LLM repair-loop
-      └── generate-*.ts         LLM generation (legacy + illustration)
+      └── generate-*.ts         LLM generation по API-ключу (landing + illustration)
   └── src/registry/
       ├── domain-visual.ts      🆕 8-domain registry (TypeScript-зеркало domain-mock-matrix.md)
       └── global-illustration-usage.ts  🆕 Cross-landing tracking (content/illustrations/registry.json)
@@ -544,7 +535,7 @@ docs/                           Документация для команды
 - **Storybook 9** — registry компонентов и визуальный workshop
 - **TailGrids v3** — закупленный набор landing-блоков (внутри `packages/ui/`)
 - **Tailwind v4** — стили + tokens.css
-- **Vercel AI SDK** — провайдер-агностичный LLM-слой (legacy flow с API-ключом)
+- **Vercel AI SDK** — провайдер-агностичный LLM-слой (прямой flow с API-ключом: `harness generate`)
 - **zod** — output contracts (LandingSpec, IllustrationSpec, BriefSchema, 6 phase schemas)
 - **Playwright** — visual regression
 - **pnpm workspaces** — монорепо

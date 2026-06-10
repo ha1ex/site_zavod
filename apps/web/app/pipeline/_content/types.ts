@@ -52,10 +52,8 @@ export interface PipelineDoc {
   kind: 'stage' | 'knowledge';
   /** Сегмент URL: /pipeline/<slug>. */
   slug: string;
-  /** Отображаемый номер этапа: '1', '2', '3a'… У knowledge-разделов отсутствует. */
+  /** Отображаемый номер этапа: '1', '2', '3'… У knowledge-разделов отсутствует. */
   num?: string;
-  /** Ветка развилки auto-routing — для схемы на обзорной странице. */
-  branch?: 'legacy' | 'phased';
   title: string;
   /** Одна строка для левой навигации и карточек обзора. */
   short: string;

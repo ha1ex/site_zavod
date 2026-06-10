@@ -87,7 +87,7 @@ export function registerBuildTool(server: McpServer) {
     'build_landing',
     {
       description:
-        'Запустить auto-routing генерацию лендинга: harness agent build landing. Решит legacy/phased/manual-creation сам. ВАЖНО: требует либо API-ключ (ANTHROPIC_API_KEY/OPENAI_API_KEY) в env при запуске MCP-сервера, либо host-LLM путь (тогда вернёт prepare-промпт для host-агента).',
+        'Запустить генерацию лендинга: harness agent build landing — гейт домена + phased pipeline (P0–P8); непокрытый домен → manual-creation stop. ВАЖНО: требует либо API-ключ (ANTHROPIC_API_KEY/OPENAI_API_KEY) в env при запуске MCP-сервера, либо host-LLM путь (тогда вернёт промпты фаз для host-агента).',
       inputSchema: {
         slug: z.string().min(1).max(64),
         routeOnly: z.boolean().optional().describe('Только показать routing decision, не запускать pipeline'),

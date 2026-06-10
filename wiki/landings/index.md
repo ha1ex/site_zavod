@@ -20,8 +20,8 @@ stale: false
 
 > Все собранные лендинги и domain-reference документы.
 >
-> **Сборка лендинга:** `pnpm -w run harness agent run landing --slug X --brief Y`
-> (phased pipeline) либо legacy `agent prepare → write spec → agent apply`.
+> **Сборка лендинга:** `pnpm -w run harness agent build landing --slug X --brief Y`
+> (гейт домена + phased pipeline P0–P8, финал — `agent apply`).
 >
 > **Перед сборкой:** обязательно сверься с
 > [`wiki/references/domain-mock-matrix.md`](../references/domain-mock-matrix.md)
@@ -75,9 +75,8 @@ stale: false
      заведи новый reference doc по образцу [`crm-reference.md`](./crm-reference.md).
 2. **Layout selection** — выбери layout из
    [`wiki/layouts/index.md`](../layouts/index.md) под awareness и сегмент.
-3. **Запуск pipeline** — либо phased orchestrator
-   (`harness agent run landing`), либо legacy
-   (`harness agent prepare landing` → write spec → `agent apply`).
+3. **Запуск pipeline** — `harness agent build landing` (гейт домена +
+   phased orchestrator P0–P8), финальные проверки и рендер — `agent apply`.
 4. **Filing back** — успешные лендинги автоматически файлятся в
    `wiki/landings/<slug>.md` через `fileLandingToWiki`.
 5. **Обновление каталога** — добавь строку в раздел «Готовые лендинги» этого
