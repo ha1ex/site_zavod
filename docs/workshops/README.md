@@ -51,6 +51,7 @@
 - Claude Code: [claude.com/claude-code](https://claude.com/claude-code)
 - Conductor: [conductor.build](https://conductor.build)
 - Vercel: [vercel.com](https://vercel.com)
+- База знаний для LLM (шаблон-вики, лучшие практики): [github.com/ha1ex/ai-kb-harness-template](https://github.com/ha1ex/ai-kb-harness-template)
 
 > ⚠️ Перед воркшопом: проверьте ссылки на установку инструментов и отрепетируйте
 > деплой репозитория на Vercel (monorepo, корень приложения — `apps/web`).
