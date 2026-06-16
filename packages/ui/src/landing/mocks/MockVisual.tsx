@@ -43,6 +43,7 @@ import {
   SlaTrackerMock,
   SupportBoardMock,
   TemplateGalleryMock,
+  PmBoard1Mock,
 } from '.';
 
 /**
@@ -106,7 +107,9 @@ export type MockVariant =
   | 'order-flow'
   | 'production-gantt'
   | 'production-task-card'
-  | 'production-departments';
+  | 'production-departments'
+  // PM-иллюстрация (приложение Kaiten)
+  | 'pm-board-1';
 
 export function MockVisual({ variant }: { variant: MockVariant | undefined }) {
   switch (variant) {
@@ -200,6 +203,8 @@ export function MockVisual({ variant }: { variant: MockVariant | undefined }) {
       return <ProductionTaskCardMock />;
     case 'production-departments':
       return <ProductionDepartmentsMock />;
+    case 'pm-board-1':
+      return <PmBoard1Mock />;
     default:
       return null;
   }

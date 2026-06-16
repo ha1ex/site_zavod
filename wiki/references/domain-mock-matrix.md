@@ -79,6 +79,7 @@ points, ревью, MR, deployment, дорожная карта.
 | `AnalyticsKpiMock` | `analytics-kpi` | Дашборд руководителя: 2×2 KPI (спринт в срок, задач в работе, цикл story, риски) + загрузка команд |
 | `IntegrationsConsoleMock` | `integrations-console` | Лента событий из 1С, AmoCRM, Telegram, GitLab |
 | `ModulesMatrixMock` | `modules-matrix` | Bento-grid модулей платформы (PM, KB, поддержка, BPM, BI, AI) |
+| `PmBoard1Mock` | `pm-board-1` | Приложение Kaiten (маркетинговый стиль): сайдбар с деревом досок, борд со свимлейнами «Цели»/«Текущие задачи», карточки-скелетоны, всплывающая срочная задача |
 
 **Reference:** [`wiki/landings/kaiten-platform.md`](../landings/kaiten-platform.md).
 

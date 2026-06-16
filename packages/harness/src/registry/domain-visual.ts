@@ -115,6 +115,12 @@ export const DOMAIN_REGISTRY: DomainEntry[] = [
         sections: ['media', 'hero'],
         description: 'Bento-grid модулей платформы (PM, KB, поддержка, BPM, BI, AI)',
       },
+      {
+        variant: 'pm-board-1',
+        sections: ['hero', 'media', 'tab', 'scenario'],
+        description:
+          'Приложение Kaiten (маркетинговый стиль): сайдбар с деревом досок, борд со свимлейнами «Цели»/«Текущие задачи», карточки-скелетоны, всплывающая срочная задача — «вся работа команды в одном окне»',
+      },
     ],
     missingMocks: [],
     referenceDoc: 'wiki/landings/kaiten-platform.md',
