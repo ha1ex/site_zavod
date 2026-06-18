@@ -39,7 +39,7 @@ const TOOLS: Tool[] = [
  * Активные кнопки — фиолетовые (--color-action-primary), неактивные — серые.
  * Свёрстан в общем стиле mock-ов (см. DocEditorRichMock, ModulesMatrixMock).
  */
-export function CallParticipantsMock() {
+export function VKSemojiMock() {
   return (
     <div
       aria-hidden
