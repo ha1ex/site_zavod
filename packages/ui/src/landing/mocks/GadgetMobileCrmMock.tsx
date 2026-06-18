@@ -49,28 +49,29 @@ export function MobileCrmMock() {
     <div
       aria-hidden
       className={cn(
-        'relative flex items-center justify-center p-6 md:p-10',
-        'rounded-(--radius-3xl) bg-gradient-to-br from-(--color-action-primary-soft) to-(--color-blue-12)',
+        'relative flex items-center justify-center',
       )}
     >
       {/* phone frame */}
       <div
         className={cn(
-          'relative w-[260px] overflow-hidden rounded-[36px]',
-          'border-[8px] border-(--color-neutral-900)',
-          'bg-(--color-surface-page) shadow-[0_25px_60px_-15px_rgba(45,45,45,0.45)]',
+          'relative flex aspect-[286/549] w-[280px] flex-col overflow-hidden rounded-[34px]',
+          'border-[8px] border-white',
+          'bg-(--color-surface-card) shadow-[0_0_44px_-16px_rgba(45,45,45,0.38)]',
         )}
       >
         {/* notch + status bar */}
-        <div className="relative flex items-center justify-between bg-(--color-neutral-900) px-4 py-1.5 text-[10px] font-medium text-white">
+        <div className="relative flex items-center justify-between bg-(--color-surface-page) px-4 py-1.5 text-[10px] font-medium text-(--color-text-primary)">
           <span>09:42</span>
-          <span className="absolute left-1/2 top-0 h-4 w-20 -translate-x-1/2 rounded-b-2xl bg-(--color-neutral-900)" />
+          <span className="absolute left-1/2 top-0 h-4 w-20 -translate-x-1/2 rounded-b-2xl bg-(--color-surface-page)" />
           <div className="flex items-center gap-1">
             <Icon name="Wifi" className="h-3 w-3" strokeWidth={2.5} />
             <Icon name="Battery" className="h-3 w-3" strokeWidth={2.5} />
           </div>
         </div>
 
+        {/* content (прижимает нижнюю навигацию к низу) */}
+        <div className="flex-1">
         {/* header */}
         <div className="px-3.5 pt-3 pb-2">
           <div className="flex items-center justify-between">
@@ -157,6 +158,7 @@ export function MobileCrmMock() {
             </div>
           ))}
         </div>
+        </div>
 
         {/* bottom nav */}
         <div className="flex items-center justify-around border-t border-(--color-border-default) bg-(--color-surface-section) px-2 py-2">
@@ -185,6 +187,9 @@ export function MobileCrmMock() {
             <Icon name="Plus" className="h-4 w-4" strokeWidth={2.5} />
           </span>
         </div>
+
+        {/* внутренняя тень по рамке (как у DocReader) */}
+        <div className="pointer-events-none absolute inset-0 z-20 rounded-[26px] shadow-[inset_0_0_6px_0_rgba(0,0,0,0.1)]" />
       </div>
     </div>
   );

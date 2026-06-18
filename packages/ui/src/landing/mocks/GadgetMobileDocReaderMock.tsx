@@ -11,40 +11,35 @@ export function MobileDocReaderMock() {
     <div
       aria-hidden
       className={cn(
-        'relative mx-auto w-full max-w-[280px] overflow-hidden rounded-[40px]',
-        'border-[6px] border-(--color-text-primary) bg-(--color-surface-card)',
-        'shadow-[0_40px_80px_-30px_rgba(125,76,207,0.35)]',
+        'relative mx-auto flex aspect-[286/549] w-full max-w-[280px] flex-col overflow-hidden rounded-[34px]',
+        'border-[8px] border-white bg-(--color-surface-card)',
+        'shadow-[0_0_44px_-16px_rgba(45,45,45,0.38)]',
       )}
     >
-      {/* notch */}
-      <div className="relative bg-(--color-text-primary) pb-1.5 pt-1.5">
-        <span className="mx-auto block h-1 w-12 rounded-full bg-white/40" />
-      </div>
-
       {/* status bar */}
-      <div className="flex items-center justify-between bg-(--color-surface-page) px-4 py-1.5 text-[9px] font-medium text-(--color-text-primary)">
+      <div className="relative flex items-center justify-between bg-(--color-surface-page) px-4 py-1.5 text-[10px] font-medium text-(--color-text-primary)">
         <span>9:41</span>
-        <span className="inline-flex items-center gap-1">
-          <Icon name="Signal" className="h-2.5 w-2.5" strokeWidth={2} />
-          <Icon name="Wifi" className="h-2.5 w-2.5" strokeWidth={2} />
-          <Icon name="BatteryFull" className="h-2.5 w-2.5" strokeWidth={2} />
-        </span>
+        <span className="absolute left-1/2 top-0 h-4 w-20 -translate-x-1/2 rounded-b-2xl bg-(--color-surface-page)" />
+        <div className="flex items-center gap-1">
+          <Icon name="Wifi" className="h-3 w-3" strokeWidth={2.5} />
+          <Icon name="Battery" className="h-3 w-3" strokeWidth={2.5} />
+        </div>
       </div>
 
       {/* nav */}
       <div className="flex items-center gap-2 border-b border-(--color-border-default) bg-(--color-surface-page) px-3 py-2.5">
         <Icon name="ChevronLeft" className="h-4 w-4 text-(--color-text-primary)" strokeWidth={2} />
         <div className="min-w-0 flex-1">
-          <div className="truncate text-[10.5px] font-semibold text-(--color-text-primary)">
+          <div className="truncate text-[13px] font-semibold text-(--color-text-primary)">
             Регламент работы поддержки
           </div>
-          <div className="text-[9px] text-(--color-text-secondary)">База знаний · Поддержка</div>
+          <div className="text-[10.5px] text-(--color-text-secondary)">База знаний · Поддержка</div>
         </div>
         <Icon name="MoreHorizontal" className="h-4 w-4 text-(--color-text-secondary)" strokeWidth={2} />
       </div>
 
       {/* content */}
-      <div className="space-y-3 bg-(--color-surface-page) px-3 py-3">
+      <div className="flex-1 space-y-3 bg-(--color-surface-page) px-3 py-3">
         {/* outline pill */}
         <div className="flex items-center gap-1.5 rounded-(--radius-lg) bg-(--color-surface-section) p-2">
           <Icon name="ListTree" className="h-3 w-3 text-(--color-text-secondary)" strokeWidth={2} />
@@ -88,7 +83,7 @@ export function MobileDocReaderMock() {
               <span
                 className={cn(
                   'text-[10px]',
-                  c.done ? 'text-(--color-text-secondary) line-through' : 'text-(--color-text-primary)',
+                  'text-(--color-text-primary)',
                 )}
               >
                 {c.text}
@@ -99,7 +94,7 @@ export function MobileDocReaderMock() {
       </div>
 
       {/* tab bar */}
-      <div className="flex items-center justify-around border-t border-(--color-border-default) bg-(--color-surface-card) px-2 pb-3 pt-2">
+      <div className="flex items-center justify-around border-t border-(--color-border-default) bg-(--color-surface-section) px-2 pb-3 pt-2">
         {[
           { icon: 'FileText', label: 'Документы', active: true },
           { icon: 'Search', label: 'Поиск' },
@@ -118,6 +113,9 @@ export function MobileDocReaderMock() {
           </span>
         ))}
       </div>
+
+      {/* внутреннее свечение/тень по рамке (как в реф-SVG: blur ~6px, чёрный 10%) */}
+      <div className="pointer-events-none absolute inset-0 z-20 rounded-[26px] shadow-[inset_0_0_6px_0_rgba(0,0,0,0.1)]" />
     </div>
   );
 }
