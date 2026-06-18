@@ -2,8 +2,6 @@ import { Icon } from '../../primitives/Icon';
 import { cn } from '../../primitives/cn';
 
 const TOOLBAR = [
-  { icon: 'Heading1', label: 'H1' },
-  { icon: 'Heading2', label: 'H2' },
   { icon: 'List', label: 'Список' },
   { icon: 'ListChecks', label: 'Чек-лист' },
   { icon: 'Table2', label: 'Таблица' },
@@ -21,9 +19,9 @@ const OUTLINE = [
 ];
 
 /**
- * Mock редактора документа с разнотипными блоками (H1, текст, чек-лист, таблица,
- * цитата, блок кода) и боковым оглавлением. Тон: «документ из разных блоков
- * собирается под задачу — текст, таблица, код, чек-лист в одном месте».
+ * Mock редактора документа с разнотипными блоками (текст, чек-лист, таблица)
+ * и боковым оглавлением слева. Тон: «документ из разных блоков собирается
+ * под задачу — текст, таблица, чек-лист в одном месте».
  */
 export function DocEditorRichMock() {
   return (
@@ -53,7 +51,8 @@ export function DocEditorRichMock() {
             key={i}
             className={cn(
               'inline-flex h-6 items-center gap-1 rounded-(--radius-md) border border-transparent px-1.5 text-[10px] text-(--color-text-secondary)',
-              i === 3 && 'border-(--color-border-default) bg-(--color-surface-card) text-(--color-text-primary)',
+              i === 1 &&
+                'border-(--color-action-primary)/25 bg-(--color-action-primary-soft) font-medium text-(--color-text-accent)',
             )}
           >
             <Icon name={t.icon} className="h-3 w-3" strokeWidth={2} />
@@ -66,7 +65,29 @@ export function DocEditorRichMock() {
         </span>
       </div>
 
-      <div className="grid grid-cols-[1fr] gap-0 md:grid-cols-[1fr_180px]">
+      <div className="grid grid-cols-[1fr] gap-0 md:grid-cols-[180px_1fr]">
+        {/* outline */}
+        <div className="hidden border-r border-(--color-border-default) bg-(--color-surface-section) p-3 md:block">
+          <div className="text-[10px] font-semibold uppercase tracking-wide text-(--color-text-secondary)">
+            Содержание
+          </div>
+          <div className="mt-2 space-y-1">
+            {OUTLINE.map((o, i) => (
+              <div
+                key={i}
+                className={cn(
+                  'truncate rounded-(--radius-md) px-2 py-1 text-[10.5px]',
+                  o.active
+                    ? 'bg-(--color-action-primary-soft) font-medium text-(--color-text-accent)'
+                    : 'text-(--color-text-secondary)',
+                )}
+              >
+                {o.text}
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* document */}
         <div className="space-y-3 bg-(--color-surface-page) p-4 md:p-5">
           <div className="text-[16px] font-semibold text-(--color-text-primary)">
@@ -113,7 +134,7 @@ export function DocEditorRichMock() {
 
           {/* table block */}
           <div className="overflow-hidden rounded-(--radius-lg) border border-(--color-border-default)">
-            <div className="grid grid-cols-[1fr_70px_90px] gap-2 border-b border-(--color-border-default) bg-(--color-surface-section) px-2.5 py-1.5 text-[9.5px] uppercase tracking-wide text-(--color-text-secondary)">
+            <div className="grid grid-cols-[1fr_64px_116px] gap-2 border-b border-(--color-border-default) bg-(--color-surface-section) px-2.5 py-1.5 text-[9.5px] uppercase tracking-wide text-(--color-text-secondary)">
               <span>Уровень</span>
               <span>SLA</span>
               <span>Ответственный</span>
@@ -125,57 +146,11 @@ export function DocEditorRichMock() {
             ].map((r, i) => (
               <div
                 key={i}
-                className="grid grid-cols-[1fr_70px_90px] gap-2 px-2.5 py-1.5 text-[11px] text-(--color-text-primary) odd:bg-(--color-surface-page) even:bg-(--color-surface-section)"
+                className="grid grid-cols-[1fr_64px_116px] gap-2 border-b border-(--color-border-default) bg-(--color-surface-card) px-2.5 py-1.5 text-[11px] text-(--color-text-primary) last:border-0"
               >
-                <span className="truncate">{r.lvl}</span>
-                <span className="tabular-nums text-(--color-text-secondary)">{r.sla}</span>
-                <span className="truncate text-(--color-text-secondary)">{r.owner}</span>
-              </div>
-            ))}
-          </div>
-
-          {/* quote block */}
-          <div className="rounded-(--radius-lg) border-l-2 border-(--color-action-primary) bg-(--color-surface-section) px-3 py-2 text-[11px] italic text-(--color-text-secondary)">
-            «Главное правило — никогда не молчать. Лучше написать клиенту, что мы разбираемся,
-            чем оставить его без ответа на час.»
-          </div>
-
-          {/* code block */}
-          <div className="overflow-hidden rounded-(--radius-lg) bg-(--color-text-primary)">
-            <div className="flex items-center justify-between border-b border-white/10 px-3 py-1.5 text-[9.5px] text-white/60">
-              <span>shell · восстановление сервиса</span>
-              <span className="inline-flex items-center gap-1">
-                <Icon name="Copy" className="h-3 w-3" strokeWidth={2} />
-                Скопировать
-              </span>
-            </div>
-            <pre className="overflow-hidden whitespace-pre-wrap px-3 py-2 font-mono text-[10.5px] leading-relaxed text-white/85">
-{`# проверить статус
-sudo systemctl status app
-# перезапустить и проверить логи
-sudo systemctl restart app
-journalctl -u app -n 100 --no-pager`}
-            </pre>
-          </div>
-        </div>
-
-        {/* outline */}
-        <div className="hidden border-l border-(--color-border-default) bg-(--color-surface-section) p-3 md:block">
-          <div className="text-[10px] font-semibold uppercase tracking-wide text-(--color-text-secondary)">
-            Содержание
-          </div>
-          <div className="mt-2 space-y-1">
-            {OUTLINE.map((o, i) => (
-              <div
-                key={i}
-                className={cn(
-                  'truncate rounded-(--radius-md) px-2 py-1 text-[10.5px]',
-                  o.active
-                    ? 'bg-(--color-action-primary-soft) font-medium text-(--color-text-accent)'
-                    : 'text-(--color-text-secondary)',
-                )}
-              >
-                {o.text}
+                <span className="truncate whitespace-nowrap">{r.lvl}</span>
+                <span className="truncate whitespace-nowrap tabular-nums text-(--color-text-secondary)">{r.sla}</span>
+                <span className="truncate whitespace-nowrap text-(--color-text-secondary)">{r.owner}</span>
               </div>
             ))}
           </div>
