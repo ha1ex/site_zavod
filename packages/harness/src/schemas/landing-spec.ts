@@ -63,6 +63,8 @@ export const AssetRefSchema = z.object({
       'production-gantt',
       'production-task-card',
       'production-departments',
+      'meeting-room',
+      'meet-list',
       'pm-board-1',
       'generic',
     ])
@@ -294,6 +296,8 @@ const MediaCopySchema = z.object({
         'production-gantt',
         'production-task-card',
         'production-departments',
+        'meeting-room',
+        'meet-list',
         'pm-board-1',
       ])
       .optional(),
@@ -540,6 +544,8 @@ export const MockVariantSchema = z.enum([
   'production-gantt',
   'production-task-card',
   'production-departments',
+  'meeting-room',
+  'meet-list',
   'pm-board-1',
 ]);
 export type MockVariant = z.infer<typeof MockVariantSchema>;

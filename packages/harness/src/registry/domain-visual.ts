@@ -116,10 +116,22 @@ export const DOMAIN_REGISTRY: DomainEntry[] = [
         description: 'Bento-grid модулей платформы (PM, KB, поддержка, BPM, BI, AI)',
       },
       {
+        variant: 'meeting-room',
+        sections: ['hero', 'media', 'tab', 'scenario'],
+        description:
+          'Комната Kaiten-созвона: сетка участников + живая ИИ-панель, превращающая речь в решения и задачи (ВКС/Встречи)',
+      },
+      {
         variant: 'pm-board-1',
         sections: ['hero', 'media', 'tab', 'scenario'],
         description:
           'Приложение Kaiten (маркетинговый стиль): сайдбар с деревом досок, борд со свимлейнами «Цели»/«Текущие задачи», карточки-скелетоны, всплывающая срочная задача — «вся работа команды в одном окне»',
+      },
+      {
+        variant: 'meet-list',
+        sections: ['hero', 'media', 'tab', 'scenario'],
+        description:
+          'Интерфейс «Kaiten Meet»: шапка (создать/подключиться, выбор хранилища записей) и таблица встреч (название/ID/создатель/активность) с кнопкой «Подключиться» — «все созвоны на одной странице»',
       },
     ],
     missingMocks: [],

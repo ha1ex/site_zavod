@@ -42,6 +42,8 @@ export { OrderFlowMock } from './OrderFlowMock';
 export { ProductionGanttMock } from './ProductionGanttMock';
 export { ProductionTaskCardMock } from './ProductionTaskCardMock';
 export { ProductionDepartmentsMock } from './ProductionDepartmentsMock';
+export { MeetingRoomMock } from './MeetingRoomMock';
+export { MeetListMock } from './MeetListMock';
 export { PmBoard1Mock } from './PmBoard1Mock';
 export { LaptopKanbanMock } from './GadgetLaptopKanbanMock';
 export { TabletKanbanMock } from './GadgetTabletKanbanMock';

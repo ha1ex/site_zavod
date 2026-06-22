@@ -63,7 +63,7 @@ export function BentoGrid({ eyebrow, title, description, cells }: BentoGridProps
         )}
       </div>
 
-      <div className="grid auto-rows-[180px] grid-cols-1 gap-4 md:grid-cols-3 md:gap-5">
+      <div className="grid auto-rows-[minmax(180px,auto)] grid-cols-1 gap-4 md:grid-cols-3 md:gap-5">
         {cells.map((c, i) => (
           <Inspect
             as="div"
@@ -81,7 +81,7 @@ export function BentoGrid({ eyebrow, title, description, cells }: BentoGridProps
               <span
                 aria-hidden
                 className={cn(
-                  'mb-4 inline-flex h-11 w-11 items-center justify-center rounded-(--radius-xl)',
+                  'mb-4 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-(--radius-xl)',
                   c.accent
                     ? 'bg-(--color-surface-card) text-(--color-text-accent)'
                     : 'bg-(--color-action-primary-soft) text-(--color-text-accent)',

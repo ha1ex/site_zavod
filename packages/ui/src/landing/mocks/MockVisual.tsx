@@ -43,6 +43,8 @@ import {
   SlaTrackerMock,
   SupportBoardMock,
   TemplateGalleryMock,
+  MeetingRoomMock,
+  MeetListMock,
   PmBoard1Mock,
 } from '.';
 
@@ -108,7 +110,9 @@ export type MockVariant =
   | 'production-gantt'
   | 'production-task-card'
   | 'production-departments'
-  // PM-иллюстрация (приложение Kaiten)
+  // ВКС / Встречи
+  | 'meeting-room'
+  | 'meet-list'
   | 'pm-board-1';
 
 export function MockVisual({ variant }: { variant: MockVariant | undefined }) {
@@ -203,6 +207,10 @@ export function MockVisual({ variant }: { variant: MockVariant | undefined }) {
       return <ProductionTaskCardMock />;
     case 'production-departments':
       return <ProductionDepartmentsMock />;
+    case 'meeting-room':
+      return <MeetingRoomMock />;
+    case 'meet-list':
+      return <MeetListMock />;
     case 'pm-board-1':
       return <PmBoard1Mock />;
     default:
