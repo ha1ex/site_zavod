@@ -140,11 +140,6 @@ export function HiringPipelineMock() {
                 </div>
                 <div className="mt-1.5 text-[11px] font-semibold text-(--color-text-accent)">{c.salary}</div>
                 <div className="mt-0.5 truncate text-[10px] text-(--color-text-secondary)">{c.interviewer}</div>
-                {c.hot && (
-                  <span className="absolute top-2 right-2 inline-flex h-4 items-center rounded-full bg-(--color-orange-100)/20 px-1.5 text-[9px] font-medium text-amber-800">
-                    Горячий
-                  </span>
-                )}
               </div>
             ))}
           </div>

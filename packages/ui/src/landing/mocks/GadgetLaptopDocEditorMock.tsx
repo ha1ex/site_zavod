@@ -35,9 +35,7 @@ const BG_COLORS: [string, boolean?][] = [
 function KaitenLogo() {
   return (
     <span className="relative inline-flex h-4 w-4 items-center justify-center">
-      <span className="absolute inset-0 rounded-full bg-[#f0322e]" />
-      <span className="absolute h-[9px] w-[9px] rotate-45 rounded-[2.5px] bg-[#69dfa8]" />
-      <span className="relative h-[8px] w-[8px] rounded-full bg-[#7b5be6]" />
+      <svg viewBox="0 0 104 104" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-full w-full"><g clipPath="url(#kaitenMarkClip)"><path d="M76.8113 0H27.1887C12.1728 0 0 12.1661 0 27.1738V76.8262C0 91.8339 12.1728 104 27.1887 104H76.8113C91.8272 104 104 91.8339 104 76.8262V27.1738C104 12.1661 91.8272 0 76.8113 0Z" fill="#F11F24"/><path d="M41.4148 11.3364L11.3364 41.4148C5.55453 47.1967 5.55453 56.571 11.3364 62.3529L41.4148 92.4313C47.1967 98.2132 56.571 98.2132 62.3529 92.4313L92.4313 62.3529C98.2132 56.571 98.2132 47.1967 92.4313 41.4148L62.3529 11.3364C56.571 5.55453 47.1967 5.55453 41.4148 11.3364Z" fill="#78FFC7"/><path d="M51.715 77.4267C65.917 77.4267 77.43 65.9144 77.43 51.7133C77.43 37.5123 65.917 26 51.715 26C37.513 26 26 37.5123 26 51.7133C26 65.9144 37.513 77.4267 51.715 77.4267Z" fill="#7D4CCF"/></g><defs><clipPath id="kaitenMarkClip"><rect width="104" height="104" rx="52" fill="white"/></clipPath></defs></svg>
     </span>
   );
 }

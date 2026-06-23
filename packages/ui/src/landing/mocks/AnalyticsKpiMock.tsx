@@ -23,8 +23,8 @@ const TREND_ICON: Record<Kpi['trend'], string> = {
 };
 
 const TREND_CLASS: Record<Kpi['trend'], string> = {
-  up: 'text-green-700 bg-(--color-green-100)',
-  down: 'text-green-700 bg-(--color-green-100)',
+  up: 'text-green-700 bg-(--color-green-12)',
+  down: 'text-(--color-red-100) bg-(--color-red-12)',
   flat: 'text-(--color-text-secondary) bg-(--color-neutral-200)',
 };
 

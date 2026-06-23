@@ -65,7 +65,7 @@ const STATE_CLASS: Record<ModuleTile['state'], string> = {
 
 const STATE_PILL: Record<ModuleTile['state'], string> = {
   core: 'bg-(--color-action-primary) text-white',
-  on: 'bg-(--color-green-100) text-green-700',
+  on: 'bg-(--color-green-12) text-green-700',
   off: 'bg-(--color-neutral-200) text-(--color-text-secondary)',
   beta: 'bg-(--color-blue-12) text-(--color-blue-100)',
 };

@@ -121,7 +121,7 @@ export function SupportBoardMock() {
                         className={cn(
                           'inline-flex h-4 items-center rounded-full px-1.5 text-[9px] font-medium leading-none',
                           t.badge === 'Bug'
-                            ? 'bg-red-100 text-red-700'
+                            ? 'bg-(--color-red-12) text-(--color-red-100)'
                             : 'bg-(--color-action-primary-soft) text-(--color-text-accent)',
                         )}
                       >

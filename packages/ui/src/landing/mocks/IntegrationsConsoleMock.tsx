@@ -49,7 +49,7 @@ const EVENTS: Event[] = [
 
 const TONE_CLASS: Record<Event['tone'], string> = {
   violet: 'bg-(--color-action-primary-soft) text-(--color-text-accent)',
-  green: 'bg-(--color-green-100) text-green-700',
+  green: 'bg-(--color-green-12) text-green-700',
   blue: 'bg-(--color-blue-12) text-(--color-blue-100)',
   orange: 'bg-(--color-orange-100) text-amber-800',
 };
@@ -62,7 +62,7 @@ const STATUS_LABEL: Record<Event['status'], string> = {
 
 const STATUS_CLASS: Record<Event['status'], string> = {
   sync: 'bg-(--color-action-primary-soft) text-(--color-text-accent)',
-  ok: 'bg-(--color-green-100) text-green-700',
+  ok: 'bg-(--color-green-12) text-green-700',
   queued: 'bg-(--color-neutral-200) text-(--color-text-secondary)',
 };
 
