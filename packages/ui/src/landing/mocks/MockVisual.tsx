@@ -43,6 +43,7 @@ import {
   SlaTrackerMock,
   SupportBoardMock,
   TemplateGalleryMock,
+  VksArtifactFlowMock,
   MeetingRoomMock,
   MeetListMock,
   PmBoard1Mock,
@@ -111,6 +112,7 @@ export type MockVariant =
   | 'production-task-card'
   | 'production-departments'
   // ВКС / Встречи
+  | 'vks-artifact-flow'
   | 'meeting-room'
   | 'meet-list'
   | 'pm-board-1';
@@ -207,6 +209,8 @@ export function MockVisual({ variant }: { variant: MockVariant | undefined }) {
       return <ProductionTaskCardMock />;
     case 'production-departments':
       return <ProductionDepartmentsMock />;
+    case 'vks-artifact-flow':
+      return <VksArtifactFlowMock />;
     case 'meeting-room':
       return <MeetingRoomMock />;
     case 'meet-list':

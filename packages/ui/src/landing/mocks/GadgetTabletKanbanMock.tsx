@@ -1,5 +1,6 @@
 import { Icon } from '../../primitives/Icon';
 import { cn } from '../../primitives/cn';
+import { KaitenLogo as BrandLogo } from '../KaitenLogo';
 
 const LABEL_CLASS: Record<'violet' | 'blue' | 'green' | 'orange', string> = {
   violet: 'bg-(--color-action-primary-soft) text-(--color-text-accent)',
@@ -57,13 +58,7 @@ function Avatar({ children }: { children: React.ReactNode }) {
 
 /** Фирменный знак Kaiten: красный круг, мятный повёрнутый ромб, фиолетовый круг. */
 function KaitenMark() {
-  return (
-    <span className="relative inline-flex h-5 w-5 items-center justify-center">
-      <span className="absolute inset-0 rounded-full bg-[#f0322e]" />
-      <span className="absolute h-[12px] w-[12px] rotate-45 rounded-[3px] bg-[#69dfa8]" />
-      <span className="relative h-[10px] w-[10px] rounded-full bg-[#7b5be6]" />
-    </span>
-  );
+  return <BrandLogo markOnly tone="dark" className="h-5 w-5" />;
 }
 
 /** Канбан-доска Kaiten: топбар, сайдбар с иконками, три колонки с карточками. */

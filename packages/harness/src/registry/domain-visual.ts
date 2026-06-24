@@ -122,6 +122,12 @@ export const DOMAIN_REGISTRY: DomainEntry[] = [
           'Комната Kaiten-созвона: сетка участников + живая ИИ-панель, превращающая речь в решения и задачи (ВКС/Встречи)',
       },
       {
+        variant: 'vks-artifact-flow',
+        sections: ['media', 'tab'],
+        description:
+          'Схема «разговор → бизнес-артефакт»: старая/новая парадигма созвона, генератор артефактов → документ и задача в Kaiten',
+      },
+      {
         variant: 'pm-board-1',
         sections: ['hero', 'media', 'tab', 'scenario'],
         description:

@@ -1,5 +1,6 @@
 import { Icon } from '../../primitives/Icon';
 import { cn } from '../../primitives/cn';
+import { KaitenLogo as BrandLogo } from '../KaitenLogo';
 
 const TREE: { icon: string; label: string; tint?: string; open?: boolean }[] = [
   { icon: 'Folder', label: 'Рабочее пространства', tint: '#e0a400' },
@@ -33,13 +34,7 @@ const BG_COLORS: [string, boolean?][] = [
 ];
 
 function KaitenLogo() {
-  return (
-    <span className="relative inline-flex h-4 w-4 items-center justify-center">
-      <span className="absolute inset-0 rounded-full bg-[#f0322e]" />
-      <span className="absolute h-[9px] w-[9px] rotate-45 rounded-[2.5px] bg-[#69dfa8]" />
-      <span className="relative h-[8px] w-[8px] rounded-full bg-[#7b5be6]" />
-    </span>
-  );
+  return <BrandLogo markOnly tone="dark" className="h-4 w-4" />;
 }
 
 function Toolbar() {

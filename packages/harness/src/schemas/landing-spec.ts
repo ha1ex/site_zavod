@@ -63,6 +63,7 @@ export const AssetRefSchema = z.object({
       'production-gantt',
       'production-task-card',
       'production-departments',
+      'vks-artifact-flow',
       'meeting-room',
       'meet-list',
       'pm-board-1',
@@ -296,6 +297,7 @@ const MediaCopySchema = z.object({
         'production-gantt',
         'production-task-card',
         'production-departments',
+        'vks-artifact-flow',
         'meeting-room',
         'meet-list',
         'pm-board-1',
@@ -544,6 +546,7 @@ export const MockVariantSchema = z.enum([
   'production-gantt',
   'production-task-card',
   'production-departments',
+  'vks-artifact-flow',
   'meeting-room',
   'meet-list',
   'pm-board-1',
@@ -670,6 +673,18 @@ const LandingFooterSchema = z.object({
   }),
 });
 
+const SiteHeaderSchema = z.object({
+  id: z.literal('site_header'),
+  component: z.literal('SiteHeader'),
+  props: z.object({}).default({}),
+});
+
+const KaitenFooterSchema = z.object({
+  id: z.literal('kaiten_footer'),
+  component: z.literal('KaitenFooter'),
+  props: z.object({}).default({}),
+});
+
 /* ─── Section union ───────────────────────────────────────────────── */
 export const SectionSchema = z.discriminatedUnion('component', [
   HeroSectionSchema,
@@ -694,6 +709,8 @@ export const SectionSchema = z.discriminatedUnion('component', [
   BentoGridSchema,
   LogoCloudSchema,
   TestimonialQuoteSchema,
+  SiteHeaderSchema,
+  KaitenFooterSchema,
 ]);
 export type Section = z.infer<typeof SectionSchema>;
 

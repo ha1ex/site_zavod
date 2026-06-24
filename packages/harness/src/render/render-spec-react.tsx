@@ -21,6 +21,8 @@ import {
   BentoGrid,
   LogoCloud,
   TestimonialQuote,
+  SiteHeader,
+  KaitenFooter,
 } from '@kaiten/ui/landing';
 import type { LandingSpec, Section } from '../schemas/landing-spec';
 
@@ -44,6 +46,10 @@ function RenderSection({ section }: { section: Section }) {
       return <FinalCta {...section.props} />;
     case 'LandingFooter':
       return <LandingFooter {...section.props} />;
+    case 'SiteHeader':
+      return <SiteHeader />;
+    case 'KaitenFooter':
+      return <KaitenFooter />;
     case 'SocialProof':
       return <SocialProof {...section.props} />;
     case 'ProcessSteps':

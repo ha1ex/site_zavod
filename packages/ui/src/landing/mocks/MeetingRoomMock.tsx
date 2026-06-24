@@ -100,8 +100,8 @@ export function MeetingRoomMock() {
             <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-(--color-action-primary) text-white">
               <Icon name="Sparkles" className="h-3.5 w-3.5" strokeWidth={2} />
             </span>
-            <span className="text-[11px] font-semibold text-neutral-100">ИИ ведёт встречу</span>
-            <span className="ml-auto inline-flex items-center gap-1 text-[9px] text-neutral-400">
+            <span className="text-[13px] font-semibold text-neutral-100">ИИ ведёт встречу</span>
+            <span className="ml-auto inline-flex items-center gap-1 text-[11px] text-neutral-400">
               <Icon name="Circle" className="h-2 w-2 fill-red-500 text-red-500" />
               запись
             </span>
@@ -109,8 +109,8 @@ export function MeetingRoomMock() {
 
           {/* transcript line */}
           <div className="mt-2.5 rounded-(--radius-lg) border border-white/10 bg-neutral-900 p-2">
-            <div className="text-[9px] uppercase tracking-wide text-neutral-500">Транскрипт</div>
-            <p className="mt-1 text-[10px] leading-snug text-neutral-400">
+            <div className="text-[11px] uppercase tracking-wide text-neutral-500">Транскрипт</div>
+            <p className="mt-1 text-[12px] leading-snug text-neutral-400">
               <span className="font-medium text-neutral-200">Анна:</span> давайте перенесём релиз на пятницу и закроем регресс…
             </p>
           </div>
@@ -126,16 +126,16 @@ export function MeetingRoomMock() {
                   <Icon name={a.icon} className="h-2.5 w-2.5" strokeWidth={2} />
                 </span>
                 <div className="min-w-0">
-                  <div className="text-[9px] font-semibold uppercase tracking-wide text-(--color-action-primary)">
+                  <div className="text-[11px] font-semibold uppercase tracking-wide text-(--color-action-primary)">
                     {a.kind}
                   </div>
-                  <div className="truncate text-[10px] leading-tight text-neutral-100">{a.text}</div>
+                  <div className="truncate text-[12px] leading-tight text-neutral-100">{a.text}</div>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="mt-2.5 flex items-center gap-1 border-t border-white/10 pt-2 text-[9px] text-neutral-400">
+          <div className="mt-2.5 flex items-center gap-1 border-t border-white/10 pt-2 text-[11px] text-neutral-400">
             <Icon name="Clock" className="h-2.5 w-2.5" strokeWidth={2} />
             Время встречи списывается в учёт автоматически
           </div>
