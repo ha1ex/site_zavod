@@ -22,7 +22,7 @@ import {
   LogoCloud,
   TestimonialQuote,
   SiteHeader,
-  KaitenFooter,
+  LandingFooterMock,
 } from '@kaiten/ui/landing';
 import type { LandingSpec, Section } from '../schemas/landing-spec';
 
@@ -48,8 +48,8 @@ function RenderSection({ section }: { section: Section }) {
       return <LandingFooter {...section.props} />;
     case 'SiteHeader':
       return <SiteHeader />;
-    case 'KaitenFooter':
-      return <KaitenFooter />;
+    case 'LandingFooterMock':
+      return <LandingFooterMock />;
     case 'SocialProof':
       return <SocialProof {...section.props} />;
     case 'ProcessSteps':

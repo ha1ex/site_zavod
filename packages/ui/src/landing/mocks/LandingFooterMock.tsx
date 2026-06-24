@@ -1,3 +1,5 @@
+'use client';
+
 const STYLE = `
 .kf {
   --bg:#2d2d2d; --card:#424242; --news:#efe9f9;

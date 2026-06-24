@@ -16,7 +16,7 @@ export type { FinalCtaProps } from './FinalCta';
 export { LandingFooter } from './LandingFooter';
 export type { LandingFooterProps, FooterColumnProps } from './LandingFooter';
 export { SiteHeader } from './SiteHeader';
-export { KaitenFooter } from './KaitenFooter';
+export { LandingFooterMock } from './mocks/LandingFooterMock';
 export { KaitenLogo } from './KaitenLogo';
 
 export { SocialProof } from './SocialProof';

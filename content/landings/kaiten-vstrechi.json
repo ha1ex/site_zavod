@@ -200,17 +200,8 @@
     },
     {
       "id": "kaiten_footer",
-      "component": "KaitenFooter",
-      "props": {
-        "brandName": "Кайтен Встречи",
-        "brandTagline": "Видеовстречи нового поколения — в едином окне с работой",
-        "columns": [
-          { "title": "Продукт", "links": [{ "label": "Как это работает", "href": "#how" }, { "label": "Возможности", "href": "#features" }, { "label": "Записаться на демо", "href": "/demo" }] },
-          { "title": "Kaiten", "links": [{ "label": "Главная", "href": "/" }, { "label": "Тарифы", "href": "/pricing" }, { "label": "Документы", "href": "/docs" }, { "label": "Задачи", "href": "/tasks" }] },
-          { "title": "Компания", "links": [{ "label": "О Kaiten", "href": "/about" }, { "label": "Безопасность", "href": "/security" }, { "label": "Контакты", "href": "/contacts" }] }
-        ],
-        "copyright": "© 2026 Kaiten. Кайтен Встречи."
-      }
+      "component": "LandingFooterMock",
+      "props": {}
     }
   ],
   "seo": {

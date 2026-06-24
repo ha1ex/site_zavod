@@ -679,9 +679,9 @@ const SiteHeaderSchema = z.object({
   props: z.object({}).default({}),
 });
 
-const KaitenFooterSchema = z.object({
+const LandingFooterMockSchema = z.object({
   id: z.literal('kaiten_footer'),
-  component: z.literal('KaitenFooter'),
+  component: z.literal('LandingFooterMock'),
   props: z.object({}).default({}),
 });
 
@@ -710,7 +710,7 @@ export const SectionSchema = z.discriminatedUnion('component', [
   LogoCloudSchema,
   TestimonialQuoteSchema,
   SiteHeaderSchema,
-  KaitenFooterSchema,
+  LandingFooterMockSchema,
 ]);
 export type Section = z.infer<typeof SectionSchema>;
 
