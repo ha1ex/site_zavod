@@ -47,6 +47,7 @@ import {
   MeetingRoomMock,
   MeetListMock,
   CTAmainMock,
+  PmBoard1Mock,
 } from '.';
 
 /**
@@ -216,7 +217,7 @@ export function MockVisual({ variant }: { variant: MockVariant | undefined }) {
     case 'meet-list':
       return <MeetListMock />;
     case 'pm-board-1':
-      return <CTAmainMock />;
+      return <PmBoard1Mock />;
     default:
       return null;
   }

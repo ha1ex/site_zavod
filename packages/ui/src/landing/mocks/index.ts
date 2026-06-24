@@ -46,6 +46,7 @@ export { VksArtifactFlowMock } from './VksArtifactFlowMock';
 export { MeetingRoomMock } from './MeetingRoomMock';
 export { MeetListMock } from './MeetListMock';
 export { CTAmainMock } from './CTAmainMock';
+export { PmBoard1Mock } from './PmBoard1Mock';
 export { LaptopKanbanMock } from './GadgetLaptopKanbanMock';
 export { TabletKanbanMock } from './GadgetTabletKanbanMock';
 export { LaptopDocEditorMock } from './GadgetLaptopDocEditorMock';
