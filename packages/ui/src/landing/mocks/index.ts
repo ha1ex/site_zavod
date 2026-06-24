@@ -47,6 +47,7 @@ export { MeetingRoomMock } from './MeetingRoomMock';
 export { MeetListMock } from './MeetListMock';
 export { CTAmainMock } from './CTAmainMock';
 export { LandingFooterMock } from './LandingFooterMock';
+export { ComparisonTableMock } from './ComparisonTableMock';
 export { PmBoard1Mock } from './PmBoard1Mock';
 export { LaptopKanbanMock } from './GadgetLaptopKanbanMock';
 export { TabletKanbanMock } from './GadgetTabletKanbanMock';
