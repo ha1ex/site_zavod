@@ -2,7 +2,7 @@
 slug: crm
 type: landing
 created: 2026-05-16
-updated: 2026-05-16
+updated: 2026-06-25
 status: draft
 brief: content/briefs/crm.json
 archetype: saas_landing
@@ -29,6 +29,9 @@ sources:
   - wiki/layouts/depersonalized-product-tour.md
   - wiki/layouts/index.md
   - wiki/layouts/crm-product-tour.md
+  - wiki/brand/redpolitika.md
+  - wiki/references/kaiten-product-facts.md
+  - wiki/references/anglicism-dictionary.md
 sections:
   - hero
   - benefits_strip
@@ -47,7 +50,7 @@ sections:
   - footer
 generator: host-agent
 durationMs: 0
-tokenEstimate: 15165
+tokenEstimate: 42893
 tags:
   - landing
   - saas_landing
@@ -61,11 +64,14 @@ stale: false
 - **archetype:** `saas_landing`
 - **goal:** `try_free` (brief.cta = "Попробовать бесплатно")
 - **sections used:** `hero, benefits_strip, tabbed_feature, cta_banner, scenario_walkthrough, media_copy, media_copy, media_copy, features, industry_picker, process, stats, faq, final_cta, footer`
-- **token estimate:** `15165`
+- **token estimate:** `42893`
 - **generation duration:** `0ms`
 - **generator:** `host-agent`
 
 **Sources (использованы в системном промпте):**
+- `wiki/brand/redpolitika.md`
+- `wiki/references/kaiten-product-facts.md`
+- `wiki/references/anglicism-dictionary.md`
 - `wiki/design-system/voice.md`
 - `wiki/design-system/colors.md`
 - `wiki/design-system/typography.md`
@@ -173,10 +179,10 @@ stale: false
 <!-- gen:audience-score -->
 # Audience score — `crm`
 
-- **Score:** 78.49 / 100 (threshold 70) — ❌ fail
+- **Score:** 78.49 / 100 (threshold 70) — ✅ pass
 - **Resolved segments:** IT
-- **CTA types detected:** Trial, Demo, Unknown
-- **Generated:** 2026-05-16T06:48:24.766Z
+- **CTA types detected:** Trial, Demo
+- **Generated:** 2026-06-24T21:59:44.695Z
 
 ## Breakdown
 
@@ -185,7 +191,7 @@ stale: false
 | S1 | Story coverage | 58.73 | 0.4 | 23.49 | top-6 stories: compare(w=0.98, c=0.30), migrate-jira(w=0.95, c=0.77), fast-check(w=0.94, c=1.00), ux-check(w=0.71, c=0.53), sandbox(w=0.62, c=0.30), security(w=0.53, c=0.47) |
 | S2 | Segment fit | 100 | 0.3 | 30 | mentioned=1/1 [IT] |
 | S3 | Role addressability | 75 | 0.2 | 15 | PM=1.00, DM=0.50 |
-| S4 | CTA alignment | 100 | 0.1 | 10 | cta-types=[Trial,Demo,Unknown], match=1/1 |
+| S4 | CTA alignment | 100 | 0.1 | 10 | cta-types=[Trial,Demo], match=1/1 |
 
 ## Story coverage (top-N)
 
@@ -200,8 +206,7 @@ stale: false
 
 ## Issues
 
-- **must-pass-failed** (`seo-mentions-priority`): seo.title + seo.description не упоминают ни одного резолвленного сегмента, ни ключевых слов из top-3 stories.
-  - _suggestion:_ Добавь в SEO упоминание сегмента (например, IT) или ключевое слово (сравни).
+_None — все правила пройдены._
 
 <!-- /gen:audience-score -->
 

@@ -103,7 +103,7 @@
               }
             ],
             "primaryCta": {
-              "label": "Подключить каналы",
+              "label": "Попробовать сервис",
               "href": "/signup?role=service"
             },
             "mockVariant": "omnichannel-inbox"
@@ -134,7 +134,7 @@
               }
             ],
             "primaryCta": {
-              "label": "Открыть аналитику",
+              "label": "Попробовать маркетинг",
               "href": "/signup?role=marketing"
             },
             "mockVariant": "crm-analytics"
@@ -711,8 +711,8 @@
           "href": "/signup"
         },
         "secondaryCta": {
-          "label": "Запросить консультацию",
-          "href": "/contact"
+          "label": "Записаться на демо",
+          "href": "/demo"
         }
       }
     },
@@ -813,12 +813,15 @@
     }
   ],
   "seo": {
-    "title": "CRM-система для продаж и управления клиентами",
-    "description": "CRM для продаж, сервиса, маркетинга и аналитики в едином интерфейсе. Воронка сделок, омниканальный inbox, AI-помощник и сквозная аналитика."
+    "title": "CRM для агентств, торговли и IT — попробуйте бесплатно",
+    "description": "CRM для агентств, торговли и IT: воронка продаж, омниканальный inbox, сквозная аналитика. Попробуйте бесплатно или запросите демо."
   },
   "illustrationSpecs": [],
   "meta": {
     "sources": [
+      "wiki/brand/redpolitika.md",
+      "wiki/references/kaiten-product-facts.md",
+      "wiki/references/anglicism-dictionary.md",
       "wiki/design-system/voice.md",
       "wiki/design-system/colors.md",
       "wiki/design-system/typography.md",
@@ -840,11 +843,11 @@
       "wiki/layouts/crm-product-tour.md",
       "wiki/layouts/index.md"
     ],
-    "generatedAt": "2026-05-16T07:42:31.660Z",
+    "generatedAt": "2026-06-24T21:59:44.705Z",
     "generator": "host-agent",
     "archetype": "saas_landing",
     "layout": "crm-product-tour",
-    "tokenEstimate": 15165,
+    "tokenEstimate": 42893,
     "domain": "crm"
   }
 }
