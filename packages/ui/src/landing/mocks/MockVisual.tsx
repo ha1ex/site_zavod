@@ -46,7 +46,7 @@ import {
   VksArtifactFlowMock,
   MeetingRoomMock,
   MeetListMock,
-  PmBoard1Mock,
+  CTAmainMock,
 } from '.';
 
 /**
@@ -216,7 +216,7 @@ export function MockVisual({ variant }: { variant: MockVariant | undefined }) {
     case 'meet-list':
       return <MeetListMock />;
     case 'pm-board-1':
-      return <PmBoard1Mock />;
+      return <CTAmainMock />;
     default:
       return null;
   }
