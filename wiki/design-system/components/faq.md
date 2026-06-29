@@ -1060,3 +1060,105 @@
 | Версия | Дата | Описание |
 |--------|------|----------|
 | 1.0.0 | 2026-06-05 | Первичная реализация Desktop + Tablet + Mobile + JS-аккордеон |
+| 2.0.0 | 2026-06-29 | Реализация на лендинге «Кайтен для производств»: нативные `<details>`, плавная анимация `::details-content`, «открыт один вопрос», иконка `+/−` на CSS, hover-подсветка вопроса (см. ниже) |
+
+---
+
+## Реализация на лендинге (vercel_index.html) — каноничная, отличия от Figma-спеки
+
+На лендинге `#faq` собран НЕ на `li role="button"`, а на **нативных `<details>`** — один адаптивный блок (без раздельных Desktop/Tablet/Mobile секций, всё через медиа-запросы). Ключевые улучшения против Figma-спеки выше:
+
+| Что | Figma-спека (выше) | Лендинг (актуально) |
+|---|---|---|
+| Разметка | `<li role="button" aria-expanded>` ×3 секции | один `<details class="faq-item">` на вопрос |
+| Раскрытие | `display:none` → `block` (мгновенно) | **плавно**: `::details-content` `block-size:0→auto` + `interpolate-size`, 0.24s `cubic-bezier(.2,0,.2,1)` |
+| Несколько открытых | каждый сам по себе (multi-open) | **открыт только один** (JS на `toggle`) |
+| Иконка `+/−` | картинки из Figma (ассеты на 7 дней) | CSS: две полоски-псевдоэлемента, при `[open]` вертикаль гаснет |
+| Hover | только рамка `#e5e7eb` | рамка + **текст вопроса → `#7d4ccf`** |
+| Ширина текста ответа (desktop) | 776px | **900px** (`.faq-item__answer{max-width:900px}`), карточки — 1216px |
+| Отступы секции (desktop) | pt 96 / pb 128 | **96 / 96** (`#faq{padding:96px 0}` ≥1280); планшет 32, мобилка 24 (общий ритм) |
+| Шрифт | Roboto | `var(--font)` = Roboto/Inter/system-ui |
+
+### CSS (как в проекте)
+```css
+.faq-section{background-color:var(--surface-section);width:100%}
+.faq-section__container{display:flex;flex-direction:column;align-items:center;width:100%;gap:var(--sp-12);max-width:1216px;margin:0 auto}
+.faq-section__title{font-weight:var(--fw-semi);color:var(--text-title);text-align:center;width:100%;font-size:var(--fs-4xl);line-height:var(--lh-4xl)}
+.faq-list{display:flex;flex-direction:column;align-items:center;gap:var(--sp-4);width:100%;list-style:none}
+
+.faq-item{background:#fff;border-radius:12px;width:100%;border:1px solid transparent;display:flex;flex-direction:column;
+  cursor:pointer;text-align:left;transition:border-color .2s ease;interpolate-size:allow-keywords}
+.faq-item:hover{border-color:#e5e7eb}
+.faq-item[open]{border-color:var(--brand-100)}
+/* плавное раскрытие реальной высоты */
+.faq-item::details-content{block-size:0;overflow:hidden;opacity:0;
+  transition:block-size .24s cubic-bezier(.2,0,.2,1),opacity .2s ease,content-visibility .24s allow-discrete}
+.faq-item[open]::details-content{block-size:auto;opacity:1}
+
+.faq-item--pad-lg>summary{padding:var(--sp-6)}
+.faq-item[open].faq-item--pad-lg>summary{padding:var(--sp-6) var(--sp-6) var(--sp-4)}
+.faq-item__question{display:flex;align-items:flex-start;justify-content:space-between;width:100%;gap:var(--sp-4);list-style:none}
+.faq-item>summary{list-style:none}.faq-item>summary::-webkit-details-marker{display:none}
+.faq-item__q-text{font-weight:var(--fw-reg);color:var(--text-title);flex:1 0 0;min-width:0;word-break:break-word;transition:color .18s ease}
+.faq-item__q-text--xl{font-size:var(--fs-xl);line-height:var(--lh-xl)}
+.faq-item:hover .faq-item__q-text,.faq-item:hover .faq-item__icon{color:var(--brand-100)}   /* hover — фиолетовый вопрос+иконка */
+.faq-item[open] .faq-item__q-text{font-weight:var(--fw-semi);color:var(--brand-100)}
+
+/* иконка + / − на псевдоэлементах (без картинок) */
+.faq-item__icon{position:relative;flex-shrink:0;width:24px;height:24px;color:var(--k600)}
+.faq-item[open] .faq-item__icon{color:var(--brand-100)}
+.faq-item__icon::before{content:"";position:absolute;left:5px;right:5px;top:11px;height:2px;background:currentColor;border-radius:2px}
+.faq-item__icon::after{content:"";position:absolute;top:5px;bottom:5px;left:11px;width:2px;background:currentColor;border-radius:2px;transition:opacity .2s}
+.faq-item[open] .faq-item__icon::after{opacity:0}   /* открыт → минус */
+
+.faq-item__answer{font-weight:var(--fw-reg);color:var(--text-secondary);word-break:break-word;width:100%;max-width:900px;padding:0 var(--sp-6) var(--sp-6)}
+.faq-item__answer--md{font-size:var(--fs-md);line-height:var(--lh-md)}
+.faq-item__answer a{color:var(--brand-100);text-decoration:underline}   /* ссылки фиолетовые + подчёркивание */
+
+/* мобилка ≤767 */
+@media(max-width:767px){
+  .faq-section__title{font-size:var(--fs-2xl)}
+  .faq-item--pad-lg>summary{padding:var(--sp-4)}
+  .faq-item[open].faq-item--pad-lg>summary{padding:var(--sp-4) var(--sp-4) var(--sp-3)}
+  .faq-item__q-text--xl{font-size:var(--fs-md);line-height:var(--lh-md)}
+  .faq-item__answer{padding:0 var(--sp-4) var(--sp-4)}
+  .faq-item__answer--md{font-size:var(--fs-sm);line-height:var(--lh-sm)}
+}
+/* отступы секции по вертикали (десктоп) */
+@media(min-width:1280px){ #faq{padding-top:var(--sp-24);padding-bottom:var(--sp-24)} }   /* 96/96 */
+```
+
+### HTML (как в проекте)
+```html
+<section class="s faq-section" id="faq" aria-label="Часто задаваемые вопросы"><div class="container">
+  <div class="faq-section__container">
+    <h2 class="faq-section__title">Нас часто спрашивают</h2>
+    <ul class="faq-list">
+      <li style="width:100%;list-style:none">
+        <details class="faq-item faq-item--pad-lg" open>   <!-- open только у первого -->
+          <summary><span class="faq-item__question">
+            <span class="faq-item__q-text faq-item__q-text--xl">Вопрос?</span>
+            <span class="faq-item__icon" aria-hidden="true"></span>
+          </span></summary>
+          <p class="faq-item__answer faq-item__answer--md">Ответ… <a href="…">Ссылка →</a></p>
+        </details>
+      </li> …
+    </ul>
+  </div>
+</div></section>
+```
+
+### JS (как в проекте) — открыт только один вопрос
+```js
+(function(){
+  var items=[].slice.call(document.querySelectorAll('#faq .faq-item'));
+  items.forEach(function(d){
+    d.addEventListener('toggle',function(){
+      d.setAttribute('aria-expanded', d.open?'true':'false');
+      if(d.open){ items.forEach(function(o){ if(o!==d && o.open){ o.open=false; } }); }
+    });
+  });
+})();
+```
+
+> Поддержка `::details-content`/`interpolate-size` — Chrome 131+/129+. Без поддержки — раскрытие мгновенное (мягкая деградация, без рывка). **Не использовать `max-height`-фикс** — он даёт рывок. См. также [[accordion.md]].
