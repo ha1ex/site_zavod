@@ -96,6 +96,15 @@ Recommended landing usage:
 - Body: `text-md` or `text-lg`.
 - UI labels and meta: `text-xs` or `text-sm`.
 
+### Hanging prepositions — forced wrap on adaptives (RU text)
+
+Short Russian function words (prepositions/conjunctions: в, и, к, с, у, о, на, по, за, из, от, до, под, без, для, над, при, про, что, как, или, а, но, не, если…) must **never** be left alone at the end of a line. Glue each to the **following** word with a non-breaking space (`&nbsp;` in HTML, ` ` in code, Alt+0160 in mockups) so on wrap the word moves to the next line **together** with the preposition.
+
+- **Forced wrap on adaptives is the whole point of the rule.** It applies on ALL breakpoints (desktop / tablet / mobile), not only desktop. Narrow viewports wrap more, so hanging prepositions appear most often on mobile. `&nbsp;` forces the preposition to move to the next line together with its word the moment that word no longer fits the container — this is the required behavior on adaptives.
+- The browser/container does the wrapping. **Never** hardcode line breaks with `<br>` — manual `<br>` breaks the responsive layout. `&nbsp;` controls only the hanging words; everything else wraps naturally.
+- **Cover ALL visible wrapping text, not just section headings.** A common mistake is to fix only the section heading + subline and skip text inside components. Apply `&nbsp;` to: H1/H2 and sublines; accordion / FAQ item titles **and** bodies (question + answer); card titles **and** descriptions (features, templates, steps, benefits); captions, badges, list items, mockup labels.
+- Verify at **360–390px** — the narrowest width exposes hanging words best. Result: a preposition and its word either both stay on the current line, or **both move to the next line together** — the preposition never hangs at the end of a line alone.
+
 ## Spacing
 
 Use a 4px-based spacing scale:
