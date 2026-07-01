@@ -24,7 +24,9 @@ import {
   TestimonialQuote,
   SiteHeader,
   LandingFooterMock,
+  MockVisual,
 } from '@kaiten/ui/landing';
+import { ButtonLink } from '@kaiten/ui/primitives';
 import type { LandingSpec, Section } from '../schemas/landing-spec';
 
 /**
@@ -69,8 +71,40 @@ function RenderSection({ section }: { section: Section }) {
       return <MetricsSplit {...section.props} />;
     case 'TabbedFeatureSection':
       return <TabbedFeatureSection {...section.props} />;
-    case 'AccordionFeatureSection':
-      return <AccordionFeatureSection {...section.props} />;
+    case 'AccordionFeatureSection': {
+      // Компонент теперь self-contained (ReactNode-пропсы), а spec остаётся
+      // JSON (mockVariant-строки) — конвертируем на границе рендера.
+      const p = section.props;
+      const hasCta = Boolean(p.primaryCta || p.secondaryCta);
+      return (
+        <AccordionFeatureSection
+          heading={p.title}
+          description={p.description}
+          defaultOpen={0}
+          items={p.items.map((it) => ({
+            title: it.title,
+            body: it.description,
+            media: <MockVisual variant={it.mockVariant} />,
+          }))}
+          cta={
+            hasCta ? (
+              <>
+                {p.primaryCta && (
+                  <ButtonLink size="lg" href={p.primaryCta.href}>
+                    {p.primaryCta.label}
+                  </ButtonLink>
+                )}
+                {p.secondaryCta && (
+                  <ButtonLink variant="outline" size="lg" href={p.secondaryCta.href}>
+                    {p.secondaryCta.label}
+                  </ButtonLink>
+                )}
+              </>
+            ) : undefined
+          }
+        />
+      );
+    }
     case 'ScenarioWalkthroughSection':
       return <ScenarioWalkthroughSection {...section.props} />;
     case 'IndustryPickerSection':

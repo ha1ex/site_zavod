@@ -1,145 +1,172 @@
 'use client';
 
-import { useState } from 'react';
-import { ButtonLink } from '../primitives/ButtonLink';
-import { Icon } from '../primitives/Icon';
-import { Inspect } from '../primitives/Inspect';
-import { cn } from '../primitives/cn';
-import { MockVisual, type MockVariant } from './mocks';
-
-export interface AccordionFeatureItemProps {
-  id: string;
-  title: string;
-  description: string;
-  icon?: string;
-  mockVariant: MockVariant;
-}
-
-export interface AccordionFeatureSectionProps {
-  eyebrow?: string;
-  title: string;
-  description?: string;
-  items: AccordionFeatureItemProps[];
-  primaryCta?: { label: string; href: string };
-  secondaryCta?: { label: string; href: string };
-  /** Сторона мока. По умолчанию 'right'. */
-  mediaPosition?: 'left' | 'right';
-}
+import { useState, type ReactNode } from 'react';
 
 /**
- * AccordionFeatureSection — секция «заголовок + аккордеон фич слева + синхронный
- * mock справа». Каждый пункт раскрывается (описание), а mock справа меняется под
- * активный пункт. Один пункт всегда раскрыт. Вертикальная альтернатива
- * TabbedFeatureSection: удобно, когда фич 3–5 и у каждой — свой интерфейсный mock
- * (статусы заказа, загрузка участков, отчёт и т.п.), но городить N×MediaCopy не хочется.
+ * AccordionFeatureSection — переиспользуемый шаблон секции-аккордеона
+ * (левая колонка: заголовок + описание + сворачиваемые пункты + CTA;
+ *  правая колонка: квадратная медиа-область 592×592 с переключаемыми панелями).
+ *
+ * Поведение (как в исходном мокапе):
+ *  - открыт всегда ровно один пункт; клик по пункту переключает и пункт, и медиа-панель;
+ *  - плавная анимация высоты тела (height:0 → auto + interpolate-size), без «дёрганья»;
+ *  - медиа-область — квадрат, картинка/мокап заполняет её по object-fit:cover;
+ *  - адаптив: ≤900px колонки складываются в одну, медиа уходит наверх.
+ *
+ * Только стили и правила поведения — контент передаётся через props.
  */
+
+export type AccordionFeatureItemProps = {
+  /** Заголовок пункта */
+  title: ReactNode;
+  /** Тело пункта (раскрывается при открытии) */
+  body: ReactNode;
+  /** Медиа для правой панели: <img/>, готовый мокап или любой ReactNode */
+  media: ReactNode;
+};
+
+/** Совместимый алиас (историческое имя типа пункта). */
+export type AccordionFeatureItem = AccordionFeatureItemProps;
+
+export type AccordionFeatureSectionProps = {
+  /** Заголовок секции (левая колонка) */
+  heading: ReactNode;
+  /** Необязательное описание под заголовком */
+  description?: ReactNode;
+  /** Пункты аккордеона + соответствующие медиа-панели */
+  items: AccordionFeatureItemProps[];
+  /** Индекс изначально открытого пункта (по умолчанию 0) */
+  defaultOpen?: number;
+  /** Блок кнопок под пунктами (например, две CTA-кнопки) */
+  cta?: ReactNode;
+  /** Доп. класс на <section> */
+  className?: string;
+  /** id секции (для якорей/CSS) */
+  id?: string;
+};
+
+const ChevronDown = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+    <path d="M6 9l6 6 6-6" />
+  </svg>
+);
+
+const STYLES = `
+.afs{--afs-brand:#7d4ccf;--afs-brand-12:#efe9f9;--afs-bd:#e0e0e0;--afs-t1:#2d2d2d;--afs-t2:#757575;--afs-sec:#f5f5f5;
+  interpolate-size:allow-keywords;font-family:'Roboto','Inter',system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--afs-t1);padding:64px 0}
+.afs *{box-sizing:border-box}
+.afs__container{max-width:1216px;margin:0 auto;padding:0 24px}
+.afs .acc-wrap{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:stretch}
+.afs .acc{display:flex;flex-direction:column;gap:12px}
+.afs .acc-intro{margin-bottom:auto}
+.afs .acc-h{font-size:30px;line-height:36px;font-weight:600;color:var(--afs-t1);margin:0 0 12px}
+.afs .acc-sub{font-size:16px;line-height:24px;color:var(--afs-t2);margin:0}
+.afs .acc-item{background:var(--afs-sec);border:1px solid transparent;border-radius:12px;overflow:hidden;transition:border-color .2s ease,box-shadow .2s ease,background .2s ease}
+.afs .acc-item.open{background:#fff;border-color:var(--afs-brand);box-shadow:0 2px 10px -4px rgba(125,76,207,.18)}
+.afs .acc-head{width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px;margin:0;background:none;border:0;cursor:pointer;text-align:left;font-family:inherit}
+.afs .acc-item.open .acc-head{padding-bottom:12px}
+.afs .acc-title{font-size:18px;line-height:1.3;font-weight:400;color:var(--afs-t1);transition:color .18s}
+.afs .acc-head:hover .acc-title,.afs .acc-item.open .acc-title{color:var(--afs-brand)}
+.afs .acc-item.open .acc-title{font-weight:600}
+.afs .acc-ic{position:relative;flex:0 0 auto;display:flex;align-items:center;justify-content:center;width:24px;height:24px;color:var(--afs-t2);transition:color .18s}
+.afs .acc-item.open .acc-ic{color:var(--afs-brand)}
+.afs .acc-ic svg{width:20px;height:20px;transition:transform .24s ease}
+.afs .acc-item.open .acc-ic svg{transform:rotate(180deg)}
+.afs .acc-body{height:0;opacity:0;overflow:hidden;transition:height .26s cubic-bezier(.2,0,.2,1),opacity .2s ease}
+.afs .acc-item.open .acc-body{height:auto;opacity:1}
+.afs .acc-body__inner{padding:0 20px 20px;color:var(--afs-t2);font-size:16px;line-height:24px}
+/* Медиа-область — квадрат 592×592 с переключаемыми панелями */
+.afs .acc-media{position:relative;justify-self:center;align-self:center;width:100%;max-width:592px;aspect-ratio:1/1;
+  background:linear-gradient(180deg,#ece0ff,#cdecff);border-radius:16px;overflow:hidden;display:grid;place-items:stretch}
+.afs .acc-panel{grid-area:1/1;width:100%;height:100%;display:flex;align-items:stretch;justify-content:center;
+  opacity:0;visibility:hidden;transform:translateY(10px);transition:opacity .28s ease,transform .28s ease}
+.afs .acc-panel.on{opacity:1;visibility:visible;transform:none}
+.afs .acc-panel img{width:100%;height:100%;object-fit:cover;display:block}
+.afs .acc-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
+@media(max-width:900px){
+  .afs{padding:40px 0}
+  .afs .acc-wrap{grid-template-columns:1fr;gap:24px}
+  .afs .acc-intro{margin-bottom:0}
+  .afs .acc-media{order:-1;margin-bottom:8px}
+  .afs .acc-h{font-size:24px;line-height:32px}
+}
+@media(prefers-reduced-motion:reduce){
+  .afs .acc-body,.afs .acc-panel,.afs .acc-ic svg{transition:none}
+}
+`;
+
 export function AccordionFeatureSection({
-  eyebrow,
-  title,
+  heading,
   description,
   items,
-  primaryCta,
-  secondaryCta,
-  mediaPosition = 'right',
+  defaultOpen = 0,
+  cta,
+  className,
+  id,
 }: AccordionFeatureSectionProps) {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const active = items[activeIndex] ?? items[0];
-
-  const media = (
-    <div className="flex items-center justify-center overflow-hidden rounded-(--radius-3xl) bg-gradient-to-br from-(--color-action-primary-soft) to-(--color-surface-section) p-5 md:p-8">
-      <MockVisual variant={active?.mockVariant} />
-    </div>
-  );
-
-  const panel = (
-    <div className="space-y-3">
-      {items.map((item, i) => {
-        const isOpen = activeIndex === i;
-        return (
-          <Inspect
-            as="div"
-            key={item.id}
-            name={`accordion_feature.items[${i}]`}
-            className={cn(
-              'overflow-hidden rounded-(--radius-xl) border transition-colors duration-(--duration-base) ease-(--ease-ui)',
-              isOpen
-                ? 'border-(--color-action-primary) bg-(--color-action-primary-soft)'
-                : 'border-(--color-border-default) bg-(--color-surface-card)',
-            )}
-          >
-            <button
-              type="button"
-              onClick={() => setActiveIndex(i)}
-              aria-expanded={isOpen}
-              className={cn(
-                'flex w-full items-center justify-between gap-3 px-5 py-4 text-left font-medium',
-                isOpen ? 'text-(--color-text-accent)' : 'text-(--color-text-primary)',
-              )}
-            >
-              <span className="flex items-center gap-2.5">
-                {item.icon && <Icon name={item.icon} className="h-5 w-5 shrink-0" strokeWidth={2} />}
-                <span data-comp={`accordion_feature.items[${i}].title`}>{item.title}</span>
-              </span>
-              <Icon
-                name={isOpen ? 'ChevronUp' : 'ChevronDown'}
-                className="h-5 w-5 shrink-0 text-(--color-text-secondary)"
-                strokeWidth={2}
-              />
-            </button>
-            {isOpen && (
-              <p
-                data-comp={`accordion_feature.items[${i}].description`}
-                className="px-5 pb-5 text-base leading-relaxed text-(--color-text-secondary)"
-              >
-                {item.description}
-              </p>
-            )}
-          </Inspect>
-        );
-      })}
-    </div>
-  );
+  const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <section className={cn('mx-auto w-full max-w-(--container-kaiten)', 'px-4 py-16 md:px-6 lg:py-24')}>
-      <div className="mb-10 max-w-2xl">
-        {eyebrow && (
-          <p
-            data-comp="accordion_feature.eyebrow"
-            className="mb-3 text-sm font-medium uppercase tracking-wide text-(--color-text-accent)"
-          >
-            {eyebrow}
-          </p>
-        )}
-        <h2 data-comp="accordion_feature.title" className="text-3xl font-semibold leading-tight md:text-4xl">
-          {title}
-        </h2>
-        {description && (
-          <p data-comp="accordion_feature.description" className="mt-4 text-lg text-(--color-text-secondary)">
-            {description}
-          </p>
-        )}
-      </div>
+    <section className={`afs${className ? ' ' + className : ''}`} id={id}>
+      <style dangerouslySetInnerHTML={{ __html: STYLES }} />
+      <div className="afs__container">
+        <div className="acc-wrap">
+          <div className="acc">
+            <div className="acc-intro">
+              <h2 className="acc-h">{heading}</h2>
+              {description ? <p className="acc-sub">{description}</p> : null}
+            </div>
 
-      <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
-        <div className={cn('min-w-0', mediaPosition === 'left' ? 'order-2 lg:order-2' : 'order-2 lg:order-1')}>{panel}</div>
-        <div className={cn('min-w-0', mediaPosition === 'left' ? 'order-1 lg:order-1' : 'order-1 lg:order-2')}>{media}</div>
-      </div>
+            {items.map((item, i) => (
+              <div className={`acc-item${i === open ? ' open' : ''}`} key={i}>
+                <button
+                  className="acc-head"
+                  type="button"
+                  aria-expanded={i === open}
+                  onClick={() => setOpen(i)}
+                >
+                  <span className="acc-title">{item.title}</span>
+                  <span className="acc-ic" aria-hidden="true">
+                    <ChevronDown />
+                  </span>
+                </button>
+                <div className="acc-body">
+                  <div className="acc-body__inner">{item.body}</div>
+                </div>
+              </div>
+            ))}
 
-      {(primaryCta || secondaryCta) && (
-        <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:justify-center">
-          {primaryCta && (
-            <ButtonLink size="lg" href={primaryCta.href}>
-              {primaryCta.label}
-            </ButtonLink>
-          )}
-          {secondaryCta && (
-            <ButtonLink variant="outline" size="lg" href={secondaryCta.href}>
-              {secondaryCta.label}
-            </ButtonLink>
-          )}
+            {cta ? <div className="acc-cta">{cta}</div> : null}
+          </div>
+
+          <div className="acc-media" aria-hidden="true">
+            {items.map((item, i) => (
+              <div className={`acc-panel${i === open ? ' on' : ''}`} key={i}>
+                {item.media}
+              </div>
+            ))}
+          </div>
         </div>
-      )}
+      </div>
     </section>
   );
 }
+
+/* --- Пример использования ---
+<AccordionFeatureSection
+  id="control"
+  heading="Заголовок секции"
+  description="Необязательное описание под заголовком."
+  defaultOpen={0}
+  items={[
+    { title: "Пункт 1", body: <p>Текст пункта 1.</p>, media: <img src="/img/1.png" alt="" /> },
+    { title: "Пункт 2", body: <p>Текст пункта 2.</p>, media: <img src="/img/2.png" alt="" /> },
+  ]}
+  cta={
+    <>
+      <a className="btn btn--fill" href="#">Попробовать</a>
+      <a className="btn btn--outline" href="#">Демо</a>
+    </>
+  }
+/>
+*/

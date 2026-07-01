@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { AccordionFeatureSection } from './AccordionFeatureSection';
+import { MockVisual } from './mocks';
+import { ButtonLink } from '../primitives/ButtonLink';
 
 const meta: Meta<typeof AccordionFeatureSection> = {
   title: 'Landing/AccordionFeatureSection',
@@ -12,45 +14,45 @@ type Story = StoryObj<typeof AccordionFeatureSection>;
 
 export const Manufacturing: Story = {
   args: {
-    eyebrow: 'Кайтен для производств',
-    title: 'Производство под контролем без планёрок и ручного контроля',
+    heading: 'Производство под контролем без планёрок и ручного контроля',
     description:
       'От заявки до отгрузки — каждый этап, отдел и срок в одной системе. Руководитель не собирает картину по звонкам и чатам.',
+    defaultOpen: 0,
     items: [
       {
-        id: 'orders',
-        icon: 'LayoutGrid',
         title: 'Статус каждого заказа виден с доски',
-        description:
+        body:
           'Каждый заказ движется по маршруту: заявка → закупка → производство → ОТК → отгрузка. Руководитель видит весь поток и сразу замечает, где образовалась очередь или задержка — до того, как это стало проблемой.',
-        mockVariant: 'order-flow',
+        media: <MockVisual variant="order-flow" />,
       },
       {
-        id: 'load',
-        icon: 'GanttChart',
         title: 'Загрузка людей и участков понятна на недели вперёд',
-        description:
+        body:
           'Загрузка цеха, участков и инженеров — на одной шкале времени. Пересечения этапов подсвечены: видно эффект задержки одной поставки. Ресурсное планирование на недели вперёд, а не на день.',
-        mockVariant: 'production-gantt',
+        media: <MockVisual variant="production-gantt" />,
       },
       {
-        id: 'data',
-        icon: 'Boxes',
         title: 'Снабжение, цех и технологи работают с одними данными',
-        description:
+        body:
           'Чертежи, спецификации и статусы закупок живут внутри карточки заказа. Снабжение, цех и технологи видят одну версию данных — без пересылки файлов по почте.',
-        mockVariant: 'production-departments',
+        media: <MockVisual variant="production-departments" />,
       },
       {
-        id: 'report',
-        icon: 'BarChart3',
         title: 'Отчёт по загрузке и выполнению заказов — без ручной сборки',
-        description:
+        body:
           'Выполнение в срок, загрузка участков и просрочки собираются автоматически. Открыли отчёт перед планёркой — вся картина уже на экране, без выгрузок в таблицы.',
-        mockVariant: 'analytics-kpi',
+        media: <MockVisual variant="analytics-kpi" />,
       },
     ],
-    primaryCta: { label: 'Попробовать Кайтен бесплатно', href: '/signup' },
-    secondaryCta: { label: 'Запросить демонстрацию', href: '/demo' },
+    cta: (
+      <>
+        <ButtonLink size="lg" href="/signup">
+          Попробовать Кайтен бесплатно
+        </ButtonLink>
+        <ButtonLink variant="outline" size="lg" href="/demo">
+          Запросить демонстрацию
+        </ButtonLink>
+      </>
+    ),
   },
 };

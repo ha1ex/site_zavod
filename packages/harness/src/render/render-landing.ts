@@ -30,7 +30,83 @@ function literal(value: unknown): string {
   return 'undefined';
 }
 
+/** Экранирование текстового узла JSX (между тегами). */
+function jsxText(value: string): string {
+  return value
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\{/g, '&#123;')
+    .replace(/\}/g, '&#125;');
+}
+
+type AccordionFeatureProps = {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  items: Array<{
+    id: string;
+    title: string;
+    description: string;
+    icon?: string;
+    mockVariant: string;
+  }>;
+  primaryCta?: { label: string; href: string };
+  secondaryCta?: { label: string; href: string };
+  mediaPosition?: 'left' | 'right';
+};
+
+/**
+ * AccordionFeatureSection теперь принимает ReactNode-пропсы (heading / items[].body /
+ * items[].media / cta), а spec остаётся JSON (mockVariant-строки). Поэтому этой
+ * секции нужен собственный сериализатор, конвертирующий mockVariant → <MockVisual/>.
+ */
+function renderAccordionFeature(props: AccordionFeatureProps): string {
+  const items = props.items
+    .map(
+      (it) =>
+        `${INDENT}${INDENT}{ title: ${jsxString(it.title)}, body: ${jsxString(
+          it.description,
+        )}, media: <MockVisual variant=${jsxString(it.mockVariant)} /> },`,
+    )
+    .join('\n');
+
+  const lines: string[] = ['<AccordionFeatureSection'];
+  lines.push(`${INDENT}heading=${jsxString(props.title)}`);
+  if (props.description) lines.push(`${INDENT}description=${jsxString(props.description)}`);
+  lines.push(`${INDENT}defaultOpen={0}`);
+  lines.push(`${INDENT}items={[`);
+  lines.push(items);
+  lines.push(`${INDENT}]}`);
+
+  if (props.primaryCta || props.secondaryCta) {
+    lines.push(`${INDENT}cta={`);
+    lines.push(`${INDENT}${INDENT}<>`);
+    if (props.primaryCta) {
+      lines.push(
+        `${INDENT}${INDENT}${INDENT}<a className="btn btn--fill" href=${jsxString(
+          props.primaryCta.href,
+        )}>${jsxText(props.primaryCta.label)}</a>`,
+      );
+    }
+    if (props.secondaryCta) {
+      lines.push(
+        `${INDENT}${INDENT}${INDENT}<a className="btn btn--outline" href=${jsxString(
+          props.secondaryCta.href,
+        )}>${jsxText(props.secondaryCta.label)}</a>`,
+      );
+    }
+    lines.push(`${INDENT}${INDENT}</>`);
+    lines.push(`${INDENT}}`);
+  }
+
+  lines.push('/>');
+  return lines.join('\n');
+}
+
 function renderSection(section: Section): string {
+  if (section.component === 'AccordionFeatureSection') {
+    return renderAccordionFeature(section.props as AccordionFeatureProps);
+  }
   const tagName = section.component;
   const props = section.props as Record<string, unknown>;
   const attrs = Object.entries(props)
@@ -48,6 +124,11 @@ export function renderLandingToTSX(spec: LandingSpec, slug: string): string {
 
   for (const section of spec.sections) {
     usedComponents.add(section.component);
+    // AccordionFeatureSection рендерит mock через <MockVisual/> внутри items[].media,
+    // поэтому его тоже нужно импортировать в сгенерированной странице.
+    if (section.component === 'AccordionFeatureSection') {
+      usedComponents.add('MockVisual');
+    }
     sectionJSX.push(renderSection(section));
   }
 

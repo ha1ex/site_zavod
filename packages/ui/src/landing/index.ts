@@ -54,6 +54,9 @@ export type {
   AccordionFeatureItemProps,
 } from './AccordionFeatureSection';
 
+export { MockVisual } from './mocks';
+export type { MockVariant } from './mocks';
+
 export { ScenarioWalkthroughSection } from './ScenarioWalkthroughSection';
 export type {
   ScenarioWalkthroughSectionProps,
