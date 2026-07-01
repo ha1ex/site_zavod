@@ -228,26 +228,29 @@ export function ReviewSlider({ title = 'Заголовок секции отзы
           </div>
         </div>
 
-        <div className="revx__nav" role="group" aria-label="Листать отзывы">
-          <button
-            type="button"
-            className="revx__navbtn"
-            aria-label="Предыдущий отзыв"
-            disabled={idx <= 0}
-            onClick={() => { if (idx > 0) setIdx(idx - 1); }}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
-          </button>
-          <button
-            type="button"
-            className="revx__navbtn"
-            aria-label="Следующий отзыв"
-            disabled={idx >= maxI}
-            onClick={() => { if (idx < maxIdx()) setIdx(idx + 1); }}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
-          </button>
-        </div>
+        {/* Листалки нужны только когда отзывов больше 3 (иначе всё видно сразу). */}
+        {data.length > 3 ? (
+          <div className="revx__nav" role="group" aria-label="Листать отзывы">
+            <button
+              type="button"
+              className="revx__navbtn"
+              aria-label="Предыдущий отзыв"
+              disabled={idx <= 0}
+              onClick={() => { if (idx > 0) setIdx(idx - 1); }}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
+            </button>
+            <button
+              type="button"
+              className="revx__navbtn"
+              aria-label="Следующий отзыв"
+              disabled={idx >= maxI}
+              onClick={() => { if (idx < maxIdx()) setIdx(idx + 1); }}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+            </button>
+          </div>
+        ) : null}
       </div>
     </section>
   );
