@@ -50,6 +50,7 @@ import {
   PmBoard1Mock,
   ModulePortfolioMock,
   ApprovalBoardMock,
+  ReportsChartsMock,
 } from '.';
 
 /**
@@ -121,7 +122,8 @@ export type MockVariant =
   | 'pm-board-1'
   // Финансы / портфель
   | 'portfolio-board'
-  | 'approval-board';
+  | 'approval-board'
+  | 'reports-charts';
 
 export function MockVisual({ variant }: { variant: MockVariant | undefined }) {
   switch (variant) {
@@ -227,6 +229,8 @@ export function MockVisual({ variant }: { variant: MockVariant | undefined }) {
       return <ModulePortfolioMock />;
     case 'approval-board':
       return <ApprovalBoardMock />;
+    case 'reports-charts':
+      return <ReportsChartsMock />;
     default:
       return null;
   }

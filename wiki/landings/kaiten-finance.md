@@ -42,9 +42,6 @@ sections:
   - features
   - process
   - features
-  - promo_banner
-  - pricing
-  - faq
   - final_cta
   - kaiten_footer
 generator: host-agent
@@ -62,7 +59,7 @@ stale: false
 - **brief:** `content/briefs/kaiten-finance.json`
 - **archetype:** `enterprise_landing`
 - **goal:** `try_free` (brief.cta = "Попробовать Кайтен")
-- **sections used:** `site_header, hero, benefits_strip, social_proof, accordion_feature, features, media_copy, features, process, features, promo_banner, pricing, faq, final_cta, kaiten_footer`
+- **sections used:** `site_header, hero, benefits_strip, social_proof, accordion_feature, features, media_copy, features, process, features, final_cta, kaiten_footer`
 - **token estimate:** `46193`
 - **generation duration:** `0ms`
 - **generator:** `host-agent`
@@ -89,7 +86,6 @@ stale: false
 - `wiki/archetypes/enterprise_landing.md`
 - `packages/harness/src/skills/conversion-landing.md`
 - `packages/harness/src/prompts/section-mock-skill.md`
-- `wiki/layouts/enterprise-modular-saas.md`
 - `wiki/layouts/index.md`
 <!-- /gen:spec-meta -->
 
@@ -152,29 +148,6 @@ stale: false
   3. `KeyRound` · "Управление доступом" — 118 chars
   4. `History` · "История всех действий" — 129 chars
 
-### promo_banner (PromoBanner)
-
-
-### pricing (PricingPlans)
-
-- **title:** "Выберите формат под вашу организацию"
-- **plans:** 3
-  1. **Free** — 0 ₽ (4 features)
-  2. **Pro** ⭐ — По запросу/чел/мес (5 features)
-  3. **Корпоративный** — По запросу (5 features)
-
-### faq (FAQAccordion)
-
-- **title:** "Что обычно спрашивают в финансовых организациях"
-- **items:** 7 Q&A
-  1. "Можно установить Кайтен на наш сервер?" — answer 234/600 chars
-  2. "Кайтен подходит для импортозамещения?" — answer 215/600 chars
-  3. "Сможем ли мы разграничить доступ между подразделениями?" — answer 196/600 chars
-  4. "Это бухгалтерская система?" — answer 236/600 chars
-  5. "Нужна ли помощь ИТ-отдела, чтобы начать?" — answer 231/600 chars
-  6. "Останется ли история действий для аудита?" — answer 165/600 chars
-  7. "Как обращения коллег попадают в работу?" — answer 227/600 chars
-
 ### final_cta (FinalCta)
 
 - **title:** "Покажем, как Кайтен работает именно для вашей команды"
@@ -190,8 +163,8 @@ stale: false
 
 - **Score:** 85.34 / 100 (threshold 70) — ✅ pass
 - **Resolved segments:** Финансы, IT
-- **CTA types detected:** Trial, Demo, Unknown
-- **Generated:** 2026-07-01T08:22:15.932Z
+- **CTA types detected:** Trial, Demo
+- **Generated:** 2026-07-01T10:05:25.799Z
 
 ## Breakdown
 
@@ -200,7 +173,7 @@ stale: false
 | S1 | Story coverage | 68.91 | 0.4 | 27.56 | top-6 stories: compare(w=0.98, c=0.30), migrate-jira(w=0.95, c=0.53), fast-check(w=0.94, c=1.00), security(w=0.88, c=0.65), ux-check(w=0.71, c=0.77), demo(w=0.70, c=1.00) |
 | S2 | Segment fit | 100 | 0.3 | 30 | mentioned=2/2 [Финансы, IT] |
 | S3 | Role addressability | 88.89 | 0.2 | 17.78 | PM=1.00, DM=1.00, ITDir=0.67 |
-| S4 | CTA alignment | 100 | 0.1 | 10 | cta-types=[Trial,Demo,Unknown], match=2/2 |
+| S4 | CTA alignment | 100 | 0.1 | 10 | cta-types=[Trial,Demo], match=2/2 |
 
 ## Story coverage (top-N)
 

@@ -66,3 +66,4 @@ export { WindowProjectModalMock } from './WindowProjectModalMock';
 export { ScaleToFit } from './ScaleToFit';
 export { ModulePortfolioMock } from './ModulePortfolioMock';
 export { ApprovalBoardMock } from './ApprovalBoardMock';
+export { ReportsChartsMock } from './ReportsChartsMock';
