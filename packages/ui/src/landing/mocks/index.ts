@@ -69,3 +69,4 @@ export { ApprovalBoardMock } from './ApprovalBoardMock';
 export { ReportsChartsMock } from './ReportsChartsMock';
 export { WindowCardLegendMock } from './WindowCardLegendMock';
 export { ModuleProjectAnimateMock } from './ModuleProjectAnimateMock';
+export { FinanceKbDocsMock } from './FinanceKbDocsMock';

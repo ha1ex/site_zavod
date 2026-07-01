@@ -70,6 +70,7 @@ export const AssetRefSchema = z.object({
       'portfolio-board',
       'approval-board',
       'reports-charts',
+      'finance-kb-docs',
       'generic',
     ])
     .optional(),
@@ -333,6 +334,7 @@ const MediaCopySchema = z.object({
         'portfolio-board',
         'approval-board',
       'reports-charts',
+      'finance-kb-docs',
       ])
       .optional(),
     /**
@@ -585,6 +587,7 @@ export const MockVariantSchema = z.enum([
   'portfolio-board',
   'approval-board',
 'reports-charts',
+'finance-kb-docs',
 ]);
 export type MockVariant = z.infer<typeof MockVariantSchema>;
 

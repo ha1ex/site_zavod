@@ -51,6 +51,7 @@ import {
   ModulePortfolioMock,
   ApprovalBoardMock,
   ReportsChartsMock,
+  FinanceKbDocsMock,
 } from '.';
 
 /**
@@ -123,7 +124,8 @@ export type MockVariant =
   // Финансы / портфель
   | 'portfolio-board'
   | 'approval-board'
-  | 'reports-charts';
+  | 'reports-charts'
+  | 'finance-kb-docs';
 
 export function MockVisual({ variant }: { variant: MockVariant | undefined }) {
   switch (variant) {
@@ -231,6 +233,8 @@ export function MockVisual({ variant }: { variant: MockVariant | undefined }) {
       return <ApprovalBoardMock />;
     case 'reports-charts':
       return <ReportsChartsMock />;
+    case 'finance-kb-docs':
+      return <FinanceKbDocsMock />;
     default:
       return null;
   }

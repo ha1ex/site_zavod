@@ -37,12 +37,12 @@ sections:
   - benefits_strip
   - reviews
   - accordion_feature
-  - features
   - media_copy
   - features
-  - process
-  - features
   - final_cta
+  - features
+  - features
+  - process
   - kaiten_footer
 generator: host-agent
 durationMs: 0
@@ -59,7 +59,7 @@ stale: false
 - **brief:** `content/briefs/kaiten-finance.json`
 - **archetype:** `enterprise_landing`
 - **goal:** `try_free` (brief.cta = "Попробовать Кайтен")
-- **sections used:** `site_header, hero, benefits_strip, reviews, accordion_feature, features, media_copy, features, process, features, final_cta, kaiten_footer`
+- **sections used:** `site_header, hero, benefits_strip, reviews, accordion_feature, media_copy, features, final_cta, features, features, process, kaiten_footer`
 - **token estimate:** `46193`
 - **generation duration:** `0ms`
 - **generator:** `host-agent`
@@ -112,46 +112,46 @@ stale: false
 ### accordion_feature (AccordionFeatureSection)
 
 
-### features (FeatureGrid)
-
-- **title:** "Всё, что нужно финансовой команде для работы"
-- **columns:** 3 · **items:** 6
-  1. `GanttChart` · "Гант и ресурсное планирование" — 130 chars
-  2. `BarChart3` · "Автоматические отчёты и аналитика" — 115 chars
-  3. `Zap` · "Автоматизации без программирования" — 116 chars
-  4. `Sparkles` · "ИИ-ассистент" — 91 chars
-  5. `MessageSquare` · "Чат и видеосвязь" — 100 chars
-  6. `Smartphone` · "Мобильное приложение" — 116 chars
-
 ### media_copy (MediaCopy)
-
-
-### features (FeatureGrid)
-
-- **title:** "Кайтен работает для всей финансовой организации"
-- **columns:** 3 · **items:** 5
-  1. `Headphones` · "Отдел по работе с клиентами" — 140 chars
-  2. `Code` · "ИТ-подразделение" — 140 chars
-  3. `Scale` · "Юридический блок" — 101 chars
-  4. `ClipboardCheck` · "Операционный блок" — 119 chars
-  5. `Building2` · "Руководство" — 147 chars
-
-### process (ProcessSteps)
 
 
 ### features (FeatureGrid)
 
 - **title:** "Кайтен соответствует требованиям финансового сектора"
 - **columns:** 4 · **items:** 4
-  1. `Server` · "Установка на вашем сервере" — 140 chars
-  2. `ShieldCheck` · "Реестр отечественного ПО" — 138 chars
-  3. `KeyRound` · "Управление доступом" — 118 chars
-  4. `History` · "История всех действий" — 129 chars
+  1. `Server` · "Установка на вашем сервере" — 144 chars
+  2. `ShieldCheck` · "Реестр отечественного ПО" — 147 chars
+  3. `KeyRound` · "Управление доступом" — 117 chars
+  4. `History` · "История всех действий" — 137 chars
 
 ### final_cta (FinalCta)
 
 - **title:** "Покажем, как Кайтен работает именно для вашей команды"
 - **primaryCta:** "Попробовать Кайтен" → `/signup`
+
+### features (FeatureGrid)
+
+- **title:** "Кайтен работает для всей финансовой организации"
+- **columns:** 3 · **items:** 5
+  1. `Headphones` · "Отдел по работе с клиентами" — 178 chars
+  2. `Code` · "ИТ-подразделение" — 164 chars
+  3. `Scale` · "Юридический блок" — 103 chars
+  4. `ClipboardCheck` · "Операционный блок" — 119 chars
+  5. `Building2` · "Руководство" — 159 chars
+
+### features (FeatureGrid)
+
+- **title:** "Один инструмент вместо десятка сервисов"
+- **columns:** 3 · **items:** 6
+  1. `GanttChart` · "Гант и ресурсное планирование" — 131 chars
+  2. `BarChart3` · "Автоматические отчёты и аналитика" — 130 chars
+  3. `Zap` · "Автоматизации без программирования" — 121 chars
+  4. `Sparkles` · "ИИ-ассистент" — 91 chars
+  5. `MessageSquare` · "Чат и видеосвязь" — 100 chars
+  6. `Smartphone` · "Мобильное приложение" — 116 chars
+
+### process (ProcessSteps)
+
 
 ### kaiten_footer (LandingFooterMock)
 <!-- /gen:sections-summary -->
@@ -164,7 +164,7 @@ stale: false
 - **Score:** 85.34 / 100 (threshold 70) — ✅ pass
 - **Resolved segments:** Финансы, IT
 - **CTA types detected:** Trial, Demo
-- **Generated:** 2026-07-01T10:54:30.845Z
+- **Generated:** 2026-07-01T11:21:45.877Z
 
 ## Breakdown
 
