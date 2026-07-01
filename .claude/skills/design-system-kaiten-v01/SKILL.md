@@ -106,6 +106,35 @@ Short Russian function words (prepositions/conjunctions: в, и, к, с, у, о,
 - **Particles `ли`, `же`, `бы`, `ль`** are the mirror case: glue them to the **preceding** word (`Можно&nbsp;ли`, `Есть&nbsp;ли`, `так&nbsp;же`), not the following one — they must not hang either, nor start a line detached from their word.
 - Verify at **360–390px** — the narrowest width exposes hanging words best. Result: a preposition and its word either both stay on the current line, or **both move to the next line together** — the preposition never hangs at the end of a line alone.
 
+### Heading alignment — center on desktop/tablet, left on mobile (ОБЯЗАТЕЛЬНО)
+
+Заголовки и подзаголовки секций (H1/H2/H3 + их подзаголовки/сублайны) выравниваются:
+
+- **Desktop и tablet (≥ tablet breakpoint) — по центру** (`text-align: center`).
+- **Mobile (< tablet breakpoint) — по левому краю** (`text-align: left`).
+
+Это правило применяется всегда, к заголовку и подзаголовку каждой секции (hero, section headings, CTA-блоки и т.п.). Body-текст, списки и подписи внутри карточек этим правилом не затрагиваются — речь именно о заголовках и подзаголовках.
+
+Реализация — mobile-first: базовый `text-left`, на планшете/десктопе переопределяем на `center`.
+
+```html
+<!-- ✅ mobile: left → tablet/desktop: center -->
+<h2 class="text-left md:text-center">Заголовок секции</h2>
+<p class="text-left md:text-center">Подзаголовок секции</p>
+```
+
+```css
+/* эквивалент без утилит */
+.section-title,
+.section-subtitle { text-align: left; }              /* mobile */
+@media (min-width: 768px) {                            /* tablet и выше */
+  .section-title,
+  .section-subtitle { text-align: center; }
+}
+```
+
+При центрированном заголовке следи, чтобы блок с текстом был ограничен по ширине и центрирован (`mx-auto max-w-…`), иначе строки центрируются относительно слишком широкого контейнера. Проверяй на 360–390px (левый край) и на tablet/desktop (центр).
+
 ## Spacing
 
 Use a 4px-based spacing scale:
