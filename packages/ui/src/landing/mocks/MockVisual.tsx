@@ -52,6 +52,8 @@ import {
   ApprovalBoardMock,
   ReportsChartsMock,
   FinanceKbDocsMock,
+  OrgBoardMiniMock,
+  PlatformFeatureMiniMock,
 } from '.';
 
 /**
@@ -125,7 +127,18 @@ export type MockVariant =
   | 'portfolio-board'
   | 'approval-board'
   | 'reports-charts'
-  | 'finance-kb-docs';
+  | 'finance-kb-docs'
+  | 'mini-org-clients'
+  | 'mini-org-it'
+  | 'mini-org-legal'
+  | 'mini-org-ops'
+  | 'mini-org-management'
+  | 'mini-feat-gantt'
+  | 'mini-feat-reports'
+  | 'mini-feat-automation'
+  | 'mini-feat-ai'
+  | 'mini-feat-chat'
+  | 'mini-feat-mobile';
 
 export function MockVisual({ variant }: { variant: MockVariant | undefined }) {
   switch (variant) {
@@ -235,6 +248,19 @@ export function MockVisual({ variant }: { variant: MockVariant | undefined }) {
       return <ReportsChartsMock />;
     case 'finance-kb-docs':
       return <FinanceKbDocsMock />;
+    case 'mini-org-clients':
+    case 'mini-org-it':
+    case 'mini-org-legal':
+    case 'mini-org-ops':
+    case 'mini-org-management':
+      return <OrgBoardMiniMock variant={variant} />;
+    case 'mini-feat-gantt':
+    case 'mini-feat-reports':
+    case 'mini-feat-automation':
+    case 'mini-feat-ai':
+    case 'mini-feat-chat':
+    case 'mini-feat-mobile':
+      return <PlatformFeatureMiniMock variant={variant} />;
     default:
       return null;
   }

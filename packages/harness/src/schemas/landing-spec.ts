@@ -113,6 +113,10 @@ const FeatureGridSchema = z.object({
           icon: z.string().describe('lucide-icon name'),
           title: z.string().min(2).max(60),
           description: z.string().min(10).max(200),
+          mockVariant: z
+            .string()
+            .optional()
+            .describe('опциональное компактное мок-превью внутри карточки'),
         }),
       )
       .min(2)
@@ -588,6 +592,17 @@ export const MockVariantSchema = z.enum([
   'approval-board',
 'reports-charts',
 'finance-kb-docs',
+'mini-org-clients',
+'mini-org-it',
+'mini-org-legal',
+'mini-org-ops',
+'mini-org-management',
+'mini-feat-gantt',
+'mini-feat-reports',
+'mini-feat-automation',
+'mini-feat-ai',
+'mini-feat-chat',
+'mini-feat-mobile',
 ]);
 export type MockVariant = z.infer<typeof MockVariantSchema>;
 

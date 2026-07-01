@@ -171,6 +171,27 @@ const BOARD = `
 <div class="tile"><div class="card h180"><div class="row" style="gap:5px;margin-bottom:8px"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="var(--violet)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.5l2.2 2.5L8 5"/><path d="M8 8.5l2.2 2.5L14 5"/></svg><span class="val">Чек-лист</span></div><div class="row" style="gap:6px;margin-bottom:7px"><span class="lab">50%</span><span style="flex:1;height:6px;border-radius:3px;background:var(--violet-12);position:relative;overflow:hidden"><span style="position:absolute;left:0;top:0;bottom:0;width:50%;background:var(--violet);border-radius:3px"></span></span><span class="lab"><b style="color:#4caf51;font-weight:600">3</b>/6</span></div><div style="display:flex;flex-direction:column;gap:6px"><div class="row" style="gap:6px"><span class="cb on"></span><span class="val" style="font-weight:400;flex:1">1. Подзадача номер 1</span><span class="chip solid-g">30 марта</span><span style="width:14px;height:14px;border-radius:50%;background:#e9e9eb;display:flex;align-items:center;justify-content:center;flex:none"><svg width="9" height="9" viewBox="0 0 24 24" fill="#b4b4b6"><circle cx="12" cy="8.5" r="4"/><path d="M3.5 21a8.5 8.5 0 0 1 17 0z"/></svg></span></div><div class="row" style="gap:6px"><span class="cb"></span><span class="lab" style="flex:1">2. Подзадача номер 2</span><span style="width:14px;height:14px;border-radius:50%;background:#e9e9eb;display:flex;align-items:center;justify-content:center;flex:none"><svg width="9" height="9" viewBox="0 0 24 24" fill="#b4b4b6"><circle cx="12" cy="8.5" r="4"/><path d="M3.5 21a8.5 8.5 0 0 1 17 0z"/></svg></span></div><div class="row" style="gap:6px"><span class="cb on"></span><span class="val" style="font-weight:400;flex:1">3. Подзадача номер 3</span><span class="chip solid-o">2 апреля</span><span style="width:14px;height:14px;border-radius:50%;background:#e9e9eb;display:flex;align-items:center;justify-content:center;flex:none"><svg width="9" height="9" viewBox="0 0 24 24" fill="#b4b4b6"><circle cx="12" cy="8.5" r="4"/><path d="M3.5 21a8.5 8.5 0 0 1 17 0z"/></svg></span></div><div class="row" style="gap:6px"><span class="cb"></span><span class="lab" style="flex:1">4. Подзадача номер 4</span><span style="width:14px;height:14px;border-radius:50%;background:#e9e9eb;display:flex;align-items:center;justify-content:center;flex:none"><svg width="9" height="9" viewBox="0 0 24 24" fill="#b4b4b6"><circle cx="12" cy="8.5" r="4"/><path d="M3.5 21a8.5 8.5 0 0 1 17 0z"/></svg></span></div><div class="row" style="gap:6px"><span class="cb on"></span><span class="val" style="font-weight:400;flex:1">5. Подзадача номер 5</span><span class="chip solid-r">3 апреля</span><span style="width:14px;height:14px;border-radius:50%;background:#e9e9eb;display:flex;align-items:center;justify-content:center;flex:none"><svg width="9" height="9" viewBox="0 0 24 24" fill="#b4b4b6"><circle cx="12" cy="8.5" r="4"/><path d="M3.5 21a8.5 8.5 0 0 1 17 0z"/></svg></span></div><div class="row" style="gap:6px"><span class="cb"></span><span class="lab" style="flex:1">6. Подзадача номер 6</span><span style="width:14px;height:14px;border-radius:50%;background:#e9e9eb;display:flex;align-items:center;justify-content:center;flex:none"><svg width="9" height="9" viewBox="0 0 24 24" fill="#b4b4b6"><circle cx="12" cy="8.5" r="4"/><path d="M3.5 21a8.5 8.5 0 0 1 17 0z"/></svg></span></div></div></div><div class="cap">Чек-листы в задаче</div></div>
 `;
 
+/** CSS галереи фич (scope `.fm`) — переиспользуется при извлечении отдельных плиток. */
+export const FEATURE_TILES_CSS = CSS;
+
+/**
+ * Достаёт HTML одной плитки (элемент `.card`) по её подписи `.cap` из BOARD.
+ * В BOARD каждая плитка — на своей строке:
+ * `<div class="tile"><div class="card…">…</div><div class="cap">Подпись</div></div>`.
+ * Возвращает только внутреннюю `.card` (без подписи), чтобы встроить в свою рамку.
+ */
+export function featureTileCard(caption: string): string | null {
+  const needle = `<div class="cap">${caption}</div>`;
+  const line = BOARD.split('\n').find((l) => l.includes(needle));
+  if (!line) return null;
+  const end = line.indexOf(needle);
+  // Карточка, стоящая НЕПОСРЕДСТВЕННО перед подписью (на строке может быть
+  // несколько плиток — берём ближайшую слева, а не первую).
+  const start = line.lastIndexOf('<div class="card', end);
+  if (start === -1 || end === -1) return null;
+  return line.slice(start, end);
+}
+
 export function FeatureMocks() {
   return (
     <div className="fm">

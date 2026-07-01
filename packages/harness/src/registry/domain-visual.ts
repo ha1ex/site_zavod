@@ -163,6 +163,72 @@ export const DOMAIN_REGISTRY: DomainEntry[] = [
         description:
           'База знаний финблока в Kaiten: коллаж из двух документов — «Регламент согласования платежей» (оглавление + таблица лимитов Тип платежа/Сумма/Согласующий) и «Шаблон финансового отчёта» (поля Период/Подготовил/Согласовано + сводка по бюджету) — «учётная политика, регламенты и шаблоны там же, где задачи»',
       },
+      {
+        variant: 'mini-org-clients',
+        sections: ['feature'],
+        description:
+          'Компактное превью доски «Воронка продаж» Kaiten (клиентский отдел): колонки Входящий поток → Согласование → Оплата с карточками-компаниями и тегами сегмента — для карточки FeatureGrid «Отдел по работе с клиентами»',
+      },
+      {
+        variant: 'mini-org-it',
+        sections: ['feature'],
+        description:
+          'Компактное превью доски «Sprint» Kaiten (ИТ-подразделение): колонки Бэклог → В работе → Готово с задачами разработки — для карточки FeatureGrid «ИТ-подразделение»',
+      },
+      {
+        variant: 'mini-org-legal',
+        sections: ['feature'],
+        description:
+          'Компактное превью доски «Поручения и дела» Kaiten (юридический блок): Новое поручение → На согласовании → Исполнено, карточки договоров/претензий/судебных дел — для карточки FeatureGrid «Юридический блок»',
+      },
+      {
+        variant: 'mini-org-ops',
+        sections: ['feature'],
+        description:
+          'Компактное превью доски «Оплата счетов» Kaiten (операционный блок): Очередь → Платёж в банке → Оплачено — для карточки FeatureGrid «Операционный блок»',
+      },
+      {
+        variant: 'mini-org-management',
+        sections: ['feature'],
+        description:
+          'Компактное превью доски «Портфель проектов» Kaiten (руководство): Идея → Реализация → Контроль с проектами и метками размера — для карточки FeatureGrid «Руководство»',
+      },
+      {
+        variant: 'mini-feat-gantt',
+        sections: ['feature'],
+        description:
+          'Компактный мок диаграммы Ганта Kaiten (полосы задач по таймлайну) — для карточки FeatureGrid «Гант и ресурсное планирование»',
+      },
+      {
+        variant: 'mini-feat-reports',
+        sections: ['feature'],
+        description:
+          'Компактный мок отчёта Kaiten: KPI-плитки + столбчатая диаграмма — для карточки FeatureGrid «Автоматические отчёты и аналитика»',
+      },
+      {
+        variant: 'mini-feat-automation',
+        sections: ['feature'],
+        description:
+          'Компактный мок правила автоматизации Kaiten (триггер → действие) — для карточки FeatureGrid «Автоматизации без программирования»',
+      },
+      {
+        variant: 'mini-feat-ai',
+        sections: ['feature'],
+        description:
+          'Компактный мок ИИ-ассистента Kaiten: расшифровка встречи → список задач — для карточки FeatureGrid «ИИ-ассистент»',
+      },
+      {
+        variant: 'mini-feat-chat',
+        sections: ['feature'],
+        description:
+          'Компактный мок чата и видеосвязи Kaiten: сообщения + панель созвона — для карточки FeatureGrid «Чат и видеосвязь»',
+      },
+      {
+        variant: 'mini-feat-mobile',
+        sections: ['feature'],
+        description:
+          'Компактный мок мобильного приложения Kaiten: телефон с карточками задач — для карточки FeatureGrid «Мобильное приложение»',
+      },
     ],
     missingMocks: [],
     referenceDoc: 'wiki/landings/kaiten-platform.md',

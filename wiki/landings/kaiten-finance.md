@@ -2,7 +2,7 @@
 slug: kaiten-finance
 type: landing
 created: 2026-07-01
-updated: 2026-07-01
+updated: 2026-07-02
 status: draft
 brief: content/briefs/kaiten-finance.json
 archetype: enterprise_landing
@@ -164,7 +164,7 @@ stale: false
 - **Score:** 85.34 / 100 (threshold 70) — ✅ pass
 - **Resolved segments:** Финансы, IT
 - **CTA types detected:** Trial, Demo
-- **Generated:** 2026-07-01T11:21:45.877Z
+- **Generated:** 2026-07-01T19:14:51.733Z
 
 ## Breakdown
 

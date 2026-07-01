@@ -1,11 +1,14 @@
 import { Inspect } from '../primitives/Inspect';
 import { cn } from '../primitives/cn';
 import { Icon } from '../primitives/Icon';
+import { MockVisual, type MockVariant } from './mocks/MockVisual';
 
 export interface FeatureItemProps {
   icon: string;
   title: string;
   description: string;
+  /** Опциональное компактное мок-превью доски внутри карточки. */
+  mockVariant?: MockVariant;
 }
 
 export interface FeatureGridProps {
@@ -73,14 +76,20 @@ export function FeatureGrid({
               'hover:-translate-y-0.5 hover:border-(--color-action-primary)/40 hover:shadow-sm',
             )}
           >
-            <div
-              className={cn(
-                'mb-5 inline-flex h-11 w-11 items-center justify-center',
-                'rounded-(--radius-xl) bg-(--color-action-primary-soft) text-(--color-text-accent)',
-              )}
-            >
-              <Icon name={item.icon} className="h-5 w-5" />
-            </div>
+            {item.mockVariant ? (
+              <div className="mb-5">
+                <MockVisual variant={item.mockVariant} />
+              </div>
+            ) : (
+              <div
+                className={cn(
+                  'mb-5 inline-flex h-11 w-11 items-center justify-center',
+                  'rounded-(--radius-xl) bg-(--color-action-primary-soft) text-(--color-text-accent)',
+                )}
+              >
+                <Icon name={item.icon} className="h-5 w-5" />
+              </div>
+            )}
             <h3
               data-comp={`features.items[${i}].title`}
               className="text-lg font-semibold leading-snug"

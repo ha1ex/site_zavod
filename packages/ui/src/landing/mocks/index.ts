@@ -70,5 +70,6 @@ export { ReportsChartsMock } from './ReportsChartsMock';
 export { WindowCardLegendMock } from './WindowCardLegendMock';
 export { ModuleProjectAnimateMock } from './ModuleProjectAnimateMock';
 export { FinanceKbDocsMock } from './FinanceKbDocsMock';
-
 export { SliderTabs } from './SliderTabs';
+export { OrgBoardMiniMock } from './OrgBoardMiniMock';
+export { PlatformFeatureMiniMock } from './PlatformFeatureMiniMock';
