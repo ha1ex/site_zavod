@@ -67,3 +67,5 @@ export { ScaleToFit } from './ScaleToFit';
 export { ModulePortfolioMock } from './ModulePortfolioMock';
 export { ApprovalBoardMock } from './ApprovalBoardMock';
 export { ReportsChartsMock } from './ReportsChartsMock';
+export { WindowCardLegendMock } from './WindowCardLegendMock';
+export { ModuleProjectAnimateMock } from './ModuleProjectAnimateMock';
