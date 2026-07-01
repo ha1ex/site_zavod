@@ -285,7 +285,14 @@ export async function ingestLanding(opts: IngestLandingOptions): Promise<IngestL
   }
 
   // Layout conformance — проверяем порядок секций vs выбранный layout.
-  if (layoutSlug) {
+  // Режим brief.landingMode='custom' («1-в-1 по ТЗ») полностью игнорирует layout
+  // (в т.ч. enterprise-modular-saas): структура берётся строго из ТЗ, гейт выключен.
+  if (brief?.landingMode === 'custom') {
+    warnings.push(
+      'landingMode=custom (1-в-1 по ТЗ) — layout игнорируется (в т.ч. enterprise-modular-saas), ' +
+        'layout-conformance пропущен. Структура и контент берутся строго из ТЗ.',
+    );
+  } else if (layoutSlug) {
     const conformance = await validateLandingLayoutConformance(spec, {
       root: opts.root,
       layout: layoutSlug,

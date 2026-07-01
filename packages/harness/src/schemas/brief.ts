@@ -47,6 +47,15 @@ export const BriefSchema = z.object({
       'Резолвленные id сегментов из wiki/audiences/kaiten-scoring.json (опционально). ' +
         'Заполняется host-LLM после audience-research, когда lexical-match по audience/market не сработал.',
     ),
+  landingMode: z
+    .enum(['brief', 'custom'])
+    .default('brief')
+    .optional()
+    .describe(
+      'Режим лендинга (выбирается ДО брифа). ' +
+        '"brief" — стандартная цепочка: layout из wiki/layouts, фазы P0..P8, пайплайн может адаптировать структуру и добавлять секции под layout. ' +
+        '"custom" — «1-в-1 по ТЗ»: pageLayout игнорируется (в т.ч. enterprise-modular-saas), layout-conformance ВЫКЛючен, структура и контент строго из ТЗ; лишние блоки (Pricing/FAQ/Promo и пр.) НЕ добавляются, если их нет в ТЗ.',
+    ),
 });
 
 export type Brief = z.infer<typeof BriefSchema>;

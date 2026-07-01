@@ -111,7 +111,9 @@ pnpm -w run harness agent build landing --slug <slug> --brief content/briefs/<sl
 [`section-mock-skill.md §0`](../../../packages/harness/src/prompts/section-mock-skill.md#0-domain-fit--обязательная-проверка-до-выбора-mocка)
 и [`domain-mock-matrix.md`](../../../wiki/references/domain-mock-matrix.md).
 
-### 0a. Pick a layout from the library — ОБЯЗАТЕЛЬНО
+### 0a. Pick a layout from the library — ОБЯЗАТЕЛЬНО (кроме custom-режима)
+
+> **⛔ Сначала проверь `brief.landingMode`.** Если `landingMode: "custom"` («1-в-1 по ТЗ») — **пропусти весь этот шаг**: layout НЕ выбирается (в т.ч. `enterprise-modular-saas`), `pageLayout` НЕ пиши, `landing-layout-conformance` выключен автоматически. Структуру и контент бери **строго из ТЗ** (`tz.landing_structure` + `tz.landing_copy`): порядок блоков и тексты 1-в-1, лишние секции (Pricing/FAQ/Promo и пр.), которых нет в ТЗ, НЕ добавляй. Переходи к §1. Всё ниже — только для `landingMode: "brief"`.
 
 **Это первый шаг. Не пропускать.** Раньше у нас был один `pageArchetype: saas` с фиксированным порядком секций — это привело к проблеме «все лендинги одинаковые». Library of 5 layouts в [`wiki/layouts/`](../../../wiki/layouts/) покрывает основные сценарии.
 
@@ -362,7 +364,7 @@ Self-contained ZIP for the frontend team.
 - **Never hand-edit `generated/landings/<slug>/page.tsx`** — it's derived from the spec. Re-run apply.
 - If the spec already exists, you can start from apply directly (e.g. for re-validation after manual edits).
 - **Never skip mock authoring** на SaaS-лендингах. Лендинг без mock'ов в Hero и body-секциях выглядит «голым» — это блокер ревью (см. memory `visual-review-required`). Минимум: Hero с `visual.variant: '<specific>'` (НЕ `generic`) + 2-4 body-секции с уникальными mock'ами (НЕ `default`).
-- **Never skip layout selection.** Если в брифе нет `pageLayout` — выбери его перед написанием spec, опираясь на `wiki/layouts/index.md`. Запиши в `spec.meta.layout`.
+- **Never skip layout selection** — КРОМЕ `brief.landingMode: "custom"`. В режиме «по брифу» если в брифе нет `pageLayout` — выбери его перед написанием spec, опираясь на `wiki/layouts/index.md`, запиши в `spec.meta.layout`. В custom-режиме (1-в-1 по ТЗ) layout НЕ выбирается — структура строго из ТЗ.
 - **Never skip Domain audit (§0).** Reuse mock'ов из чужого домена («pm-board для CRM», «request-card для HR») — самый частый блокер ревью. См. [`domain-mock-matrix.md`](../../../wiki/references/domain-mock-matrix.md).
 - **Never use `mediaVariant: 'default'` twice на одном лендинге.** Валидатор завалит. Создай новый mock-компонент или подбери другой variant из реестра.
 
