@@ -81,6 +81,12 @@ stale: false
    из **brief** или **свободного запроса** — НЕ выбирай его: разворачивай фичи
    обычными `MediaCopy` (или `TabbedFeatureSection`, если ТЗ просит табы). Правило:
    `accordion-only-if-tz`.
+7. **Слот отзывов/доверия → `ReviewSlider` ПО УМОЛЧАНИЮ.** Там, где в таблицах
+   секций стоит `SocialProof`, по умолчанию ставь `ReviewSlider` (слайдер отзывов).
+   `SocialProof` (статичная сетка), `TestimonialQuote` (одна цитата), `LogoCloud`
+   (полоса лого) — альтернативы, только если явно нужны/просят в ТЗ. Conformance
+   считает эти четыре блока взаимозаменяемыми для слота `SocialProof`. Правило:
+   `reviews-default-slider`.
 
 ## Когда добавлять шестой layout
 

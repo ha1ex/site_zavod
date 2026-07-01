@@ -200,6 +200,32 @@ const SocialProofSchema = z.object({
   }),
 });
 
+/* ─── ReviewSlider (слайдер клиентских отзывов) ───────────────────── */
+const ReviewSliderSchema = z.object({
+  id: z.literal('reviews'),
+  component: z.literal('ReviewSlider'),
+  props: z.object({
+    title: z.string().max(120).optional(),
+    subtitle: z.string().max(280).optional(),
+    reviews: z
+      .array(
+        z.object({
+          logo: z.string().max(60).optional(),
+          quote: z.string().min(10).max(600),
+          name: z.string().min(2).max(80),
+          role: z.string().min(2).max(120),
+          avatar: z.string().optional(),
+          avatarInitial: z.string().max(4).optional(),
+          avatarBg: z.string().max(30).optional(),
+          caseUrl: z.string().optional(),
+          caseLabel: z.string().max(40).optional(),
+        }),
+      )
+      .min(1)
+      .max(12),
+  }),
+});
+
 /* ─── ProcessSteps ────────────────────────────────────────────────── */
 const ProcessStepsSchema = z.object({
   id: z.literal('process'),
@@ -725,6 +751,7 @@ export const SectionSchema = z.discriminatedUnion('component', [
   HeroSectionSchema,
   FeatureGridSchema,
   SocialProofSchema,
+  ReviewSliderSchema,
   ProcessStepsSchema,
   CtaBannerSchema,
   PricingPlansSchema,

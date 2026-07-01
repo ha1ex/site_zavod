@@ -133,7 +133,7 @@ export const REGISTRY: ComponentEntry[] = [
     sectionId: 'social_proof',
     category: 'social_proof',
     description:
-      'Карточки клиентских кейсов: 2-6 карточек с brand-инициалом, цитатой и опц. metric/href на полный кейс.',
+      'АЛЬТЕРНАТИВА ReviewSlider (по умолчанию для отзывов бери ReviewSlider). Статичная сетка карточек клиентских кейсов: 2-6 карточек с brand-инициалом, цитатой и опц. metric/href на полный кейс. Бери, когда нужен именно статичный ряд без слайдера.',
     props: {
       eyebrow: 'string (<=80) | undefined',
       title: 'string (4..80) | undefined',
@@ -142,6 +142,21 @@ export const REGISTRY: ComponentEntry[] = [
         'Array<{ brand: 1..60; brandInitial?: <=4; quote: 10..400; metric?: <=120; href? }> (2..6)',
     },
     constraints: ['min_2_cases', 'max_6_cases'],
+  },
+  {
+    name: 'ReviewSlider',
+    specComponent: 'ReviewSlider',
+    sectionId: 'reviews',
+    category: 'social_proof',
+    description:
+      'ДЕФОЛТНЫЙ блок для любых отзывов/доверия. Слайдер клиентских отзывов (листается стрелками): карточки с названием/лого компании, цитатой, аватаром-инициалом, именем и ролью автора, опц. кнопкой «Читать кейс». Используй его для блока «кейсы/доверие» по умолчанию. SocialProof/TestimonialQuote/LogoCloud — альтернативы (см. их описания).',
+    props: {
+      title: 'string (<=120) | undefined',
+      subtitle: 'string (<=280) | undefined',
+      reviews:
+        'Array<{ logo?: <=60 (название/лого); quote: 10..600; name: 2..80; role: 2..120; avatar?; avatarInitial?: <=4; avatarBg?; caseUrl?; caseLabel?: <=40 }> (1..12)',
+    },
+    constraints: ['min_1_review', 'max_12_reviews'],
   },
   {
     name: 'ProcessSteps',

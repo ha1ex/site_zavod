@@ -22,10 +22,10 @@
   "tone": "clear, practical, confident, no hype",
   "cta": "Попробовать Кайтен",
   "pageArchetype": "enterprise",
-  "pageLayout": "enterprise-modular-saas",
   "resolvedSegments": [
     "Финансы",
     "IT",
     "Топ-менеджмент"
-  ]
+  ],
+  "landingMode": "custom"
 }

@@ -24,6 +24,7 @@ import {
   TestimonialQuote,
   SiteHeader,
   LandingFooterMock,
+  ReviewSlider,
   MockVisual,
 } from '@kaiten/ui/landing';
 import { ButtonLink } from '@kaiten/ui/primitives';
@@ -55,6 +56,8 @@ function RenderSection({ section }: { section: Section }) {
       return <LandingFooterMock />;
     case 'SocialProof':
       return <SocialProof {...section.props} />;
+    case 'ReviewSlider':
+      return <ReviewSlider {...section.props} />;
     case 'ProcessSteps':
       return <ProcessSteps {...section.props} />;
     case 'CtaBanner':

@@ -151,10 +151,13 @@ export async function validateLandingLayoutConformance(
   //   удовлетворяют требование MediaCopy — это их прямое назначение: свернуть
   //   простынь из 3-5 MediaCopy в одну секцию.
   const INTERACTIVE_MEDIA = new Set(['TabbedFeatureSection', 'AccordionFeatureSection']);
+  // Блоки отзывов/доверия взаимозаменяемы в слоте SocialProof. Дефолт — ReviewSlider.
+  const TRUST_COMPONENTS = new Set(['SocialProof', 'ReviewSlider', 'TestimonialQuote', 'LogoCloud']);
   const componentMatches = (actual: string, required: string) =>
     actual === required ||
     (required === 'LandingFooter' && actual === 'LandingFooterMock') ||
-    (required === 'MediaCopy' && INTERACTIVE_MEDIA.has(actual));
+    (required === 'MediaCopy' && INTERACTIVE_MEDIA.has(actual)) ||
+    (required === 'SocialProof' && TRUST_COMPONENTS.has(actual));
 
   let cursor = 0;
   for (const req of requiredOnly) {
