@@ -64,3 +64,4 @@ export { WindowSlaMock } from './WindowSlaMock';
 export { WindowTicketModalMock } from './WindowTicketModalMock';
 export { WindowProjectModalMock } from './WindowProjectModalMock';
 export { ScaleToFit } from './ScaleToFit';
+export { ModuleProjectAnimateMock } from './ModuleProjectAnimateMock';
