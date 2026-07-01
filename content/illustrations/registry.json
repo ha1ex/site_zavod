@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-01T19:14:51.746Z",
+  "updatedAt": "2026-07-01T19:43:47.448Z",
   "entries": [
     {
       "kind": "mock-use",
@@ -270,7 +270,7 @@
       "sectionId": "hero",
       "sectionIdx": 1,
       "domain": "pm",
-      "recordedAt": "2026-07-01T19:14:51.745Z"
+      "recordedAt": "2026-07-01T19:43:47.447Z"
     },
     {
       "kind": "mock-use",
@@ -279,7 +279,7 @@
       "sectionId": "media_copy",
       "sectionIdx": 5,
       "domain": "pm",
-      "recordedAt": "2026-07-01T19:14:51.746Z"
+      "recordedAt": "2026-07-01T19:43:47.448Z"
     }
   ]
 }

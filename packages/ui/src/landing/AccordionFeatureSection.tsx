@@ -82,7 +82,7 @@ const STYLES = `
   opacity:0;visibility:hidden;transform:translateY(10px);transition:opacity .28s ease,transform .28s ease}
 .afs .acc-panel.on{opacity:1;visibility:visible;transform:none}
 .afs .acc-panel img{width:100%;height:100%;object-fit:cover;display:block}
-.afs .acc-cta{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:32px}
+.afs .acc-cta{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:48px}
 @media(max-width:900px){
   .afs{padding:40px 0}
   .afs .acc-wrap{grid-template-columns:1fr;gap:24px}
@@ -136,7 +136,6 @@ export function AccordionFeatureSection({
               </div>
             ))}
 
-            {cta ? <div className="acc-cta">{cta}</div> : null}
           </div>
 
           <div className="acc-media" aria-hidden="true">
@@ -147,6 +146,8 @@ export function AccordionFeatureSection({
             ))}
           </div>
         </div>
+
+        {cta ? <div className="acc-cta">{cta}</div> : null}
       </div>
     </section>
   );

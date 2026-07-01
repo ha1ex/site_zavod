@@ -117,29 +117,78 @@ function AiCardMock() {
   );
 }
 
-/** Мобильное приложение — рисованный телефон с карточками задач. */
+/** Мобильное приложение Kaiten — по образцу реального приложения. */
 function MobileMock() {
-  const rows = [
-    { t: 'Согласовать платёж', c: '#7d4ccf' },
-    { t: 'Сверка за март', c: '#2b8fd6' },
-    { t: 'Отчёт готов', c: '#3f9d4a' },
+  const cards = [
+    { bar: '#7d4ccf', t: 'Согласовать платёж поставщику', due: '10 июня', avatars: ['#d9a3a3', '#8a9bc9'] },
+    { bar: '#e5548a', t: 'Сверка за март', avatars: ['#8ac9a0'] },
   ];
   return (
     <Frame>
-      <div className="flex h-[168px] w-[92px] flex-col overflow-hidden rounded-[12px] border-2 border-(--color-text-primary)/80 bg-(--color-surface-card) p-1.5 shadow-[0_10px_30px_-12px_rgba(45,45,45,0.4)]">
-        <div className="mx-auto mb-1.5 mt-0.5 h-1 w-6 rounded-full bg-(--color-neutral-300)" />
-        <div className="flex flex-1 flex-col gap-1.5">
-          {rows.map((r) => (
-            <div key={r.t} className="rounded border border-(--color-border-default) p-1">
-              <span className="mb-1 block h-1 w-4 rounded-full" style={{ background: r.c }} />
-              <span className="block truncate text-[7px] text-(--color-text-primary)">{r.t}</span>
+      <div className="flex h-[184px] w-[116px] flex-col overflow-hidden rounded-[14px] border-2 border-(--color-text-primary)/80 bg-(--color-surface-page) shadow-[0_12px_34px_-12px_rgba(45,45,45,0.45)]">
+        {/* статус-бар */}
+        <div className="flex items-center justify-between bg-(--color-surface-card) px-2 pt-1 pb-0.5 text-[5px] font-semibold text-(--color-text-primary)">
+          <span>23:59</span>
+          <span className="flex items-end gap-[1px]">
+            <span className="h-[3px] w-[2px] rounded-[1px] bg-(--color-text-primary)" />
+            <span className="h-[4px] w-[2px] rounded-[1px] bg-(--color-text-primary)" />
+            <span className="h-[5px] w-[2px] rounded-[1px] bg-(--color-text-primary)" />
+            <span className="ml-0.5 inline-block h-[5px] w-[8px] rounded-[1px] border border-(--color-text-primary)" />
+          </span>
+        </div>
+        {/* шапка */}
+        <div className="flex items-center gap-1 border-b border-(--color-border-default) bg-(--color-surface-card) px-2 py-1">
+          <span className="h-2.5 w-2.5 rounded-[3px] bg-gradient-to-br from-(--color-action-primary) to-(--color-blue-100)" />
+          <span className="text-[6.5px] font-bold text-(--color-text-primary)">Kaiten</span>
+          <span className="ml-auto flex items-center gap-1">
+            <span className="h-1.5 w-1.5 rounded-full border border-(--color-text-tertiary)" />
+            <span className="rounded-[3px] bg-gradient-to-r from-[#7d4ccf] to-[#2b8fd6] px-1 py-px text-[4.5px] font-bold text-white">AI</span>
+            <span className="flex flex-col gap-[1px]">
+              {[0, 1, 2].map((i) => <span key={i} className="h-[1.5px] w-[1.5px] rounded-full bg-(--color-text-tertiary)" />)}
+            </span>
+          </span>
+        </div>
+        {/* тулбар */}
+        <div className="flex items-center justify-between px-2 py-1">
+          <span className="grid h-3.5 w-3.5 place-items-center rounded-[4px] bg-(--color-action-primary) text-[8px] font-bold leading-none text-white">+</span>
+          <span className="grid h-3.5 w-3.5 place-items-center rounded-[4px] bg-(--color-surface-card)">
+            <span className="flex flex-col gap-[1.5px]">
+              <span className="h-[1.5px] w-2 rounded-full bg-(--color-text-tertiary)" />
+              <span className="h-[1.5px] w-1.5 rounded-full bg-(--color-text-tertiary)" />
+              <span className="h-[1.5px] w-1 rounded-full bg-(--color-text-tertiary)" />
+            </span>
+          </span>
+        </div>
+        {/* доска */}
+        <div className="flex flex-1 flex-col gap-1 overflow-hidden px-2">
+          <span className="text-[5.5px] font-semibold text-(--color-text-secondary)">В очереди</span>
+          {cards.map((c) => (
+            <div key={c.t} className="rounded-[5px] border border-(--color-border-default) bg-(--color-surface-card) p-1">
+              <span className="block h-[2px] w-4 rounded-full" style={{ background: c.bar }} />
+              <span className="mt-1 block text-[5.5px] leading-tight text-(--color-text-primary) line-clamp-2">{c.t}</span>
+              <div className="mt-1 flex items-center gap-1">
+                <span className="flex -space-x-1">
+                  {c.avatars.map((a, i) => (
+                    <span key={i} className="h-2 w-2 rounded-full border border-(--color-surface-card)" style={{ background: a }} />
+                  ))}
+                </span>
+                {c.due && (
+                  <span className="ml-auto rounded-[3px] bg-[#fbe3ec] px-1 text-[4.5px] font-semibold text-[#c2185b]">{c.due}</span>
+                )}
+              </div>
             </div>
           ))}
         </div>
-        <div className="mt-1.5 flex justify-around">
-          {['#7d4ccf', '#c9c9cf', '#c9c9cf'].map((c, i) => (
-            <span key={i} className="h-1.5 w-1.5 rounded-full" style={{ background: c }} />
+        {/* нижняя навигация */}
+        <div className="mt-1 flex items-center justify-around border-t border-(--color-border-default) bg-(--color-surface-card) px-1 py-1">
+          <span className="relative">
+            <span className="block h-2 w-2.5 rounded-[2px] border border-(--color-action-primary)" />
+            <span className="absolute -right-1 -top-1 grid h-1.5 min-w-[6px] place-items-center rounded-full bg-(--color-action-primary) px-[1px] text-[3.5px] font-bold text-white">18</span>
+          </span>
+          {[0, 1, 2, 3].map((i) => (
+            <span key={i} className="h-2 w-2 rounded-[2px] border border-(--color-text-tertiary)" />
           ))}
+          <span className="h-2.5 w-2.5 rounded-full bg-[#d9a3a3]" />
         </div>
       </div>
     </Frame>

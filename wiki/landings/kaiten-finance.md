@@ -164,7 +164,7 @@ stale: false
 - **Score:** 85.34 / 100 (threshold 70) — ✅ pass
 - **Resolved segments:** Финансы, IT
 - **CTA types detected:** Trial, Demo
-- **Generated:** 2026-07-01T19:14:51.733Z
+- **Generated:** 2026-07-01T19:43:47.433Z
 
 ## Breakdown
 
