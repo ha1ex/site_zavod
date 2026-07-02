@@ -54,6 +54,12 @@ import {
   FinanceKbDocsMock,
   OrgBoardMiniMock,
   PlatformFeatureMiniMock,
+  RetailCardMock,
+  RetailProjectMock,
+  RetailPortfolioAnimateMock,
+  RetailMobileMock,
+  RetailDocMiniMock,
+  RetailReportMiniMock,
 } from '.';
 
 /**
@@ -138,7 +144,18 @@ export type MockVariant =
   | 'mini-feat-automation'
   | 'mini-feat-ai'
   | 'mini-feat-chat'
-  | 'mini-feat-mobile';
+  | 'mini-feat-mobile'
+  // Retail / розничная сеть (pm)
+  | 'retail-task-card'
+  | 'retail-project'
+  | 'retail-portfolio-animated'
+  | 'retail-mobile'
+  | 'retail-doc-instruction'
+  | 'retail-doc-standards'
+  | 'retail-doc-contracts'
+  | 'retail-report-stores'
+  | 'retail-report-bottlenecks'
+  | 'retail-report-ai';
 
 export function MockVisual({ variant }: { variant: MockVariant | undefined }) {
   switch (variant) {
@@ -261,6 +278,22 @@ export function MockVisual({ variant }: { variant: MockVariant | undefined }) {
     case 'mini-feat-chat':
     case 'mini-feat-mobile':
       return <PlatformFeatureMiniMock variant={variant} />;
+    case 'retail-task-card':
+      return <RetailCardMock />;
+    case 'retail-project':
+      return <RetailProjectMock />;
+    case 'retail-portfolio-animated':
+      return <RetailPortfolioAnimateMock />;
+    case 'retail-mobile':
+      return <RetailMobileMock />;
+    case 'retail-doc-instruction':
+    case 'retail-doc-standards':
+    case 'retail-doc-contracts':
+      return <RetailDocMiniMock variant={variant} />;
+    case 'retail-report-stores':
+    case 'retail-report-bottlenecks':
+    case 'retail-report-ai':
+      return <RetailReportMiniMock variant={variant} />;
     default:
       return null;
   }
