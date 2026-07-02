@@ -95,6 +95,18 @@ export const DOMAIN_REGISTRY: DomainEntry[] = [
           'Канбан PM-команды: Бэклог → В работе → Ревью → Готово, карточки с эпиками, story points, исполнителями',
       },
       {
+        variant: 'mcp-agent-board',
+        sections: ['hero', 'media'],
+        description:
+          'MCP-сервер Kaiten: слева окно ИИ-ассистента, вызывающего kaiten.create_card через MCP, справа доска «Спринт 24» с созданной карточкой в колонке «В работе». Показывает, что ассистент управляет задачами Kaiten из диалога (для лендинга MCP-сервера)',
+      },
+      {
+        variant: 'mcp-agent-board-animated',
+        sections: ['hero'],
+        description:
+          'Анимированный первый экран MCP-сервера Kaiten: спринт-доработка (Бэклог → В работе → Готово) и плавающий поверх неё чат ИИ-ассистента. Юзер пишет «Назначь ответственного, передвинь в Готово» → ассистент вызывает kaiten.update_card через MCP → на карточке всплывает аватар ответственного и она переезжает в «Готово». CSS @keyframes, без хуков',
+      },
+      {
         variant: 'kb-internal',
         sections: ['media', 'tab'],
         description: 'Внутренний регламент / база знаний для команды',
@@ -288,6 +300,12 @@ export const DOMAIN_REGISTRY: DomainEntry[] = [
         sections: ['feature'],
         description:
           'Мок-превью «ИИ-аналитик»: прогноз срока проекта на основе похожих задач сети с трендом — для карточки FeatureGrid «Когда будет готово»',
+      },
+      {
+        variant: 'gantt-chart',
+        sections: ['media', 'tab', 'scenario', 'feature'],
+        description:
+          'Диаграмма Ганта Kaiten (GanttChartMock): таймлайн проектов по фазам с полосами задач, зависимостями и ресурсным планированием. КАНОНИЧНЫЙ мок для пункта/секции «Диаграмма Ганта» — не путать с reports/analytics',
       },
     ],
     missingMocks: [],

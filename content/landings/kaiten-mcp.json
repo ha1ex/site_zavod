@@ -1,0 +1,351 @@
+{
+  "pageType": "saas_landing",
+  "goal": "try_free",
+  "sections": [
+    {
+      "id": "site_header",
+      "component": "SiteHeader",
+      "props": {}
+    },
+    {
+      "id": "hero",
+      "component": "HeroSection",
+      "props": {
+        "eyebrow": "Новое в Kaiten · MCP-сервер",
+        "title": "ИИ-ассистент управляет задачами в Kaiten",
+        "accentWord": "задачами",
+        "subtitle": "Подключите Claude, Cursor или другой ИИ-инструмент к доскам Kaiten. Ассистент создаёт, читает и обновляет карточки прямо из диалога — по стандарту Model Context Protocol.",
+        "primaryCta": {
+          "label": "Попробовать бесплатно",
+          "href": "/signup"
+        },
+        "secondaryCta": {
+          "label": "Как подключить",
+          "href": "#process"
+        },
+        "visual": {
+          "type": "product_screenshot",
+          "assetId": "kaiten-mcp-agent-board",
+          "variant": "mcp-agent-board-animated"
+        },
+        "visualPosition": "below"
+      }
+    },
+    {
+      "id": "benefits_strip",
+      "component": "BenefitsStrip",
+      "props": {
+        "items": [
+          "Любой MCP-клиент",
+          "Карточки из диалога",
+          "Статусы без ручного клика",
+          "Сводки по спринтам"
+        ]
+      }
+    },
+    {
+      "id": "logo_cloud",
+      "component": "LogoCloud",
+      "props": {
+        "title": "Kaiten доверяют 100 000+ компаний",
+        "items": [
+          {
+            "brand": "Сбер",
+            "brandInitial": "С"
+          },
+          {
+            "brand": "S7 Airlines",
+            "brandInitial": "S7"
+          },
+          {
+            "brand": "X5 Group",
+            "brandInitial": "X5"
+          },
+          {
+            "brand": "Ростелеком",
+            "brandInitial": "Р"
+          },
+          {
+            "brand": "Норникель",
+            "brandInitial": "Н"
+          }
+        ]
+      }
+    },
+    {
+      "id": "media_copy",
+      "component": "MediaCopy",
+      "props": {
+        "eyebrow": "Зачем это",
+        "title": "Меньше переключений между окнами",
+        "description": "Задачи живут в Kaiten, а работа идёт в ИИ-ассистенте и редакторе кода. Раньше статусы и карточки приходилось обновлять вручную. MCP-сервер убирает разрыв: ассистент сам обращается к доскам и меняет задачи по вашему запросу.",
+        "checklist": [
+          {
+            "text": "Ассистент видит колонки, задачи, сроки и ответственных"
+          },
+          {
+            "text": "Карточки заводятся и двигаются прямо из диалога"
+          },
+          {
+            "text": "Не нужно открывать доску за каждым статусом"
+          }
+        ],
+        "mediaPosition": "right",
+        "mediaVariant": "pm-board"
+      }
+    },
+    {
+      "id": "media_copy",
+      "component": "MediaCopy",
+      "props": {
+        "eyebrow": "Сравниваете трекеры",
+        "title": "Пришли с Jira, YouTrack или Trello",
+        "description": "Многие команды сравнивают инструменты для задач и выбирают, стоит ли переезжать. Kaiten переносит задачи из Jira, YouTrack и Trello, а ИИ-ассистент через MCP сразу управляет карточками. Не нужно бросать привычный инструмент — попробуйте на одной доске без риска для остальных.",
+        "checklist": [
+          {
+            "text": "Импорт задач из Jira, YouTrack, Trello и Asana"
+          },
+          {
+            "text": "Аналог привычной глубины: спринты, эпики, вложенные задачи"
+          },
+          {
+            "text": "Пилот на одной доске — остальная работа не затронута"
+          }
+        ],
+        "mediaPosition": "left",
+        "mediaVariant": "mcp-agent-board"
+      }
+    },
+    {
+      "id": "media_copy",
+      "component": "MediaCopy",
+      "props": {
+        "eyebrow": "Тимлиду и техническому директору",
+        "title": "Прозрачно и под контролем доступа",
+        "description": "Тимлид видит статус спринта без созвонов, а технический директор (CTO) — что команда не тратит время на рутину. Агент работает под правами доступа и токеном, которые вы ему открыли. Данные остаются в контуре Kaiten и хранятся в России.",
+        "checklist": [
+          {
+            "text": "Каждое действие агента видно в истории карточки"
+          },
+          {
+            "text": "Права доступа и токен ограничивают, что агенту доступно"
+          },
+          {
+            "text": "Хранение данных в России, в реестре отечественного ПО"
+          }
+        ],
+        "mediaPosition": "right",
+        "mediaVariant": "analytics-kpi"
+      }
+    },
+    {
+      "id": "metrics_split",
+      "component": "MetricsSplit",
+      "props": {
+        "eyebrow": "Почему это выгодно команде",
+        "title": "Надёжная основа под новую возможность",
+        "description": "MCP-сервер работает поверх зрелой платформы Kaiten — без переезда и долгого внедрения.",
+        "metrics": [
+          {
+            "value": "100 000+",
+            "label": "команд работают в Kaiten"
+          },
+          {
+            "value": "2018",
+            "label": "на рынке с 2018 года"
+          },
+          {
+            "value": "РФ",
+            "label": "данные хранятся в России"
+          },
+          {
+            "value": "Любой",
+            "label": "MCP-клиент подключается"
+          }
+        ],
+        "bullets": [
+          {
+            "title": "Прозрачные действия",
+            "description": "Каждое изменение агента видно в истории карточки — команда контролирует, что он сделал."
+          },
+          {
+            "title": "Права доступа",
+            "description": "Агент работает под токеном и вашими правами. Доступ можно ограничить нужными досками."
+          },
+          {
+            "title": "Без переезда",
+            "description": "MCP-сервер работает поверх ваших досок Kaiten — привычная работа команды не меняется."
+          },
+          {
+            "title": "Быстрый старт",
+            "description": "Подключение занимает несколько минут и не требует интегратора — попробуйте бесплатно."
+          }
+        ]
+      }
+    },
+    {
+      "id": "process",
+      "component": "ProcessSteps",
+      "props": {
+        "eyebrow": "Подключение",
+        "title": "Как подключить MCP-сервер",
+        "description": "Подключение занимает несколько минут и работает из коробки — без интегратора.",
+        "steps": [
+          {
+            "icon": "key-round",
+            "title": "Создайте токен доступа",
+            "description": "В настройках Kaiten создайте токен для доступа ассистента к вашим доскам."
+          },
+          {
+            "icon": "plug",
+            "title": "Добавьте сервер в клиент",
+            "description": "Укажите адрес MCP-сервера и токен в своём ИИ-инструменте — Claude, Cursor или другом."
+          },
+          {
+            "icon": "layout-grid",
+            "title": "Откройте нужные доски",
+            "description": "Дайте агенту доступ к доскам и пространствам, с которыми он будет работать."
+          },
+          {
+            "icon": "messages-square",
+            "title": "Работайте из диалога",
+            "description": "Просите ассистента заводить задачи, двигать статусы и собирать сводки по спринтам."
+          }
+        ]
+      }
+    },
+    {
+      "id": "features",
+      "component": "FeatureGrid",
+      "props": {
+        "eyebrow": "Возможности",
+        "title": "Что умеет ассистент с доступом к Kaiten",
+        "items": [
+          {
+            "icon": "eye",
+            "title": "Читает доски",
+            "description": "Спросите статус спринта — ассистент соберёт данные с досок и вернёт сводку."
+          },
+          {
+            "icon": "plus",
+            "title": "Создаёт задачи",
+            "description": "Опишите задачу словами — ассистент заведёт карточку с описанием и чек-листом."
+          },
+          {
+            "icon": "move",
+            "title": "Двигает статусы",
+            "description": "Агент переносит карточки по колонкам и меняет поля, пока вы остаётесь в редакторе кода."
+          },
+          {
+            "icon": "bar-chart-3",
+            "title": "Собирает сводки",
+            "description": "Попросите отчёт по спринту — агент подготовит результат из данных Kaiten."
+          },
+          {
+            "icon": "plug",
+            "title": "Открытый стандарт",
+            "description": "Model Context Protocol поддерживают Claude, Cursor, VS Code и другие клиенты."
+          },
+          {
+            "icon": "shield-check",
+            "title": "Права доступа",
+            "description": "Агент работает с теми досками, к которым вы открыли доступ токеном."
+          }
+        ],
+        "columns": 3
+      }
+    },
+    {
+      "id": "faq",
+      "component": "FAQAccordion",
+      "props": {
+        "title": "Вопросы о MCP-сервере",
+        "items": [
+          {
+            "question": "С какими ИИ-инструментами работает MCP-сервер?",
+            "answer": "С любым MCP-совместимым клиентом: Claude, Cursor, VS Code и другими. Kaiten следует открытому стандарту Model Context Protocol."
+          },
+          {
+            "question": "Мы работаем в Jira — можно перейти?",
+            "answer": "Да. Kaiten переносит задачи из Jira, YouTrack, Trello и Asana. После импорта ИИ-ассистент сразу управляет карточками через MCP."
+          },
+          {
+            "question": "Что ассистент может делать с задачами?",
+            "answer": "Читать доски и карточки, создавать и обновлять задачи, двигать их по колонкам, менять поля и собирать сводки по спринтам."
+          },
+          {
+            "question": "Насколько это безопасно?",
+            "answer": "Агент работает под токеном и правами доступа, которые вы открыли. Доступ можно ограничить нужными досками. Данные хранятся в России, Kaiten в реестре отечественного ПО."
+          },
+          {
+            "question": "Можно проверить без риска?",
+            "answer": "Да. Подключите MCP-сервер к одной доске и попробуйте бесплатно — остальная работа команды не затронута."
+          },
+          {
+            "question": "Работает ли на локальной версии?",
+            "answer": "Сейчас MCP-сервер доступен в облачной версии Kaiten."
+          }
+        ]
+      }
+    },
+    {
+      "id": "final_cta",
+      "component": "FinalCta",
+      "props": {
+        "title": "Отдайте рутину по задачам агенту",
+        "description": "Подключите MCP-сервер Kaiten к своему ИИ-ассистенту и управляйте задачами из диалога. Попробуйте бесплатно.",
+        "primaryCta": {
+          "label": "Попробовать бесплатно",
+          "href": "/signup"
+        },
+        "secondaryCta": {
+          "label": "Как подключить",
+          "href": "#process"
+        }
+      }
+    },
+    {
+      "id": "kaiten_footer",
+      "component": "LandingFooterMock",
+      "props": {}
+    }
+  ],
+  "seo": {
+    "title": "Kaiten для разработки: MCP-сервер для ИИ-ассистентов",
+    "description": "Подключите ИИ-ассистента к доскам Kaiten по стандарту Model Context Protocol. Агент создаёт, читает и обновляет задачи из диалога — Claude, Cursor, VS Code."
+  },
+  "illustrationSpecs": [],
+  "meta": {
+    "sources": [
+      "wiki/brand/redpolitika.md",
+      "wiki/references/kaiten-product-facts.md",
+      "wiki/references/anglicism-dictionary.md",
+      "wiki/design-system/voice.md",
+      "wiki/design-system/colors.md",
+      "wiki/design-system/typography.md",
+      "wiki/design-system/spacing.md",
+      "wiki/design-system/radius.md",
+      "wiki/design-system/motion.md",
+      "wiki/design-system/grid.md",
+      "wiki/design-system/components/hero.md",
+      "wiki/design-system/components/feature-grid.md",
+      "wiki/design-system/components/pricing.md",
+      "wiki/design-system/components/faq.md",
+      "wiki/design-system/components/accordion.md",
+      "wiki/design-system/components/final-cta.md",
+      "wiki/design-system/components/footer.md",
+      "wiki/design-system/components/button.md",
+      "wiki/archetypes/saas_landing.md",
+      "packages/harness/src/skills/conversion-landing.md",
+      "packages/harness/src/prompts/section-mock-skill.md",
+      "wiki/layouts/single-module-deep-dive.md",
+      "wiki/layouts/index.md"
+    ],
+    "generatedAt": "2026-07-02T10:39:40.300Z",
+    "generator": "host-agent",
+    "archetype": "saas_landing",
+    "layout": "single-module-deep-dive",
+    "tokenEstimate": 46401,
+    "domain": "pm"
+  }
+}

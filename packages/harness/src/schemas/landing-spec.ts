@@ -23,6 +23,8 @@ export const AssetRefSchema = z.object({
     .enum([
       'support-board',
       'pm-board',
+      'mcp-agent-board',
+      'mcp-agent-board-animated',
       'analytics-kpi',
       'integrations-console',
       'modules-matrix',
@@ -75,6 +77,7 @@ export const AssetRefSchema = z.object({
       'retail-project',
       'retail-portfolio-animated',
       'retail-mobile',
+      'gantt-chart',
       'generic',
     ])
     .optional(),
@@ -174,15 +177,23 @@ const FAQAccordionSchema = z.object({
   }),
 });
 
-/* ─── FinalCta ────────────────────────────────────────────────────── */
+/* ─── FinalCta (единый вид — градиентный CTAsecondaryMock) ─────────── */
 const FinalCtaSchema = z.object({
   id: z.literal('final_cta'),
   component: z.literal('FinalCta'),
   props: z.object({
-    title: z.string().min(4).max(80),
-    description: z.string().max(200).optional(),
+    title: z.string().min(4).max(120),
+    description: z.string().max(280).optional(),
     primaryCta: CtaSchema,
     secondaryCta: CtaSchema.nullable().optional(),
+    variant: z
+      .enum(['solid', 'gradient'])
+      .optional()
+      .describe("'solid' (дефолт) — сплошная заливка (старые лендинги); 'gradient' — блок CTAsecondaryMock (ритейл и новые)"),
+    visualVariant: z
+      .string()
+      .optional()
+      .describe('интерфейс справа для variant=gradient под тематику лендинга (напр. retail-portfolio-animated, pm-board-1)'),
   }),
 });
 
@@ -295,6 +306,8 @@ const MediaCopySchema = z.object({
         'kb-public',
         'kb-internal',
         'pm-board',
+        'mcp-agent-board',
+        'mcp-agent-board-animated',
         'analytics-kpi',
         'integrations-console',
         'modules-matrix',
@@ -347,6 +360,7 @@ const MediaCopySchema = z.object({
       'retail-project',
       'retail-portfolio-animated',
       'retail-mobile',
+      'gantt-chart',
       ])
       .optional(),
     /**
@@ -552,6 +566,8 @@ export const MockVariantSchema = z.enum([
   'kb-public',
   'kb-internal',
   'pm-board',
+  'mcp-agent-board',
+  'mcp-agent-board-animated',
   'analytics-kpi',
   'integrations-console',
   'modules-matrix',
@@ -621,6 +637,7 @@ export const MockVariantSchema = z.enum([
 'retail-report-stores',
 'retail-report-bottlenecks',
 'retail-report-ai',
+'gantt-chart',
 ]);
 export type MockVariant = z.infer<typeof MockVariantSchema>;
 

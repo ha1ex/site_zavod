@@ -1,3 +1,4 @@
+import { ScaleToFit } from './ScaleToFit';
 import {
   AbTestResultsMock,
   AnalyticsKpiMock,
@@ -20,6 +21,8 @@ import {
   KnowledgeBaseMock,
   LedgerViewMock,
   MarketplaceConnectorMock,
+  McpAgentBoardMock,
+  McpAgentBoardAnimatedMock,
   MobileCrmMock,
   MobileDocReaderMock,
   ModulesMatrixMock,
@@ -60,6 +63,7 @@ import {
   RetailMobileMock,
   RetailDocMiniMock,
   RetailReportMiniMock,
+  GanttChartMock,
 } from '.';
 
 /**
@@ -71,6 +75,8 @@ import {
 export type MockVariant =
   // PM
   | 'pm-board'
+  | 'mcp-agent-board'
+  | 'mcp-agent-board-animated'
   | 'analytics-kpi'
   | 'integrations-console'
   | 'modules-matrix'
@@ -155,7 +161,8 @@ export type MockVariant =
   | 'retail-doc-contracts'
   | 'retail-report-stores'
   | 'retail-report-bottlenecks'
-  | 'retail-report-ai';
+  | 'retail-report-ai'
+  | 'gantt-chart';
 
 export function MockVisual({ variant }: { variant: MockVariant | undefined }) {
   switch (variant) {
@@ -169,6 +176,10 @@ export function MockVisual({ variant }: { variant: MockVariant | undefined }) {
       return <KnowledgeBaseMock variant="internal" />;
     case 'pm-board':
       return <PmBoardMock />;
+    case 'mcp-agent-board':
+      return <McpAgentBoardMock />;
+    case 'mcp-agent-board-animated':
+      return <McpAgentBoardAnimatedMock />;
     case 'analytics-kpi':
       return <AnalyticsKpiMock />;
     case 'integrations-console':
@@ -294,6 +305,14 @@ export function MockVisual({ variant }: { variant: MockVariant | undefined }) {
     case 'retail-report-bottlenecks':
     case 'retail-report-ai':
       return <RetailReportMiniMock variant={variant} />;
+    case 'gantt-chart':
+      return (
+        <div className="w-full overflow-hidden">
+          <ScaleToFit designWidth={1040}>
+            <GanttChartMock />
+          </ScaleToFit>
+        </div>
+      );
     default:
       return null;
   }

@@ -78,6 +78,8 @@ points, ревью, MR, deployment, дорожная карта.
 | Mock | Variant slug | Что показывает |
 |---|---|---|
 | `PmBoardMock` | `pm-board` | Канбан PM-команды: Бэклог → В работе → Ревью → Готово, карточки с эпиками, story points, исполнителями |
+| `McpAgentBoardMock` | `mcp-agent-board` | MCP-сервер Kaiten: окно ИИ-ассистента (вызов kaiten.create_card через MCP) + доска «Спринт 24» с созданной карточкой в «В работе». Для лендинга MCP-сервера — ассистент управляет задачами из диалога |
+| `McpAgentBoardAnimatedMock` | `mcp-agent-board-animated` | Анимированный первый экран MCP-сервера: спринт-доска + плавающий чат ИИ. Юзер пишет «Назначь ответственного, передвинь в Готово» → аватар всплывает на карточке, карточка едет в «Готово». CSS @keyframes, hero-only |
 | `KnowledgeBaseMock` | `kb-public` / `kb-internal` | Статья базы знаний или внутренний регламент |
 | `AnalyticsKpiMock` | `analytics-kpi` | Дашборд руководителя: 2×2 KPI (спринт в срок, задач в работе, цикл story, риски) + загрузка команд |
 | `IntegrationsConsoleMock` | `integrations-console` | Лента событий из 1С, AmoCRM, Telegram, GitLab |
