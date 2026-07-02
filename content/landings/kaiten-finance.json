@@ -182,7 +182,9 @@
         "secondaryCta": {
           "label": "Запросить демонстрацию",
           "href": "/demo"
-        }
+        },
+        "variant": "gradient",
+        "visualVariant": "approval-board"
       }
     },
     {
@@ -333,10 +335,10 @@
       "packages/harness/src/prompts/section-mock-skill.md",
       "wiki/layouts/index.md"
     ],
-    "generatedAt": "2026-07-01T19:43:47.445Z",
+    "generatedAt": "2026-07-02T12:09:19.969Z",
     "generator": "host-agent",
     "archetype": "enterprise_landing",
-    "tokenEstimate": 46193,
+    "tokenEstimate": 46465,
     "domain": "pm"
   }
 }

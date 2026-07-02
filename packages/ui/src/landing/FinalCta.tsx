@@ -1,21 +1,57 @@
 import { ButtonLink } from '../primitives/ButtonLink';
 import { Inspect } from '../primitives/Inspect';
 import { cn } from '../primitives/cn';
+import { CTAsecondaryMock, type CTAButton } from './mocks/CTAsecondaryMock';
+import { MockVisual, type MockVariant } from './mocks';
 
 export interface FinalCtaProps {
   title: string;
   description?: string;
   primaryCta: { label: string; href: string };
   secondaryCta?: { label: string; href: string } | null;
+  /**
+   * 'solid' (по умолчанию) — прежняя сплошная фиолетовая заливка (старые лендинги).
+   * 'gradient' — градиентный блок `CTAsecondaryMock` (ритейл и последующие лендинги).
+   */
+  variant?: 'solid' | 'gradient';
+  /** Интерфейс справа (только для variant='gradient') под тематику лендинга. */
+  visualVariant?: MockVariant;
 }
 
-export function FinalCta({ title, description, primaryCta, secondaryCta }: FinalCtaProps) {
+/**
+ * FinalCta — финальный призыв к действию.
+ *  - `variant='solid'` (дефолт): сплошная заливка — как было, для старых лендингов;
+ *  - `variant='gradient'`: градиентный блок `CTAsecondaryMock` с интерфейсом справа
+ *    (opt-in для ритейла и новых лендингов). Правило: `finalcta-gradient`.
+ */
+export function FinalCta({
+  title,
+  description,
+  primaryCta,
+  secondaryCta,
+  variant = 'solid',
+  visualVariant,
+}: FinalCtaProps) {
+  if (variant === 'gradient') {
+    const buttons: CTAButton[] = [
+      { label: primaryCta.label, href: primaryCta.href, variant: 'fill' },
+      ...(secondaryCta
+        ? [{ label: secondaryCta.label, href: secondaryCta.href, variant: 'outline' as const }]
+        : []),
+    ];
+    return (
+      <CTAsecondaryMock
+        title={title}
+        subtitle={description}
+        buttons={buttons}
+        visual={visualVariant ? <MockVisual variant={visualVariant} /> : undefined}
+      />
+    );
+  }
+
   return (
     <section
-      className={cn(
-        'mx-auto w-full max-w-(--container-kaiten)',
-        'px-4 py-16 md:px-6 lg:py-24',
-      )}
+      className={cn('mx-auto w-full max-w-(--container-kaiten)', 'px-4 py-16 md:px-6 lg:py-24')}
     >
       <div
         className={cn(

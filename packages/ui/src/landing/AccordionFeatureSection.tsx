@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, type ReactNode } from 'react';
+import { FitContain } from './mocks/FitContain';
 
 /**
  * AccordionFeatureSection — переиспользуемый шаблон секции-аккордеона
@@ -77,8 +78,8 @@ const STYLES = `
 .afs .acc-body__inner{padding:0 20px 20px;color:var(--afs-t2);font-size:16px;line-height:24px}
 /* Медиа-область — квадрат 592×592 с переключаемыми панелями */
 .afs .acc-media{position:relative;justify-self:center;align-self:center;width:100%;max-width:592px;aspect-ratio:1/1;
-  background:linear-gradient(180deg,#ece0ff,#cdecff);border-radius:16px;overflow:hidden;display:grid;place-items:stretch}
-.afs .acc-panel{grid-area:1/1;width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(180deg,#ece0ff,#cdecff);border-radius:16px;overflow:hidden;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr);place-items:stretch}
+.afs .acc-panel{grid-area:1/1;min-width:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;
   opacity:0;visibility:hidden;transform:translateY(10px);transition:opacity .28s ease,transform .28s ease}
 .afs .acc-panel.on{opacity:1;visibility:visible;transform:none}
 .afs .acc-panel img{width:100%;height:100%;object-fit:cover;display:block}
@@ -141,7 +142,7 @@ export function AccordionFeatureSection({
           <div className="acc-media" aria-hidden="true">
             {items.map((item, i) => (
               <div className={`acc-panel${i === open ? ' on' : ''}`} key={i}>
-                {item.media}
+                <FitContain>{item.media}</FitContain>
               </div>
             ))}
           </div>

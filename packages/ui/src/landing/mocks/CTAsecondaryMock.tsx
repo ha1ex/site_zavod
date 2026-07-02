@@ -48,7 +48,7 @@ const STYLE = `
   display:block; width:100%; padding:48px var(--sp-4); box-sizing:border-box;
 }
 .cta-secondary, .cta-secondary *{box-sizing:border-box;}
-.cta-secondary .fcta{position:relative; overflow:hidden; max-width:1216px; margin:0 auto; background:var(--brand-12); border-radius:var(--radius-3xl); text-align:left; padding:var(--sp-16) var(--sp-12) 0;}
+.cta-secondary .fcta{position:relative; overflow:hidden; max-width:1216px; margin:0 auto; background:var(--brand-12); border-radius:var(--radius-3xl); text-align:left; padding:var(--sp-16) var(--sp-12) var(--sp-12);}
 .cta-secondary .fcta__blur{position:absolute; width:786px; height:744px; left:55%; top:-120px; border-radius:9999px; background:linear-gradient(-90deg,#e298ff,#6fe5ff); filter:blur(200px); opacity:.5; pointer-events:none; z-index:0;}
 .cta-secondary .fcta__in{position:relative; z-index:1; display:grid; grid-template-columns:minmax(0,1fr) 520px; gap:var(--sp-10); align-items:center;}
 .cta-secondary .fcta__copy{max-width:560px; align-self:start;}

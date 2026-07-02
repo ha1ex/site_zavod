@@ -274,7 +274,7 @@
             "title": "Диаграмма Ганта и ресурсное планирование",
             "description": "Постройте таймлайн проекта, покажите зависимости между этапами. Видно, что тормозит процесс и кто из сотрудников перегружен.",
             "icon": "GanttChart",
-            "mockVariant": "retail-report-bottlenecks"
+            "mockVariant": "gantt-chart"
           }
         ],
         "primaryCta": {
@@ -453,7 +453,9 @@
         "secondaryCta": {
           "label": "Запросить демонстрацию",
           "href": "/demo"
-        }
+        },
+        "variant": "gradient",
+        "visualVariant": "retail-portfolio-animated"
       }
     },
     {
@@ -492,11 +494,11 @@
       "packages/harness/src/prompts/section-mock-skill.md",
       "wiki/layouts/index.md"
     ],
-    "generatedAt": "2026-07-02T08:16:27.675Z",
+    "generatedAt": "2026-07-02T12:03:53.810Z",
     "generator": "host-agent",
     "archetype": "saas_landing",
     "layout": "depersonalized-product-tour",
-    "tokenEstimate": 46129,
+    "tokenEstimate": 46401,
     "domain": "pm"
   }
 }
